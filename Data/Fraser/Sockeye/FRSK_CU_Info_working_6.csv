@@ -1,0 +1,87 @@
+Base.Unit.CU.ID,Base.Unit.Species,Base.Unit.CU.ShortName,Base.Unit.CU.FullName,Base.Unit.CU.Lat,Base.Unit.CU.Long,BaseUnit.FAZ,BaseUnit.MAZ,BaseUnit.JAZ,BaseUnit.Drainage,BaseUnit.WatershedGroup,BaseUnit.Watershed,BaseUnit. ManagementTiming,BaseUnit.AvgAge,DataQualIdx,Comments
+SEL-L-03-05,SK,Pitt_ES,Pitt_ES,49.4282,-122.5414,LFR,GStr,LFR+GStr,,Lower Fraser,Fraser,Early_Summer,4,,
+SEL-L-06-20,SK,Nadina_Francois_ES,Nadina_Francois_ES,54.0253,-125.6902,MFR,GStr,MFR+GStr,,Nechako,Fraser,Early_Summer,4,,
+SEL-L-10-01,SK,Kamloops_ES,Kamloops_ES,50.7319,-120.6021,NTh,GStr,NTh+GStr,,North Thompson,Fraser,Early_Summer,4,,
+SEL-L-07-01,SK,Bowron_ES,Bowron_ES,53.1458,-121.0932,UFR,GStr,UFR+GStr,,Upper Fraser,Fraser,Early_Summer,4,,
+SEL-L-10-03,SK,North_Barriere_ES,North_Barriere_ES_(de_novo),51.3309,-119.8539,NTh,GStr,NTh+GStr,,North Thompson,Fraser,Early_Summer,4,,
+SEL-L-05-02,SK,Nahatlatch_ES,Nahatlatch_ES,49.9786,-121.7759,FRCany,GStr,FRCany+GStr,,Lower Fraser,Fraser,Early_Summer,4,,
+SEL-L-06-16,SK,Taseko_ES,Taseko_ES,51.3354,-123.6154,MFR,GStr,MFR+GStr,,Chilcotin,Fraser,Early_Summer,4,,
+SEL-L-03-01,SK,Chilliwack_ES,Chilliwack_ES,49.0791,-121.435,LFR,GStr,LFR+GStr,,Lower Fraser,Fraser,Early_Summer,4,,
+SEL-L-06-01,SK,Anderson_Seton_ES,Anderson_Seton_ES,,,MFR,GStr,MFR+GStr,,Seton-Anderson,Fraser,Early_Summer,4,,Spawning channel began 1968
+SEL-L-06-03,SK,Chilko_S_ES,Chilko_S_ES,51.326,-124.0958,MFR,GStr,MFR+GStr,,Chilcotin,Fraser,Summer,4,,
+SEL-L-06-07,SK,Fran_Fras_S,Francois_Fraser_S,54.0743,-124.7671,MFR,GStr,MFR+GStr,,Nechako,Fraser,Summer,4,,
+SEL-L-03-02,SK,Cultus_L,Cultus_L,49.0615,-121.9833,LFR,GStr,LFR+GStr,,Lower Fraser,Fraser,Late,4,,
+SEL-L-06-11,SK,Seton-L,Seton_L_(de_novo),50.6854,-122.1019,MFR,GStr,MFR+GStr,,Seton-Anderson,Fraser,Late,4,,
+SEL-L-03-04,SK,Harrison_US_L,Harrison_(U/S)_L,49.5554,-121.8629,LFR,GStr,LFR+GStr,,Harrison-Lillooet,Fraser,Late,4,,
+SER-R02,SK,Widgeon_RT,Widgeon_(River_Type),49.3666,-122.6376,LFR,GStr,LFR+GStr,,Lower Fraser,Fraser,Late,4,,
+SEL-L-04-01,SK,Lillooet_Harr_L,Lillooet_Harrison_L,50.2617,-122.5322,LILL,GStr,LILL+GStr,,Harrison-Lillooet,Fraser,Late,4,,
+SEL-L-03-03,SK,Harrison_DS_L,Harrison_(D/S)_L,49.5664,-121.8693,LFR,GStr,LFR+GStr,,Harrison-Lillooet,Fraser,Late,4,,
+SEL-L-06-14,SK,Takla_Trem_Estu,Takla_Trembleur_Estu,,,MFR,GStr,MFR+GStr,,Early Stuart,Fraser,Estu,4,,
+SEL-L-06-13,SK,Takla_Trem_S_S,Takla_Trembleur_Stuart_S,,,MFR,GStr,MFR+GStr,,Late Stuart,Fraser,Summer,4,,
+SEL-L-06-10,SK,Quesnel_S,Quesnel_S,,,MFR,GStr,MFR+GStr,,Quesnel,Fraser,Summer,4,,
+SEL-L-09-03,SK,Shuswap_L,Shuswap_L,,,STh,GStr,STh+GStr,,Late South Thompson,Fraser,Late,4,,
+SEL-L-09-02,SK,Shuswap_ES,Shuswap_ES,,,STh,GStr,STh+GStr,,Early South Thompson,Fraser,Early_Summer,4,,
+SER-R03,SK,Harrison_RT,Harrison_RT,,,LFR,GStr,LFR+GStr,,Harrison-Lillooet,Fraser,Summer,3,,
+CK-39,CK,BCR-BENT,Bella Coola-Bentinck,52.3071384,-126.5192197,,,,,Central Coast,North Coast,NA,5,,arith not geom total compared to BMS
+CK-40,CK,DEAN,Dean River,52.76621241,-126.4529395,,,,,Central Coast,North Coast,NA,5,,arith not geom total compared to BMS
+CK-46,CK,ECST,Ecstall,53.93875727,-129.6541812,,,,,Skeena,North Coast,NA,,,
+CK-49,CK,KALUM-E,Kalum-early timing,54.85684032,-128.8395476,,,,,Skeena,North Coast,NA,5.378575921,,arith not geom total compared to BMS
+CK-50,CK,KALUM-L,Kalum-late timing,54.63827418,-128.7132299,,,,,Skeena,North Coast,NA,5.38210036,,arith not geom total compared to BMS
+CK-48,CK,LSK,Lower Skeena-CK,54.52130369,-128.7155915,,,,,Skeena,North Coast,NA,4.570512821,,arith not geom total compared to BMS
+CK-53,CK,MSK-LGLKS,Middle Skeena-large lakes,55.06769744,-126.6988702,,,,,Skeena,North Coast,NA,4.734929933,,arith not geom total compared to BMS
+CK-54,CK,MSK-M/S,Middle Skeena-mainstem tributaries,55.46005624,-127.8641809,,,,,Skeena,North Coast,NA,5.103069527,,arith not geom total compared to BMS
+CK-42,CK,NCC-stream,North & Central Coast-early timing,53.44994034,-128.4254321,,,,,Central Coast,North Coast,NA,5,,arith not geom total compared to BMS
+CK-41,CK,NCC-lake,North & Central Coast-late timing,53.05612492,-128.5756904,,,,,Central Coast,North Coast,NA,5,,arith not geom total compared to BMS
+CK-57,CK,LNR-P,Portland Sound-Observatory Inlet-Lower Nass,55.01352226,-129.8255968,,,,,Nass,North Coast,NA,5,,arith not geom total compared to BMS
+CK-37,CK,RI,Rivers Inlet,51.71445039,-126.9570952,,,,,Central Coast,North Coast,NA,5,,arith not geom total compared to BMS
+CK-55,CK,MSK-UprBulk,Upper Bulkley River,54.42161207,-126.4590096,,,,,Skeena,North Coast,NA,4.956338728,,
+CK-58,CK,UNR,Upper Nass,55.93432425,-129.0877853,,,,,Nass,North Coast,NA,5,,arith not geom total compared to BMS
+CK-38,CK,WANN,Wannock,51.67892496,-127.2521096,RSI,HStr,RSI+HStr,,Central Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-20-01,SK,Alastair,Alastair,54.11510313,-129.1911298,,,,,Skeena,North Coast,NA,5.345,,arith not geom total compared to BMS
+SEL-L-22-01,SK,Asitika,Asitika,56.39412073,-126.7884946,,,,,Skeena,North Coast,NA,5,,
+SEL-L-22-02,SK,Azuklotz,Azuklotz,56.09155332,-126.7456458,,,,,Skeena,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-21-02,SK,Babine,Babine Complex,54.88307568,-126.0483318,,,,,Skeena,North Coast,NA,4.588061008,,arith not geom total compared to BMS
+SEL-L-18-01,SK,Backland,Backland<<VREQ[Bin]>>,53.64847761,-129.3033258,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-22-03,SK,Bear,Bear,56.19968217,-126.8885457,,,,,Skeena,North Coast,NA,4.586956522,,arith not geom total compared to BMS
+SEL-L-19-02,SK,Bloomfield,Bloomfield,52.85660524,-128.6816781,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-18-02,SK,Canoona,Canoona,53.07370077,-128.569743,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-11,SK,Curtis Inlet,Curtis Inlet,53.50088446,-129.8621889,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-24-02,SK,Damdochax/Wiminasik,Damdochax/Wiminasik,56.53156589,-128.3159485,,,,,Nass,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-22-04,SK,Damshilgwit,Damshilgwit,56.39714816,-127.9229215,,,,,Skeena,North Coast,NA,4.253731343,,arith not geom total compared to BMS
+SEL-L-19-14,SK,Devon,Devon,53.45326067,-129.7717555,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-18-04,SK,Evelyn,Evelyn,53.58475422,-128.9541169,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-24-03,SK,Fred Wright,Fred Wright,56.07228136,-128.7727112,,,,,Nass,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-20,SK,Freeda/Brodie,Freeda/Brodie,53.66974776,-129.7123294,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-21,SK,Hartley Bay,Hartley Bay<<VREQ[Bin]>>,53.42715764,-129.2538384,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-20-05,SK,Johnston,Johnston,53.86028083,-129.4855518,,,,,Skeena,North Coast,NA,,,
+SEL-L-19-24,SK,Kadjusdis River,Kadjusdis River<<VREQ[Bin]>>,52.15237838,-128.0431209,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-18-05,SK,Kainet Creek,Kainet Creek,52.75553537,-127.8814783,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-26,SK,Keecha,Keecha,53.30918104,-129.8300405,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-18-08,SK,Kitlope,Kitlope,53.21087108,-127.8439671,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-20-06,SK,Kitsumkalum,Kitsumkalum,54.77744466,-128.7858281,,,,,Skeena,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-21-05,SK,Kitwancool,Kitwancool,55.20452571,-128.0899057,,,,,Skeena,North Coast,NA,4.144043664,,arith not geom total compared to BMS
+SEL-L-19-33,SK,Koeye,Koeye,51.78038626,-127.8624678,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-34,SK,Kooryet,Kooryet,53.34198737,-129.8836628,,,,,Skeena,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-36,SK,Kwakwa Creek,Kwakwa Creek,52.55745612,-128.7078729,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-20-07,SK,Lakelse,Lakelse,54.38204489,-128.5524899,,,,,Skeena,North Coast,NA,4.443298969,,arith not geom total compared to BMS
+SEL-L-15-01,SK,Long,Long,51.26039672,-127.1340642,,,,,Central Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-39,SK,Lowe/Simpson/Weare,Lowe/Simpson/Weare,53.55992805,-129.5624716,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-40,SK,Mary Cove Creek,Mary Cove Creek,52.61785937,-128.4344276,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-20-08,SK,Mcdonell,Mcdonell,54.68260932,-127.7104804,,,,,Skeena,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-24-05,SK,Meziadin,Meziadin,56.05195997,-129.2377463,,,,,Nass,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-21-07,SK,Morice,Morice,54.15671012,-127.3475333,,,,,Skeena,North Coast,NA,5.387755102,,arith not geom total compared to BMS
+SEL-L-22-08,SK,Motase,Motase,56.04902927,-127.0380756,,,,,Skeena,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-45,SK,Namu,Namu,51.85649427,-127.8649717,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-15-02,SK,Owikeno,Owikeno,51.73456475,-126.7934667,,,,,Central Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-46,SK,Port John,Port John,52.12451055,-127.8380071,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-49,SK,Prudhomme,Prudhomme,54.24331831,-130.1545672,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-50,SK,Roderick,Roderick<<VREQ[Bin]>>,52.60209194,-128.4400074,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-54,SK,Shawatlan,Shawatlan,54.32433298,-130.2541525,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-16-01,SK,South Atnarko Lakes,South Atnarko Lakes,52.19405331,-125.7277976,,,,,Central Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-21-09,SK,Stephens,Stephens,55.7942696,-128.622562,,,,,Skeena,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-21-11,SK,Tahlo/Morrison,Tahlo/Morrison,55.31577136,-126.4478068,,,,,Skeena,North Coast,NA,4.368386039,,arith not geom total compared to BMS
+SEL-L-19-60,SK,Tankeeah River,Tankeeah River,52.29818492,-128.2615901,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-62,SK,Tsimtack/ Lakes,Tsimtack Lakes,53.38128565,-129.4663289,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SEL-L-19-70,SK,Yeo,Yeo,52.30378075,-128.1181732,,,,,North Coast,North Coast,NA,5,,arith not geom total compared to BMS
+SER-R20,SK,LNR-P,Lower Nass-Portland,55.02223148,-129.5904101,,,,,Nass,North Coast,NA,4,,
+SER-R19,SK,SKNA-HI,Skeena River-high interior,55.8151921,-128.6968859,,,,,Skeena,North Coast,NA,5,,
