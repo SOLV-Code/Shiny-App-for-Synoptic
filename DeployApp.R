@@ -1,4 +1,8 @@
-
+# Feb 13, 2019
+# Created by B. MacDonald, DFO
+# Objective: This code launches Version 1 of Synoptic Status Evaluation Tool being developed by DFO's State of the Salmon Program. The shiny
+#            app will be used to evaluate Wild Salmon Policy metrics for Pacific salmon populations in the BC/Yukon region.  
+# This code is under development
 
 
 
