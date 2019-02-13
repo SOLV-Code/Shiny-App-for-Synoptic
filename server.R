@@ -1,3 +1,6 @@
+# Server funtion for the State of the Salmon Synoptic Status Evaluation Tool
+# Developed by B. MacDonald
+# Feb 13, 2019
 
 
 # ==========Define server components ================
@@ -108,6 +111,10 @@ function(input, output,session){
     #df <- df[na.order,]
   })
   
+  # Create first data table with all data
+  output$AllData <- DT::renderDataTable({
+    DT::datatable(data.show())
+  })
   
   # Create data.row for the parallel plot to have names
   data.row <- eventReactive(data.new(),{
@@ -122,6 +129,8 @@ function(input, output,session){
     #[,-c(1:2)]
   })
   
+  
+  # Set up values for changing axis scales in PC plot
   # Update max values to equal actual mx or will break at "which" below when none are ">=" the max
   observe({ 
     df <- data.row()
@@ -132,7 +141,6 @@ function(input, output,session){
     }
     
   })  
-  
   observeEvent({input$select_change},{
     if(input$select_change == "Change"){
       for(i in 6:7){
@@ -147,18 +155,16 @@ function(input, output,session){
     }
   })
   
-  # Reset upper limits of metrics if added
+  # Reset upper limits of metrics if these are changed in the axis scale setting section
   data.par.plot <- reactive({
     req(input$axis_1_max, input$axis_2_max, data.row())                
     df <- data.row()
     max.vals <- list(max1=input$axis_1_max, max2=input$axis_2_max, max3=input$axis_3_max, max4=input$axis_4_max, max5=input$axis_5_max)
     min.vals <- list(min1=input$axis_1_min, min2=input$axis_2_min, min3=input$axis_3_min, min4=input$axis_4_min, min5=input$axis_5_min,
                      min6=input$axis_6_min, min7=input$axis_7_min  )
-    
     for(i in 1:5){
       df[which(df[,colnames(df)[i]] >=max.vals[[i]]) ,colnames(df)[i]] <- max.vals[[i]]
     }
-    
     if(input$select_change == "Change"){
       df[which(df[,colnames(df)[6]] >= input$axis_6_max),colnames(df)[6]] <- input$axis_6_max
       df[which(df[,colnames(df)[7]] >= input$axis_7_max),colnames(df)[7]] <- input$axis_7_max
@@ -170,6 +176,8 @@ function(input, output,session){
     df
   })
   
+  
+  # Implement parallel coordinates plot
   observeEvent({
     input$reset_brush
     #data.row()
@@ -255,8 +263,7 @@ function(input, output,session){
         )
       })
     } # end  if input$select_change="Change"
-  }
-                     )
+  }) # end parallel coordinaltes plotting code
   
   # 
   #  selected <- reactive({
@@ -264,10 +271,7 @@ function(input, output,session){
   # #       datatable(data.row[ids,])
   #  })
   
-  output$AllData <- DT::renderDataTable({
-    DT::datatable(data.show())
-  })
-  
+
   brushed.data <- reactive({
     if(length(input$parcoords_brushed_row_names)>0){
       df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% input$parcoords_brushed_row_names)
@@ -277,6 +281,7 @@ function(input, output,session){
     df
   })
   
+  # Create brushed dataframe for output table
   output$SelectedData <-  DT::renderDataTable({
     #ids <- rownames(data.row) %in% input$parcoords_brushed_row_names
     df <- brushed.data() 
@@ -286,7 +291,7 @@ function(input, output,session){
   })
   
   
-  
+  # update available selections for the radar plot metrics
   
   observe({ 
     updateSelectInput(session, "selected_metric_1", choices=colnames(data.row()), selected=colnames(data.row())[1])
