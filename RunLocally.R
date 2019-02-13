@@ -1,2 +1,2 @@
-source("setup.R", local=TRUE)
+source("setup.R", local=TRUE)[1]
 runApp()

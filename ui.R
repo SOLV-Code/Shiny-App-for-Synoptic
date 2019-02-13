@@ -122,49 +122,8 @@ body <- shinydashboard::dashboardBody(
       ),
       
       parcoordsOutput("parcoords", height="600px"),           # 400px is defaultheight
-  
-      #tags$button(id="btn-resetbrush", onclick="reset_brush()", "reset brush")
-      fluidRow(
-        column(width=2),
-        column( width=1, 
-                numericInput("axis_1_max", label= "Set max value", value= 16, min=0, max=16, step=1)), 
-        column( width=1,
-                numericInput("axis_2_max", label= "Set max value", value= 30, min=0, max=30, step=1)),
-        column( width=1,
-                numericInput("axis_3_max", label= "Set max value", value= 10, min=0, max=10, step=1)),
-        column( width=1,
-                numericInput("axis_4_max", label= "Set max value", value= 10, min=0, max=10, step=1)),
-        column( width=1,
-                numericInput("axis_5_max", label= "Set max value", value= 10, min=0, max=10, step=1)),
-        conditionalPanel("input.select_change == 'Annual'",  column(width=5)),
-        conditionalPanel("input.select_change == 'Change'",  
-                         column(width=1,
-                                numericInput("axis_6_max", label= "Set max value", value= 1, min=-1, max=1, step=0.01)),
-                         column(width=1,
-                                numericInput("axis_7_max", label= "Set max value", value= 5, min=-5, max=5, step=1)),
-                         column(width=3)
-        )
-      ),
-      conditionalPanel("input.select_change == 'Change'",
-                       fluidRow(
-                         column(width=2),
-                         column( width=1, 
-                                 numericInput("axis_1_min", label= "Set min value", value= -10, min=-10, max=16, step=1)), 
-                         column( width=1,
-                                 numericInput("axis_2_min", label= "Set min value", value= -10, min=-10, max=30, step=1)),
-                         column( width=1,
-                                 numericInput("axis_3_min", label= "Set min value", value= -10, min=-10, max=10, step=1)),
-                         column( width=1,
-                                 numericInput("axis_4_min", label= "Set min value", value= -10, min=-10, max=10, step=1)),
-                         column( width=1,
-                                 numericInput("axis_5_min", label= "Set min value", value= -1, min=-1, max=10, step=1)),
-                         column( width=1,
-                                 numericInput("axis_6_min", label= "Set min value", value= -1, min=-1, max=10, step=0.01)),
-                         column( width=1,
-                                 numericInput("axis_7_min", label= "Set min value", value= -1, min=-1, max=10, step=1)),
-                         column(width=3)
-                       )
-      )
+      uiOutput("parcoordsControls")
+      
     ),
     tabItem(
       tabName = "AllData",
