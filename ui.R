@@ -118,7 +118,7 @@ body <- shinydashboard::dashboardBody(
         column(width=1),
         actionButton(inputId = "reset_brush",
                      label="Reset Brushing",icon("paper-plane"), 
-                     style="color: #fff; background-color: #337ab7; border-color: #2e6da4")
+                     style="color: #fff; background-color: #337ab7; border-color: #2e6da4, height:100px; width:180px; font-size: 130%")
       ),
       
       parcoordsOutput("parcoords", height="600px"),           # 400px is defaultheight
