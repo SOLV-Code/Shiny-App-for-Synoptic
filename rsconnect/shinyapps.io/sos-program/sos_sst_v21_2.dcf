@@ -1,0 +1,10 @@
+name: sos_sst_v21_2
+title: SOS SST V2.1_2
+username:
+account: sos-program
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 665092
+bundleId: 1846855
+url: https://sos-program.shinyapps.io/sos_sst_v21_2/
+when: 1548885344.51065
