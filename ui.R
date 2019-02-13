@@ -205,7 +205,7 @@ body <- shinydashboard::dashboardBody(
       ),
       checkboxInput(inputId = "faceted",
                     label = "Select faceting:",
-                    value = FALSE),
+                    value = TRUE),
       #tags$head(tags$style(HTML(mycss))),
       #div(id = "plot-container",
       #    tags$img(src = "spinner.gif",
