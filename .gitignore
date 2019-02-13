@@ -1,0 +1,12 @@
+*.pdf
+*.jpg
+*.tiff
+*.doc
+*.docx
+*.xls
+*.xlsx
+.RData
+.RDataTmp
+.Rhistory
+
+
