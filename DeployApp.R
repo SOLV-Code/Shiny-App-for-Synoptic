@@ -60,7 +60,7 @@ data.start <- readxl::read_excel("data/FR SK metrics.xls")
 #app <- shinyApp(ui = ui, server = server)
 
 #runApp()
-rsconnect::deployApp(appTitle="SOS SST V2.1_2_git trial")
+rsconnect::deployApp(appTitle="SOS SST V2.2 git")
 
 rsconnect::showLogs()
 

@@ -294,7 +294,8 @@ function(input, output,session){
   # update available selections for the radar plot metrics
   data.metrics <- reactive({
          df <- as.data.frame(data.row()) 
-         df2 <- df %>% select(-c(WSP.status, FAZ, Recent.ER, Management.Timing))
+         if(input$select_change=="Annual") {df2 <- df %>% select(-c(WSP.status, FAZ, Recent.ER, Management.Timing))}
+         if(input$select_change == "Change") {df2 <- df %>% select(-c(WSP.numeric, FAZ, Recent.ER, Management.Timing))}
          print(df2)
   })
     
