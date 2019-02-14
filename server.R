@@ -292,16 +292,22 @@ function(input, output,session){
   
   
   # update available selections for the radar plot metrics
-  
+  data.metrics <- reactive({
+         df <- as.data.frame(data.row()) 
+         df2 <- df %>% select(-c(WSP.status, FAZ, Recent.ER, Management.Timing))
+         print(df2)
+  })
+    
+    
   observe({ 
-    updateSelectInput(session, "selected_metric_1", choices=colnames(data.row()), selected=colnames(data.row())[1])
+    updateSelectInput(session, "selected_metric_1", choices=colnames(data.metrics()), selected=colnames(data.metrics())[1])
   })
   
   observeEvent(
     {input$selected_metric_1
-      data.row()},
+      data.metrics()},
     {
-      choices_2 <- data.row() %>% select(-dplyr::one_of(input$selected_metric_1)) %>%
+      choices_2 <- data.metrics() %>% select(-dplyr::one_of(input$selected_metric_1)) %>%
         colnames()
       updateSelectInput(session, "selected_metric_2", choices=choices_2, selected = choices_2[1])
     })
@@ -309,9 +315,9 @@ function(input, output,session){
   observeEvent(
     {input$selected_metric_1
       input$selected_metric_2
-      data.row()},
+      data.metrics()},
     {
-      choices_3 <- data.row() %>% select(-dplyr::one_of(input$selected_metric_1,input$selected_metric_2)) %>%
+      choices_3 <- data.metrics() %>% select(-dplyr::one_of(input$selected_metric_1,input$selected_metric_2)) %>%
         colnames()
       updateSelectInput(session, "selected_metric_3", choices=choices_3, selected=choices_3[1])
     })
