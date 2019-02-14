@@ -25,7 +25,8 @@ library(shinyWidgets)
 library(parcoords)
 library(plotly)
 library(markdown)
-data.start <- readxl::read_excel("data/FR SK metrics.xls")
+
+#data.start <- readxl::read_excel("data/FR SK metrics.xls")
 
 sidebar <- shinydashboard::dashboardSidebar(
   shinydashboard::sidebarMenu(
@@ -78,7 +79,21 @@ body <- shinydashboard::dashboardBody(
                             choices =levels(factor(data.start$BaseUnit.Watershed)),
                             selected="Fraser",
                             multiple=FALSE)
-        )
+       )
+        # column(width=3,
+        #        selectInput(inputId="selected_metrics", 
+        #                    label="Selected Metrics:", 
+        #                    choices=names(data.start)[4:ncol(data.start)], 
+        #                    multiple=TRUE, 
+        #                    selected=names(data.start[4:ncol(data.start)]), 
+        #                    selectize=TRUE)),
+        # column(width=3,
+        #        selectInput(inputId="selected_cus", 
+        #                    label="Selected CUs:", 
+        #                    choices=CUs,
+        #                    multiple=TRUE, 
+        #                    selected=CUs, 
+        #                    selectize = TRUE))
       )
     ),
     tabItem(

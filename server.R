@@ -1,4 +1,34 @@
 
+list.of.packages <- c("shiny", 
+                      "shinydashboard",
+                      "tibble",
+                      "devtools",
+                      "ggplot2",
+                      "dplyr",
+                      "GGally",
+                      "DT",
+                      "htmltools",
+                      "shinyWidgets",
+                      "plotly",
+                      "forcats",
+                      "rsconnect",
+                      "brew",
+                      "ini",
+                      "xfun",
+                      "readxl",
+                      "markdown")                      
+
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+lapply(list.of.packages, require, character.only = TRUE)
+
+#if(!"parcoords" %in% installed.packages()[,"Package"]) devtools::install_github("timelyportfolio/parcoords")
+devtools::install_github("brigitte-dorner/parcoords")
+#if(!"ezR" %in% installed.packages()[,"Package"]) devtools::install_github("jerryzhujian9/ezR")
+library(parcoords)
+library(shinydashboard)
+library(forcats)
+#library("ezR")
 
 # ==========Define server components ================
 
@@ -10,9 +40,7 @@ function(input, output,session){
   # assemble the id of a shiny input widget or a variable name from a prefix and a postfix, e.g. widget.1 
   sId <- function(pre, post) {paste(pre, post, sep=".")}
   
-  # the names of the numeric metrics
-  numericMetrics <- names(data.start)[unlist(lapply(data.start, is.numeric))] 
-  
+  #print(unique(as.character(data.start[, "Base.Unit.CU.ShortName"])))  
   #------------------- Data processing ------------------
   
   # data.start <- readxl::read_excel("data/FR SK metrics.xls")

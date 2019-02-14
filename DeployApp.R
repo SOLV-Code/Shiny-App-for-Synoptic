@@ -1,4 +1,4 @@
-source("setup.R", local=TRUE)
+
 rsconnect::deployApp(appTitle="SOS SST V2.1_2_git trial")
 
 rsconnect::showLogs()
