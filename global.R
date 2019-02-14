@@ -1,6 +1,6 @@
 
 # explanatory information for the different metrics
-metricInfo <<- list(
+metricInfo <- list(
   Base.Unit.CU.ShortName = "Conservation Unit",
   Base.Unit.Species = "Species Code (Sk = Sockeye, Ck = Chinook, ...)",
   FAZ = "Freshwater Adaptive Zone",
@@ -15,8 +15,12 @@ metricInfo <<- list(
   Management.Timing = "Management timing")
 
 
-
-#data.start <- readxl::read_excel("data/FR SK metrics.xls")
+# data.start <- readxl::read_excel("data/FR SK metrics.xls")
+# data.start$Lower.Ratio <- suppressWarnings(as.double(data.start$Lower.Ratio))
+# data.start$Upper.Ratio <- suppressWarnings(as.double(data.start$Upper.Ratio))
+# data.start$Recent.ER <- suppressWarnings(as.double(data.start$Recent.ER))
+# data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
+# data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
 data.start <- read.csv("data/FR SK metrics.csv")
 
 # the names of the numeric metrics

@@ -40,7 +40,6 @@ function(input, output,session){
   # assemble the id of a shiny input widget or a variable name from a prefix and a postfix, e.g. widget.1 
   sId <- function(pre, post) {paste(pre, post, sep=".")}
   
-  #print(unique(as.character(data.start[, "Base.Unit.CU.ShortName"])))  
   #------------------- Data processing ------------------
   
   # data.start <- readxl::read_excel("data/FR SK metrics.xls")
