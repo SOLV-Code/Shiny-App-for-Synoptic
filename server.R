@@ -1,3 +1,6 @@
+# Server funtion for the State of the Salmon Synoptic Status Evaluation Tool
+# Developed by B. MacDonald
+# Feb 13, 2019
 
 list.of.packages <- c("shiny", 
                       "shinydashboard",
@@ -48,7 +51,7 @@ function(input, output,session){
   # data.start$Recent.ER <- suppressWarnings(as.double(data.start$Recent.ER))
   # data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
   # data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
- 
+  
   data.new <- reactive({
     req(input$selected_species, input$selected_watershed, input$selected_year)
     
@@ -204,6 +207,14 @@ function(input, output,session){
   
   #------------------- Radar Plots ------------------
   
+  # update available selections for the radar plot metrics
+  data.metrics <- reactive({
+    df <- as.data.frame(data.par()) 
+    if(input$select_change=="Annual") {df2 <- df %>% select(-c(WSP.status, FAZ, Recent.ER, Management.Timing))}
+    if(input$select_change == "Change") {df2 <- df %>% select(-c(WSP.numeric, FAZ, Recent.ER, Management.Timing))}
+    #print(df2)
+  })
+  
   # Re-scale function adapted from ezR package (devtools::install_github("jerryzhujian9/ezR")
   ez.rescale02 = function (x) {
     if (is.numeric(x)) {
@@ -235,9 +246,9 @@ function(input, output,session){
   
   observeEvent(
     {input$selected_metric_1
-      data.par()},
+      data.metrics()},
     {
-      choices_2 <- data.par() %>% select(-dplyr::one_of(input$selected_metric_1)) %>%
+      choices_2 <- data.metrics() %>% select(-dplyr::one_of(input$selected_metric_1)) %>%
         colnames()
       updateSelectInput(session, "selected_metric_2", choices=choices_2, selected = choices_2[1])
     })
@@ -245,9 +256,9 @@ function(input, output,session){
   observeEvent(
     {input$selected_metric_1
       input$selected_metric_2
-      data.par()},
+      data.metrics()},
     {
-      choices_3 <- data.par() %>% select(-dplyr::one_of(input$selected_metric_1,input$selected_metric_2)) %>%
+      choices_3 <- data.metrics() %>% select(-dplyr::one_of(input$selected_metric_1,input$selected_metric_2)) %>%
         colnames()
       updateSelectInput(session, "selected_metric_3", choices=choices_3, selected=choices_3[1])
     })
@@ -318,7 +329,7 @@ function(input, output,session){
         
       })
   
-
+  
   #------------------- All Data Tab ------------------
   
   # Create another data object to show in the All Data tab
@@ -327,7 +338,7 @@ function(input, output,session){
     
     df <- data.start  %>% filter(Base.Unit.Species %in% input$selected_species) %>%
       dplyr::select_if(colSums(!is.na(.)) > 0)
-   # browser()
+    # browser()
     if(input$selected_watershed != "All"){
       df <- df %>% filter(BaseUnit.Watershed %in% input$selected_watershed) %>%
         dplyr::select_if(colSums(!is.na(.)) > 0)
@@ -370,7 +381,7 @@ function(input, output,session){
   
   #------------------- Areas Tab ------------------
   
-
+  
   output$Areas <- DT::renderDataTable({
     df <- metrics_subset()
     
@@ -394,6 +405,7 @@ function(input, output,session){
     #   subset_data <-subset(data.start, !duplicated(Base.Unit.CU.ShortName) )
     subset_data <- data.new()
     brushed_data <- brushed.data()
+    
     if(variable == "Recent.ER"){
       if(change == "Annual"){
         breaks <- c( 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)
@@ -439,42 +451,51 @@ function(input, output,session){
     brushed.data()
     input$selected_type},{
       p.1 <- summary.prep(variable="Management.Timing", type=input$selected_type, change=input$select_change)
-      output$summaryPlot_MT <- renderPlotly({p.1})
+      
+      output$summaryPlot_MT <- renderPlotly({
+        print(p.1)
+      })
       
       p.2 <- summary.prep(variable="FAZ", type=input$selected_type,change=input$select_change)
-      output$summaryPlot_FAZ <- renderPlotly({p.2})
+      output$summaryPlot_FAZ <- renderPlotly({
+        print(p.2)
+      })
       
       if(input$select_change=="Annual") p.3 <- summary.prep(variable="WSP.status", type=input$selected_type, change=input$select_change)
       if(input$select_change=="Change") p.3 <- summary.prep(variable="WSP.numeric", type=input$selected_type, change=input$select_change)
-      output$summaryPlot_WSP <- renderPlotly({p.3})
+      output$summaryPlot_WSP <- renderPlotly({
+        print(p.3)
+      })
       
       p.4 <-  summary.prep(variable="Recent.ER", type=input$selected_type,change=input$select_change)
-      output$summaryPlot_ER <- renderPlotly({p.4})
+      
+      output$summaryPlot_ER <- renderPlotly({
+        print(p.4)
+      })
     }
   )
   
 } # end server function
-  #   
-  
-  # 
-  # # Add observer to write to screen if metric = NA
-  #  incomplete <- reactive({
-  #        metrics_subset() %>%  filter(!complete.cases(.)) %>%
-  #                         select(Base.Unit.CU.ShortName)
-  #  })    
-  #  
-  # observeEvent(incomplete(),{
-  #     if(length(incomplete()$Base.Unit.CU.ShortName) == 0 ){
-  #                     output$incomplete_plots <- renderText({paste("")})
-  #     }
-  #     if(length(incomplete()$Base.Unit.CU.ShortName) > 0){
-  #                     output$incomplete_plots <- renderText({
-  #                                               paste("The following CUs are missing metric values for",
-  #                                                     input$selected_metric,
-  #                                                     ":",
-  #                                                     toString(incomplete()$Base.Unit.CU.ShortName) )
-  #                      })
-  #     }
-  # })
-  # # 
-  
+#   
+
+# 
+# # Add observer to write to screen if metric = NA
+#  incomplete <- reactive({
+#        metrics_subset() %>%  filter(!complete.cases(.)) %>%
+#                         select(Base.Unit.CU.ShortName)
+#  })    
+#  
+# observeEvent(incomplete(),{
+#     if(length(incomplete()$Base.Unit.CU.ShortName) == 0 ){
+#                     output$incomplete_plots <- renderText({paste("")})
+#     }
+#     if(length(incomplete()$Base.Unit.CU.ShortName) > 0){
+#                     output$incomplete_plots <- renderText({
+#                                               paste("The following CUs are missing metric values for",
+#                                                     input$selected_metric,
+#                                                     ":",
+#                                                     toString(incomplete()$Base.Unit.CU.ShortName) )
+#                      })
+#     }
+# })
+# # 
