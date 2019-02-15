@@ -93,19 +93,40 @@ body <- shinydashboard::dashboardBody(
     tabItem(
       tabName = "Parallel",
       h2("Parallel coordinate plots"),
-      h4("Select a year to view WSP metrics, or select 'change' to view changes in metrics between years."),
-      br(),
-      fluidRow(
-        column( width=3,
+       fluidRow(
+         column(width = 4, h3("Step 1:")),
+         column(width = 4, h3("Step 2:")),
+         column(width=4, h3("Step 3:"))
+       ),
+       fluidRow(
+        #column(width=1),
+        column(width = 3,  h4("Select 'Annual' to view WSP metrics for a specific year, or 'Change' to view changes 
+                              in metrics between two years")),
+        column(width = 1),
+        conditionalPanel( "input.select_change == 'Annual'",
+                          column(width = 3,  h4("Select year to view WSP metric values"))),
+        conditionalPanel( "input.select_change == 'Change'",
+                          column(width = 3,  h4("Select years to calculate change"))),
+        column(width = 1),
+        column(width=3, h4("Click and drag mouse over vertical axes to select CUs")),
+        column(width=1)
+       ),
+      
+       fluidRow(
+       # column(width=1), 
+        column(width=3,
                 radioButtons( "select_change",
-                              label="Select change or annual values:",
-                              choices=c("Annual", "Change"),
+                              label="",
+                              choiceNames = list( HTML("<p style='font-size:125%;'>Annual</p>"), HTML("<p style='font-size:125%;'>Change</p>")),
+                              choiceValues = list("Annual","Change"),
+                              inline=TRUE,
                               selected="Annual")
         ),
+        column(width=1),
         conditionalPanel("input.select_change == 'Annual'",
-                         column( width=3,
-                                 sliderTextInput( inputId="selected_year",					 
-                                                  label="Select Year:",
+                         column( width=4,
+                                 selectInput( inputId="selected_year",					 
+                                                  label="",
                                                   choices = levels(as.factor(data.start$Year)),
                                                   selected= levels(as.factor(data.start$Year))[1])
                          )
@@ -113,21 +134,24 @@ body <- shinydashboard::dashboardBody(
         conditionalPanel("input.select_change == 'Change'",
                          column( width=2,
                                  selectInput( inputId="selected_changeyear_1",					 
-                                              label="Select Initial Year:",
+                                              label="Initial Year:",
                                               choices = levels(as.factor(data.start$Year))[-(length(levels(as.factor(data.start$Year))))],  # choices do not include the last year
                                               selected= dplyr::first(levels(as.factor(data.start$Year))) )
                          ),
                          column( width=2,
                                  selectInput( inputId="selected_changeyear_2",					 
-                                              label="Select Last Year:",
+                                              label="Last Year:",
                                               choices = levels(as.factor(data.start$Year))[-1],      # choices do not include the first year
                                               selected= dplyr::last(levels(as.factor(data.start$Year))) )
                          )
         ),
-        column(width=1),
+        column(width=1)
+       ),
+      fluidRow(
+        column(width=10),
         actionButton(inputId = "reset_brush",
                      label="Reset Brushing",icon("paper-plane"), 
-                     style="color: #fff; background-color: #337ab7; border-color: #2e6da4, height:100px; width:180px; font-size: 130%")
+                     style="color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; width:180px; font-size: 130%")
       ),
       
       parcoordsOutput("parcoords", height="600px"),           # 400px is defaultheight

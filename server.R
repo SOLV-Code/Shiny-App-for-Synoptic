@@ -241,7 +241,7 @@ function(input, output,session){
   }
   
   observe({ 
-    updateSelectInput(session, "selected_metric_1", choices=colnames(data.par()), selected=colnames(data.par())[1])
+    updateSelectInput(session, "selected_metric_1", choices=colnames(data.metrics()), selected=colnames(data.metrics())[1])
   })
   
   observeEvent(
