@@ -209,10 +209,10 @@ function(input, output,session){
   
   # update available selections for the radar plot metrics
   data.metrics <- reactive({
-    df <- as.data.frame(data.row()) 
+    df <- as.data.frame(data.par()) 
     if(input$select_change=="Annual") {df2 <- df %>% select(-c(WSP.status, FAZ, Recent.ER, Management.Timing))}
     if(input$select_change == "Change") {df2 <- df %>% select(-c(WSP.numeric, FAZ, Recent.ER, Management.Timing))}
-    print(df2)
+    df2
   })
   
   # Re-scale function adapted from ezR package (devtools::install_github("jerryzhujian9/ezR")
@@ -452,26 +452,18 @@ function(input, output,session){
     input$selected_type},{
       p.1 <- summary.prep(variable="Management.Timing", type=input$selected_type, change=input$select_change)
       
-      output$summaryPlot_MT <- renderPlotly({
-        print(p.1)
-      })
+      output$summaryPlot_MT <- renderPlotly({p.1})
       
       p.2 <- summary.prep(variable="FAZ", type=input$selected_type,change=input$select_change)
-      output$summaryPlot_FAZ <- renderPlotly({
-        print(p.2)
-      })
+      output$summaryPlot_FAZ <- renderPlotly({p.2})
       
       if(input$select_change=="Annual") p.3 <- summary.prep(variable="WSP.status", type=input$selected_type, change=input$select_change)
       if(input$select_change=="Change") p.3 <- summary.prep(variable="WSP.numeric", type=input$selected_type, change=input$select_change)
-      output$summaryPlot_WSP <- renderPlotly({
-        print(p.3)
-      })
+      output$summaryPlot_WSP <- renderPlotly({p.3})
       
       p.4 <-  summary.prep(variable="Recent.ER", type=input$selected_type,change=input$select_change)
       
-      output$summaryPlot_ER <- renderPlotly({
-        print(p.4)
-      })
+      output$summaryPlot_ER <- renderPlotly({p.4})
     }
   )
   
