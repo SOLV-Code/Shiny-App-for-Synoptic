@@ -141,6 +141,7 @@ function(input, output,session){
     input$reset_brush
     data.par()
   },{
+ 
     output$parcoords <- renderParcoords({ parcoords(data=data.par(),
                                                     autoresize=TRUE,
                                                     color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Management.Timing"),
@@ -151,7 +152,51 @@ function(input, output,session){
                                                     brushPredicate="and",
                                                     reorderable = TRUE, 
                                                     dimensions=dims(),
-                                                    nullValueSeparator="nullValue")})
+                                                    nullValueSeparator="nullValue",
+                                                    tasks = list(
+                                                      htmlwidgets::JS(sprintf(
+                                                        "
+                                                        function(){
+                                                        debugger
+                                                        this.parcoords.dimensions()['WSP.status']
+                                                        .yscale = d3.scale.ordinal()
+                                                        .domain([%s])
+                                                        .rangePoints([
+                                                        1,
+                                                        this.parcoords.height()-this.parcoords.margin().top - this.parcoords.margin().bottom
+                                                        ])
+                                                        
+                                                        this.parcoords.removeAxes();
+                                                        this.parcoords.render();
+                                                        // duplicated from the widget js code
+                                                        //  to make sure reorderable and brushes work
+                                                        // if( this.x.options.reorderable ) {
+                                                        this.parcoords.reorderable();
+                                                        
+                                                        //
+                                                        
+                                                        
+                                                        if( this.x.options.brushMode ) {
+                                                        // reset the brush with None
+                                                        this.parcoords.brushMode('None')
+                                                        this.parcoords.brushMode(this.x.options.brushMode);
+                                                        this.parcoords.brushPredicate(this.x.options.brushPredicate);
+                                                        }
+                                                        
+                                                        
+                                                        
+                                                        
+                                                        // delete title from the rownames axis
+                                                        d3.select('#' + this.el.id + ' .dimension .axis > text').remove();
+                                                        this.parcoords.render()
+                                                        
+                                                        }
+                                                        "     ,
+                                                        paste0(shQuote(rev(levels(data.par()$WSP.status))),collapse=",")     
+                                                      ))
+                                                    )
+                                          )
+                        })
   })
   
   # Create a block with miscellaneous controls for the parcoords plot
