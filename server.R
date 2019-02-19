@@ -31,6 +31,7 @@ devtools::install_github("brigitte-dorner/parcoords")
 library(parcoords)
 library(shinydashboard)
 library(forcats)
+library(crosstalk)
 #library("ezR")
 
 # ==========Define server components ================
@@ -109,6 +110,9 @@ function(input, output,session){
     df[order(rowSums(is.na(df))),]
   })
   
+  # create a shared dataset for use with crosstalk
+  sharedDS <- SharedData$new(data.par)
+  
   # create dimensions list with auxiliary information on numeric metrics to pass on to parcoords
   # each element in dims is a list with a set of parameters specific to dims[[metric]], where 'metric'
   # is one of the metrics included in the parcoords dataset
@@ -144,11 +148,9 @@ function(input, output,session){
            })
   })
  
-  observeEvent({
-    input$reset_brush
-    data.par()
-  },{
-    output$parcoords <- renderParcoords({ parcoords(data=data.par(),
+  observeEvent({input$reset_brush}, {sharedDS$selection(NULL)})
+  
+  output$parcoords <- renderParcoords({ parcoords(data=sharedDS,
                                                   autoresize=TRUE,
                                                   color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Management.Timing"),
                                                   rownames=T,
@@ -159,7 +161,6 @@ function(input, output,session){
                                                   reorderable = TRUE, 
                                                   dimensions=dims(),
                                                   nullValueSeparator="nullValue")})
-  })
 
   # Create a block with miscellaneous controls for the parcoords plot
   output$parcoordsControls <- renderUI({
