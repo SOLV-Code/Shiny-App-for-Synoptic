@@ -118,6 +118,7 @@ function(input, output,session){
     names(metrics) <- metrics
     lapply(metrics, 
            function(m) {
+             print(m)
              d <- list() # add any information on metric m here that we want to pass on to javascript
              # if there is a checkbox for this dim; allow it to set visibility, otherwise make it always visible
              d[['hide']] <- ifelse (any(names(input) == sId("visible", m)), !input[[sId("visible", m)]], FALSE) 
@@ -132,28 +133,34 @@ function(input, output,session){
                  d[['ymin']] <- d[['min']]
                  d[['ymax']] <- d[['max']]
                }
+             } else {
+               if (is.factor(dataset[ ,m])) {
+                 # maintain the order of values in the parcoords plot
+                 d[['ordering']] <- levels(dataset[ ,m])
+               }
              }
+             
              d
            })
   })
-  
+ 
   observeEvent({
     input$reset_brush
     data.par()
   },{
     output$parcoords <- renderParcoords({ parcoords(data=data.par(),
-                                                    autoresize=TRUE,
-                                                    color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Management.Timing"),
-                                                    rownames=T,
-                                                    alpha=0.6, 
-                                                    alphaOnBrushed = 0,
-                                                    brushMode="1D-axes-multi",
-                                                    brushPredicate="and",
-                                                    reorderable = TRUE, 
-                                                    dimensions=dims(),
-                                                    nullValueSeparator="nullValue")})
+                                                  autoresize=TRUE,
+                                                  color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Management.Timing"),
+                                                  rownames=T,
+                                                  alpha=0.6, 
+                                                  alphaOnBrushed = 0,
+                                                  brushMode="1D-axes-multi",
+                                                  brushPredicate="and",
+                                                  reorderable = TRUE, 
+                                                  dimensions=dims(),
+                                                  nullValueSeparator="nullValue")})
   })
-  
+
   # Create a block with miscellaneous controls for the parcoords plot
   output$parcoordsControls <- renderUI({
     metrics <- names(data.par())

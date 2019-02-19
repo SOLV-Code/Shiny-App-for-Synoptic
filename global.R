@@ -19,8 +19,8 @@ metricInfo <- list(
 # data.start$Lower.Ratio <- suppressWarnings(as.double(data.start$Lower.Ratio))
 # data.start$Upper.Ratio <- suppressWarnings(as.double(data.start$Upper.Ratio))
 # data.start$Recent.ER <- suppressWarnings(as.double(data.start$Recent.ER))
-# data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
-# data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
+data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
+data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
 data.start <- read.csv("data/FR SK metrics.csv")
 
 # the names of the numeric metrics
