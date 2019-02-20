@@ -31,6 +31,7 @@ devtools::install_github("brigitte-dorner/parcoords")
 library(parcoords)
 library(shinydashboard)
 library(forcats)
+library(crosstalk)
 #library("ezR")
 
 # ==========Define server components ================
@@ -38,11 +39,12 @@ library(forcats)
 
 # Define server logic 
 function(input, output,session){
-  
+
   #--------- ---------- Helper functions ------------------
   # assemble the id of a shiny input widget or a variable name from a prefix and a postfix, e.g. widget.1 
   sId <- function(pre, post) {paste(pre, post, sep=".")}
-  
+  # sum columns using select_if function of dplyr to remove empty columns
+  sumfun <- function(x){sum(!is.na(x)) > 0}
   #------------------- Data processing ------------------
   
   # data.start <- readxl::read_excel("data/FR SK metrics.xls")
@@ -51,17 +53,16 @@ function(input, output,session){
   # data.start$Recent.ER <- suppressWarnings(as.double(data.start$Recent.ER))
   # data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
   # data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
-  
   data.new <- reactive({
     req(input$selected_species, input$selected_watershed, input$selected_year)
-    
     df <- data.start  %>% filter(Base.Unit.Species %in% input$selected_species) %>%
-      dplyr::select_if(colSums(!is.na(.)) > 0)
-    
+                          #dplyr::select_if(colSums(!is.na(.)) > 0)
+                          dplyr::select_if(sumfun)
     
     if(input$selected_watershed != "All"){
       df <- df %>% filter(BaseUnit.Watershed %in% input$selected_watershed) %>%
-        dplyr::select_if(colSums(!is.na(.)) > 0)
+                   #dplyr::select_if(colSums(!is.na(.)) > 0)
+                   dplyr::select_if(sumfun)
     }
     
     if(input$select_change == "Change" ){                     ########## WILL NEED TO SET THIS UP SO IT UPDATES METRICS AUTOMATICALLY WITHOUT CHANGING THIS - LOOK TO METRICS FILE FOR LIST OF NAMES
@@ -82,7 +83,7 @@ function(input, output,session){
     as.data.frame(df)
   })
   
-  
+ 
   observeEvent(                            # will need to update selections once we have more than 2 years so both cannot be same year
     {input$select_changeyear_1},{ 
       updateSelectInput(session, "selected_changeyear_2", choices=levels(as.factor( unique(data.start$Year[data.start$Year > input$selected_changeyear_1]))), 
@@ -100,7 +101,7 @@ function(input, output,session){
   
   # Create data for the parallel plot (add row names and reorder columns and rows)
   data.par <- reactive({
-    df <- as.data.frame(data.new())        
+    df <- as.data.frame(data.new())   
     rownames(df) <- df[,1]  
     df <- df %>% select(-dplyr::one_of("Base.Unit.CU.ShortName", "Base.Unit.Species", "BaseUnit.Watershed")) %>%  # one_of allows you to provide a list including names that may not be there
       select(-Management.Timing, Management.Timing) %>%
@@ -108,6 +109,9 @@ function(input, output,session){
     # Must re-order rows so most full rows are first and also have a full row as the first (no NAs)
     df[order(rowSums(is.na(df))),]
   })
+  
+  # create a shared dataset for use with crosstalk
+  sharedDS <- SharedData$new(data.par)
   
   # create dimensions list with auxiliary information on numeric metrics to pass on to parcoords
   # each element in dims is a list with a set of parameters specific to dims[[metric]], where 'metric'
@@ -118,6 +122,7 @@ function(input, output,session){
     names(metrics) <- metrics
     lapply(metrics, 
            function(m) {
+             print(m)
              d <- list() # add any information on metric m here that we want to pass on to javascript
              # if there is a checkbox for this dim; allow it to set visibility, otherwise make it always visible
              d[['hide']] <- ifelse (any(names(input) == sId("visible", m)), !input[[sId("visible", m)]], FALSE) 
@@ -132,28 +137,31 @@ function(input, output,session){
                  d[['ymin']] <- d[['min']]
                  d[['ymax']] <- d[['max']]
                }
+             } else {
+               if (is.factor(dataset[ ,m])) {
+                 # maintain the order of values in the parcoords plot
+                 d[['ordering']] <- levels(dataset[ ,m])
+               }
              }
+             
              d
            })
   })
+ 
+  observeEvent({input$reset_brush}, {sharedDS$selection(NULL)})
   
-  observeEvent({
-    input$reset_brush
-    data.par()
-  },{
-    output$parcoords <- renderParcoords({ parcoords(data=data.par(),
-                                                    autoresize=TRUE,
-                                                    color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Management.Timing"),
-                                                    rownames=T,
-                                                    alpha=0.6, 
-                                                    alphaOnBrushed = 0,
-                                                    brushMode="1D-axes-multi",
-                                                    brushPredicate="and",
-                                                    reorderable = TRUE, 
-                                                    dimensions=dims(),
-                                                    nullValueSeparator="nullValue")})
-  })
-  
+  output$parcoords <- renderParcoords({ parcoords(data=sharedDS,
+                                                  autoresize=TRUE,
+                                                  color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Management.Timing"),
+                                                  rownames=T,
+                                                  alpha=0.6, 
+                                                  alphaOnBrushed = 0,
+                                                  brushMode="1D-axes-multi",
+                                                  brushPredicate="and",
+                                                  reorderable = TRUE, 
+                                                  dimensions=dims(),
+                                                  nullValueSeparator="nullValue")})
+
   # Create a block with miscellaneous controls for the parcoords plot
   output$parcoordsControls <- renderUI({
     metrics <- names(data.par())
@@ -180,6 +188,7 @@ function(input, output,session){
                                                          value = c(d[[m]][['ymin']],d[[m]][['ymax']]), 
                                                          width='80px')))})
     fluidRow(do.call(tagList, c(numWidgets, catWidgets)))})
+
   
   observeEvent({input$select_change}, {
     df <- data.par()
@@ -337,11 +346,12 @@ function(input, output,session){
     req(input$selected_species, input$selected_watershed, input$selected_year)
     
     df <- data.start  %>% filter(Base.Unit.Species %in% input$selected_species) %>%
-      dplyr::select_if(colSums(!is.na(.)) > 0)
-    # browser()
+                          #dplyr::select_if(colSums(!is.na(.)) > 0)
+                          dplyr::select_if(sumfun)
     if(input$selected_watershed != "All"){
       df <- df %>% filter(BaseUnit.Watershed %in% input$selected_watershed) %>%
-        dplyr::select_if(colSums(!is.na(.)) > 0)
+                   #dplyr::select_if(colSums(!is.na(.)) > 0)
+                   dplyr::select_if(sumfun)
     }
     #df <- as.data.frame(df)
     #rownames(df) <- df[,1]
@@ -361,9 +371,11 @@ function(input, output,session){
   #------------------- Extracted Data Tab ------------------
   
   brushed.data <- reactive({
-    if(length(input$parcoords_brushed_row_names)>0){
-      df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% input$parcoords_brushed_row_names)
-    }
+#    if(length(input$parcoords_brushed_row_names)>0){
+#      df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% input$parcoords_brushed_row_names)
+     if (any(sharedDS$selection())) {
+       df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% row.names(sharedDS$data()[sharedDS$selection(),]))
+     }
     else{df <- data.new()}
     # write.csv(df, "brushed.data.csv")
     df
