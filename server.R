@@ -371,9 +371,11 @@ function(input, output,session){
   #------------------- Extracted Data Tab ------------------
   
   brushed.data <- reactive({
-    if(length(input$parcoords_brushed_row_names)>0){
-      df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% input$parcoords_brushed_row_names)
-    }
+#    if(length(input$parcoords_brushed_row_names)>0){
+#      df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% input$parcoords_brushed_row_names)
+     if (any(sharedDS$selection())) {
+       df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% row.names(sharedDS$data()[sharedDS$selection(),]))
+     }
     else{df <- data.new()}
     # write.csv(df, "brushed.data.csv")
     df
