@@ -31,6 +31,7 @@ lapply(list.of.packages, require, character.only = TRUE)
 library(parcoords)
 library(shinydashboard)
 library(forcats)
+library(crosstalk)
 #library("ezR")
 
 # ==========Define server components ================
@@ -108,7 +109,10 @@ function(input, output,session){
     # Must re-order rows so most full rows are first and also have a full row as the first (no NAs)
     df[order(rowSums(is.na(df))),]
   })
-
+  
+  # create a shared dataset for use with crosstalk
+  sharedDS <- SharedData$new(data.par)
+  
   # create dimensions list with auxiliary information on numeric metrics to pass on to parcoords
   # each element in dims is a list with a set of parameters specific to dims[[metric]], where 'metric'
   # is one of the metrics included in the parcoords dataset
@@ -118,6 +122,7 @@ function(input, output,session){
     names(metrics) <- metrics
     lapply(metrics, 
            function(m) {
+             print(m)
              d <- list() # add any information on metric m here that we want to pass on to javascript
              # if there is a checkbox for this dim; allow it to set visibility, otherwise make it always visible
              d[['hide']] <- ifelse (any(names(input) == sId("visible", m)), !input[[sId("visible", m)]], FALSE) 
@@ -132,73 +137,31 @@ function(input, output,session){
                  d[['ymin']] <- d[['min']]
                  d[['ymax']] <- d[['max']]
                }
+             } else {
+               if (is.factor(dataset[ ,m])) {
+                 # maintain the order of values in the parcoords plot
+                 d[['ordering']] <- levels(dataset[ ,m])
+               }
              }
+             
              d
            })
   })
-  
-  observeEvent({
-    input$reset_brush
-    data.par()
-  },{
  
-    output$parcoords <- renderParcoords({ parcoords(data=data.par(),
-                                                    autoresize=TRUE,
-                                                    color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Management.Timing"),
-                                                    rownames=T,
-                                                    alpha=0.6, 
-                                                    alphaOnBrushed = 0,
-                                                    brushMode="1D-axes-multi",
-                                                    brushPredicate="and",
-                                                    reorderable = TRUE, 
-                                                    dimensions=dims(),
-                                                    nullValueSeparator="nullValue",
-                                                    tasks = list(
-                                                      htmlwidgets::JS(sprintf(
-                                                        "
-                                                        function(){
-                                                        debugger
-                                                        this.parcoords.dimensions()['WSP.status']
-                                                        .yscale = d3.scale.ordinal()
-                                                        .domain([%s])
-                                                        .rangePoints([
-                                                        1,
-                                                        this.parcoords.height()-this.parcoords.margin().top - this.parcoords.margin().bottom
-                                                        ])
-                                                        
-                                                        this.parcoords.removeAxes();
-                                                        this.parcoords.render();
-                                                        // duplicated from the widget js code
-                                                        //  to make sure reorderable and brushes work
-                                                        // if( this.x.options.reorderable ) {
-                                                        this.parcoords.reorderable();
-                                                        
-                                                        //
-                                                        
-                                                        
-                                                        if( this.x.options.brushMode ) {
-                                                        // reset the brush with None
-                                                        this.parcoords.brushMode('None')
-                                                        this.parcoords.brushMode(this.x.options.brushMode);
-                                                        this.parcoords.brushPredicate(this.x.options.brushPredicate);
-                                                        }
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        // delete title from the rownames axis
-                                                        d3.select('#' + this.el.id + ' .dimension .axis > text').remove();
-                                                        this.parcoords.render()
-                                                        
-                                                        }
-                                                        "     ,
-                                                        paste0(shQuote(rev(levels(data.par()$WSP.status))),collapse=",")     
-                                                      ))
-                                                    )
-                                          )
-                        })
-  })
+  observeEvent({input$reset_brush}, {sharedDS$selection(NULL)})
   
+  output$parcoords <- renderParcoords({ parcoords(data=sharedDS,
+                                                  autoresize=TRUE,
+                                                  color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Management.Timing"),
+                                                  rownames=T,
+                                                  alpha=0.6, 
+                                                  alphaOnBrushed = 0,
+                                                  brushMode="1D-axes-multi",
+                                                  brushPredicate="and",
+                                                  reorderable = TRUE, 
+                                                  dimensions=dims(),
+                                                  nullValueSeparator="nullValue")})
+
   # Create a block with miscellaneous controls for the parcoords plot
   output$parcoordsControls <- renderUI({
     metrics <- names(data.par())
