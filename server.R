@@ -2,7 +2,7 @@
 # Developed by B. MacDonald
 # Feb 13, 2019
 
-list.of.packages <- c("shiny", 
+list.of.packages <- c("shiny",
                       "shinydashboard",
                       "tibble",
                       "devtools",
@@ -19,15 +19,15 @@ list.of.packages <- c("shiny",
                       "ini",
                       "xfun",
                       "readxl",
-                      "markdown")                      
-
+                      "markdown")
+# 
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 lapply(list.of.packages, require, character.only = TRUE)
-
-#if(!"parcoords" %in% installed.packages()[,"Package"]) devtools::install_github("timelyportfolio/parcoords")
-devtools::install_github("brigitte-dorner/parcoords")
-#if(!"ezR" %in% installed.packages()[,"Package"]) devtools::install_github("jerryzhujian9/ezR")
+# 
+# #if(!"parcoords" %in% installed.packages()[,"Package"]) devtools::install_github("timelyportfolio/parcoords")
+ devtools::install_github("brigitte-dorner/parcoords")
+# #if(!"ezR" %in% installed.packages()[,"Package"]) devtools::install_github("jerryzhujian9/ezR")
 library(parcoords)
 library(shinydashboard)
 library(forcats)
