@@ -130,6 +130,7 @@ function(input, output,session){
                d[['nullValue']] <- median(dataset[, m], na.rm = T) # change this to "top" or "bottom" to show nulls above or below chart
                d[['min']] <- min(dataset[, m], na.rm = T)
                d[['max']] <- max(dataset[, m], na.rm = T)
+               d[['info']] <- metricInfo[[m]]
                if (sId("yrange", m) %in% names(input)) { # if there is an input widget for this dim, allow for it to set the ylims
                  d[['ymin']] <- input[[sId("yrange", m)]][1]
                  d[['ymax']] <- input[[sId("yrange", m)]][2]
