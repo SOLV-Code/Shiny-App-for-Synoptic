@@ -26,7 +26,7 @@ if(length(new.packages)) install.packages(new.packages)
 lapply(list.of.packages, require, character.only = TRUE)
 # 
 # #if(!"parcoords" %in% installed.packages()[,"Package"]) devtools::install_github("timelyportfolio/parcoords")
- devtools::install_github("brigitte-dorner/parcoords")
+devtools::install_github("brigitte-dorner/parcoords")
 # #if(!"ezR" %in% installed.packages()[,"Package"]) devtools::install_github("jerryzhujian9/ezR")
 library(parcoords)
 library(shinydashboard)
@@ -190,6 +190,16 @@ function(input, output,session){
     fluidRow(do.call(tagList, c(numWidgets, catWidgets)))})
 
   
+  brushed.data <- reactive({
+    #    if(length(input$parcoords_brushed_row_names)>0){
+    #      df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% input$parcoords_brushed_row_names)
+    if (any(sharedDS$selection())) {
+      df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% row.names(sharedDS$data()[sharedDS$selection(),]))
+    }
+    else{df <- data.new()}
+    df
+  })
+  
   observeEvent({input$select_change}, {
     df <- data.par()
     for (m in names(df)) {
@@ -200,19 +210,19 @@ function(input, output,session){
     }
   })
   
-  # leave this out for now; this triggers a call to parcoords, which resets the brushing 
-  # which is not the desired beharviour. need to add option to draw parcoords with pre-selected data
-  # to make this work.  
-  #  observeEvent({input$scale_to_selected}, {
-  #    df <- data.par()
-  #    for (m in names(df)) {
-  #      if (sId("yrange", m) %in% names(input)) { # adjust the sliders so ylims correspond to range of selected data
-  #        updateSliderInput(session, sId("yrange", m), 
-  #                          value = c(min(df[input$parcoords_brushed_row_names, m], na.rm=T),
-  #                                    max(df[input$parcoords_brushed_row_names, m], na.rm=T)))
-  #      }
-  #    }
-  #  })
+  # scale parcoords graph axes to current selection 
+  observeEvent({input$scale_to_selected}, {
+      df <- brushed.data()
+      if (nrow(df) > 0) {
+        for (m in names(df)) {
+          if (sId("yrange", m) %in% names(input)) { # adjust the sliders so ylims correspond to range of selected data
+            updateSliderInput(session, sId("yrange", m), 
+                              value = c(min(df[, m], na.rm=T),
+                                        max(df[, m], na.rm=T)))
+          }
+        }
+      }
+    })
   
   #------------------- Radar Plots ------------------
   
@@ -370,16 +380,6 @@ function(input, output,session){
   
   #------------------- Extracted Data Tab ------------------
   
-  brushed.data <- reactive({
-#    if(length(input$parcoords_brushed_row_names)>0){
-#      df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% input$parcoords_brushed_row_names)
-     if (any(sharedDS$selection())) {
-       df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% row.names(sharedDS$data()[sharedDS$selection(),]))
-     }
-    else{df <- data.new()}
-    # write.csv(df, "brushed.data.csv")
-    df
-  })
   
   output$SelectedData <-  DT::renderDataTable({
     #ids <- rownames(data.par()) %in% input$parcoords_brushed_row_names

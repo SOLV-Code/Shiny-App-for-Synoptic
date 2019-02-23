@@ -148,10 +148,15 @@ body <- shinydashboard::dashboardBody(
         column(width=1)
        ),
       fluidRow(
-        column(width=10),
+        column(width=5),
         actionButton(inputId = "reset_brush",
                      label="Reset Brushing",icon("paper-plane"), 
+                     style="color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; width:180px; font-size: 130%"),
+        column(width=5),
+        actionButton(inputId = "scale_to_selected",
+                     label="Scale to Selected",icon("search-plus"), 
                      style="color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; width:180px; font-size: 130%")
+        
       ),
       
       parcoordsOutput("parcoords", height="600px"),           # 400px is defaultheight
