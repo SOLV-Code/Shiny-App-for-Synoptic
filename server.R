@@ -379,17 +379,80 @@ function(input, output,session){
     DT::datatable(data.show())
   })
   
+  # Downloadable csv of selected dataset ----
+  output$downloadAllData <- downloadHandler(
+    filename = "data.csv",
+    content = function(file) {write.csv(data.show(), file, row.names = FALSE)}
+  )
+  
+  
   #------------------- Extracted Data Tab ------------------
   
+  # show the data in a table
+  # ideally, we'd just use crosstalk here, i.e.,
+  # output$SelectedData <-  DT::renderDataTable({DT::datatable(sharedDS)}, server=FALSE)
+  # but DT shows selected values (interprets selection as filter?), instead of 
+  # showing full dataset with selected values highlighted. Work around this by using plain
+  # shiny for data selection in table for now.
+  output$SelectedData <- DT::renderDataTable({
+    sel <- isolate(selectedRows())
+    if (!is.null(sel)) {
+      datatable(data.par(), selection=list(selected=sel))
+    } else {
+      datatable(data.par())
+    }
+   }, server=FALSE)
   
-  output$SelectedData <-  DT::renderDataTable({
-    #ids <- rownames(data.par()) %in% input$parcoords_brushed_row_names
-    df <- brushed.data() 
-    rownames(df) <- df[,1] 
-    df <- df[-c(1:3)]
-    DT::datatable(df)
+  # update datatable in response to various events
+  proxySelectedData <- dataTableProxy('SelectedData')
+  
+  # use this to get selection of rows 'shiny-style', i.e., as indices of selected rows
+  selectedRows <- reactive({
+    if(!is.null(sharedDS$selection())) {
+      return(which(sharedDS$selection()))
+    } else {
+      return(NULL)
+    }
   })
   
+  observeEvent({sharedDS$selection()}, {proxySelectedData %>% selectRows(selectedRows())})
+  observeEvent({input$reset_brush}, {proxySelectedData %>% selectRows(NULL)})
+  
+  # helper function for converting representation of a selection of rows in a Shiny input to
+  # the corresponding selection in crosstalk:
+  # creates a vector of TRUE/FALSE values, given the indices of the true values 
+  # and the length of the output vector
+  # return NULL if trueIndices = NULL
+  makeBoolVect <- function(trueIndices, len) {
+    if (!is.null(trueIndices) && len > 0) {
+      v <- rep(FALSE, len)
+      v[trueIndices] <- TRUE
+      return(v)
+    }
+    else {
+      return(NULL)
+    }
+  }
+  
+  # set crosstalk selection in response to Shiny selection
+  observeEvent({input$SelectedData_rows_selected}, {
+    sharedDS$selection(value = makeBoolVect(input$SelectedData_rows_selected, 
+                                            nrow(isolate(sharedDS$data()))))
+  })
+  
+
+  
+  # Downloadable csv of selected dataset ----
+  output$downloadSelectedData <- downloadHandler(
+    filename = "selection.csv", 
+    content = function(file) {
+      selected <- sharedDS$selection()
+      if(is.null(sharedDS$selection())) {
+        write.csv(sharedDS$data(), file, row.names = TRUE)
+      } else {
+        write.csv(sharedDS$data()[sharedDS$selection(), ], file, row.names = TRUE)
+      }
+    })
   
   
   #------------------- Areas Tab ------------------

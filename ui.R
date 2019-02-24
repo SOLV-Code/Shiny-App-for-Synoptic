@@ -163,11 +163,17 @@ body <- shinydashboard::dashboardBody(
     tabItem(
       tabName = "AllData",
       h2("Data"),
+      tags$div('style' = "text-align:right;", 
+               downloadButton("downloadAllData", "Download")
+      ),
       DT::dataTableOutput("AllData", width="50%")
     ),
     tabItem(
       tabName = "Data",
       h2("Data selected in parallel coordinate plot"),
+      tags$div('style' = "text-align:right;", 
+        downloadButton("downloadSelectedData", "Download")
+      ),
       DT::dataTableOutput("SelectedData", width="50%")
     ),
     tabItem(
