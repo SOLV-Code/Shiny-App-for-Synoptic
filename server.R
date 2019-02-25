@@ -122,7 +122,6 @@ function(input, output,session){
     names(metrics) <- metrics
     lapply(metrics, 
            function(m) {
-             print(m)
              d <- list() # add any information on metric m here that we want to pass on to javascript
              # if there is a checkbox for this dim; allow it to set visibility, otherwise make it always visible
              d[['hide']] <- ifelse (any(names(input) == sId("visible", m)), !input[[sId("visible", m)]], FALSE) 
