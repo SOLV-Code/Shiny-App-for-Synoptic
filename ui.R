@@ -19,6 +19,7 @@ library(shinyWidgets)
 library(parcoords)
 library(plotly)
 library(markdown)
+library(leaflet)
 
 #data.start <- readxl::read_excel("data/FR SK metrics.xls")
 
@@ -33,6 +34,7 @@ sidebar <- shinydashboard::dashboardSidebar(
     menuItem("Radar Plots", tabName="Radar"),
     menuItem("Areas", tabName="Areas"),
     menuItem("Summary of selected data", tabName="Summary"),
+    menuItem("Map", tabName="Map"),
     br(),br(), br(),br(), br(),br(),
     br(),br(), br(),br(), br(),br(),
     br(),br(), br(),br(), br(),br(),
@@ -254,6 +256,11 @@ body <- shinydashboard::dashboardBody(
                        h3("Selected CUs by Change in Exploitation Rate")
       ),
       plotlyOutput("summaryPlot_ER",width="70%")
+    ),
+    tabItem(
+      tabName = "Map",
+      h2("Data selected"),
+      leafletOutput("CUmap",height = 500)
     )
   )
 )

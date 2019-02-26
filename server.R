@@ -111,7 +111,7 @@ function(input, output,session){
   })
   
   # create a shared dataset for use with crosstalk
-  sharedDS <- SharedData$new(data.par)
+  sharedDS <- SharedData$new(data.par, group="CUmetrics")
   
   # create dimensions list with auxiliary information on numeric metrics to pass on to parcoords
   # each element in dims is a list with a set of parameters specific to dims[[metric]], where 'metric'
@@ -414,8 +414,9 @@ function(input, output,session){
     }
   })
   
-  observeEvent({sharedDS$selection()}, {proxySelectedData %>% selectRows(selectedRows())})
-  observeEvent({input$reset_brush}, {proxySelectedData %>% selectRows(NULL)})
+  observeEvent({sharedDS$selection()}, 
+               {proxySelectedData %>% selectRows(selectedRows())},
+               ignoreNULL = FALSE) # make sure this handler fires when selection is reset to NULL
   
   # helper function for converting representation of a selection of rows in a Shiny input to
   # the corresponding selection in crosstalk:
@@ -540,6 +541,50 @@ function(input, output,session){
       
       output$summaryPlot_ER <- renderPlotly({p.4})
     }
+  )
+  
+  #------------------- Map Tab ------------------
+  
+  # create a shared dataset for use with crosstalk, with labels and lat-long info attached,
+  # and linked to sharedDS used with parcoords
+  
+  data.spatial <- reactive({withLatLong(withLabels(data.par()))})
+  sharedDSspatial <- SharedData$new(data.spatial, group="CUmetrics")
+  
+  #colorPal <- colorFactor(c("black", "red", "green", "blue"), 
+  #                        domain=c("Early_Summer", "Summer", "Late", "Estu"))
+  
+  output$CUmap <- renderLeaflet({ 
+    leaflet(sharedDSspatial) %>%
+    addTiles() %>%
+    addCircleMarkers(lat = ~lat, lng = ~ long,
+                     color = "black",
+                     layerId = ~labels,
+                     label = ~htmlEscape(labels) 
+    #                color = ~colorPal(Management.Timing),
+    #                stroke = FALSE,
+    #                fillOpacity = 0.4
+    )
+    #addLegend(pal=colorPal,
+    #          values=~Management.Timing,
+    #          position="bottomleft")
+  })
+  
+
+  # toggle CU selection when corresponding marker is clicked
+  observeEvent(input$CUmap_marker_click, 
+               {
+                 # get current selection from crosstalk shared data
+                 CUs <- sharedDSspatial$key()
+                 sel <- sharedDSspatial$selection()
+                 if (is.null(sel)) {sel <- rep(TRUE, length(CUs))} # a NULL selection means everything is selected
+                 names(sel) <- CUs
+                 # toggle selection
+                 sel[input$CUmap_marker_click$id] <- !sel[input$CUmap_marker_click$id]
+                 if(all(sel)) {sel <- NULL}
+                 # set the crosstalk selection
+                 sharedDSspatial$selection(sel)
+               }
   )
   
 } # end server function

@@ -23,8 +23,37 @@ data.start <- read.csv("data/FR SK metrics.csv")
 data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
 data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
 
-# the names of the numeric metrics
-numericMetrics <- names(data.start)[unlist(lapply(data.start, is.numeric))] 
+data.latlong <- read.csv("data/FRSK_CU_Info_masterUpdate.csv")
+data.latlong <- unique(data.latlong[ ,c("Base.Unit.CU.ShortName", "Base.Unit.CU.Lat", "Base.Unit.CU.Long")])
+names(data.latlong) <- c("CU", "lat", "long")
+data.latlong$CU <- as.character(data.latlong$CU)
+# Hack alert!! Some overlap here in Base.Unit.CU.ShortName for Chinook and Sockeye
+# For now, make this go away by removing duplicates. Ultimately, lat-long info should be attached
+# in a pre-processing script.
+data.latlong <- data.latlong[!duplicated(data.latlong$CU), ]
+row.names(data.latlong) <- data.latlong$CU
 
-# the names of the CUs
-CUs <- unique(as.character(data.start[, "Base.Unit.CU.ShortName"]))
+# pass through a CU metrics table and return with lat-long columns attached
+# if CUnames is given, looks for CU names is CUnames column
+# otherwise assumes that the ds row names are the CU names 
+withLatLong <- function(ds, CUnames = NULL) {
+  if (is.null(CUnames)) {
+    return(cbind(ds, data.latlong[row.names(ds), c("lat", "long")]))
+  } else {
+    return(cbind(ds, data.latlong[ds[, CUnames], ]))
+  }
+}
+
+# pass through a CU metrics table and add a 'labels' column
+# CUlabels should be a named vector that specified the label for each CU
+# if CUlabels is given, uses the labels from CUlabels
+# otherwise assumes that the ds row names are to be used as the labels 
+withLabels <- function(ds, CUnames = NULL) {
+  if (is.null(CUnames)) {
+    ds$labels <- row.names(ds)
+  } else {
+    ds$labels <- CUlabels[row.names(ds)]
+  }
+  return(ds)
+}
+
