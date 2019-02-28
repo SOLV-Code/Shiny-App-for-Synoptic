@@ -12,14 +12,9 @@
 
 # ====================== Define UI Components =========================
 
-
-#library(ezR)
 library(shinydashboard)
 library(shinyWidgets)
-library(parcoords)
-library(plotly)
 library(markdown)
-library(leaflet)
 
 #data.start <- readxl::read_excel("data/FR SK metrics.xls")
 
@@ -27,14 +22,10 @@ sidebar <- shinydashboard::dashboardSidebar(
   shinydashboard::sidebarMenu(
     #   id = "tabs",
     menuItem("DISCLAIMER", tabName="DISCLAIM"),
-    menuItem("Select filters", tabName="Filters"),
-    menuItem("All Data", tabName="AllData"),
-    menuItem("Parallel Coordinates Plot", tabName="Parallel"),
-    menuItem("Extracted Data", tabName="Data"),
-    menuItem("Radar Plots", tabName="Radar"),
-    menuItem("Areas", tabName="Areas"),
-    menuItem("Summary of selected data", tabName="Summary"),
-    menuItem("Map", tabName="Map"),
+    menuItem("CU Status Summary", tabName="Flow"),
+    menuItem("Full Data", tabName="AllData"),
+#    menuItem("Radar Plots", tabName="Radar"),
+#    menuItem("Areas", tabName="Areas"),
     br(),br(), br(),br(), br(),br(),
     br(),br(), br(),br(), br(),br(),
     br(),br(), br(),br(), br(),br(),
@@ -59,124 +50,12 @@ body <- shinydashboard::dashboardBody(
       )
     ),
     tabItem(
-      tabName = "Filters",
-      h2("Select filters"),
-      fluidRow(
-        column(width=3,
-               selectInput( inputId="selected_species",					 
-                            label="Selected Species:",
-                            choices = levels(factor(data.start$Base.Unit.Species)),
-                            selected="SK",
-                            multiple=FALSE)
-        ),
-        column(width=3,
-               selectInput( inputId="selected_watershed",					 
-                            label="Selected Watershed:",
-                            choices =levels(factor(data.start$BaseUnit.Watershed)),
-                            selected="Fraser",
-                            multiple=FALSE)
-       )
-        # column(width=3,
-        #        selectInput(inputId="selected_metrics", 
-        #                    label="Selected Metrics:", 
-        #                    choices=names(data.start)[4:ncol(data.start)], 
-        #                    multiple=TRUE, 
-        #                    selected=names(data.start[4:ncol(data.start)]), 
-        #                    selectize=TRUE)),
-        # column(width=3,
-        #        selectInput(inputId="selected_cus", 
-        #                    label="Selected CUs:", 
-        #                    choices=CUs,
-        #                    multiple=TRUE, 
-        #                    selected=CUs, 
-        #                    selectize = TRUE))
-      )
-    ),
-    tabItem(
-      tabName = "Parallel",
-      h2("Parallel coordinate plots"),
-       fluidRow(
-         column(width = 4, h3("Step 1:")),
-         column(width = 4, h3("Step 2:")),
-         column(width=4, h3("Step 3:"))
-       ),
-       fluidRow(
-        #column(width=1),
-        column(width = 3,  h4("Select 'Annual' to view WSP metrics for a specific year, or 'Change' to view changes 
-                              in metrics between two years")),
-        column(width = 1),
-        conditionalPanel( "input.select_change == 'Annual'",
-                          column(width = 3,  h4("Select year to view WSP metric values"))),
-        conditionalPanel( "input.select_change == 'Change'",
-                          column(width = 3,  h4("Select years to calculate change"))),
-        column(width = 1),
-        column(width=3, h4("Click and drag mouse over vertical axes to select CUs")),
-        column(width=1)
-       ),
-      
-       fluidRow(
-       # column(width=1), 
-        column(width=3,
-                radioButtons( "select_change",
-                              label="",
-                              choiceNames = list( HTML("<p style='font-size:125%;'>Annual</p>"), HTML("<p style='font-size:125%;'>Change</p>")),
-                              choiceValues = list("Annual","Change"),
-                              inline=TRUE,
-                              selected="Annual")
-        ),
-        column(width=1),
-        conditionalPanel("input.select_change == 'Annual'",
-                         column( width=4,
-                                 selectInput( inputId="selected_year",					 
-                                                  label="",
-                                                  choices = levels(as.factor(data.start$Year)),
-                                                  selected= levels(as.factor(data.start$Year))[1])
-                         )
-        ),
-        conditionalPanel("input.select_change == 'Change'",
-                         column( width=2,
-                                 selectInput( inputId="selected_changeyear_1",					 
-                                              label="Initial Year:",
-                                              choices = levels(as.factor(data.start$Year))[-(length(levels(as.factor(data.start$Year))))],  # choices do not include the last year
-                                              selected= dplyr::first(levels(as.factor(data.start$Year))) )
-                         ),
-                         column( width=2,
-                                 selectInput( inputId="selected_changeyear_2",					 
-                                              label="Last Year:",
-                                              choices = levels(as.factor(data.start$Year))[-1],      # choices do not include the first year
-                                              selected= dplyr::last(levels(as.factor(data.start$Year))) )
-                         )
-        ),
-        column(width=1)
-       ),
-      tags$div('style' = "text-align:right;", 
-        actionButton(inputId = "reset_brush",
-                     label="Reset Brushing",icon("paper-plane"), 
-                     style="color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; width:180px; font-size: 130%"),
-        actionButton(inputId = "scale_to_selected",
-                     label="Scale to Selected",icon("search-plus"), 
-                     style="color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; width:180px; font-size: 130%")
-      ),
-      
-      parcoordsOutput("parcoords", height="600px"),           # 400px is defaultheight
-      uiOutput("parcoordsControls")
-      
-    ),
-    tabItem(
       tabName = "AllData",
       h2("Data"),
       tags$div('style' = "text-align:right;", 
                downloadButton("downloadAllData", "Download")
       ),
       DT::dataTableOutput("AllData", width="50%")
-    ),
-    tabItem(
-      tabName = "Data",
-      h2("Data selected in parallel coordinate plot"),
-      tags$div('style' = "text-align:right;", 
-        downloadButton("downloadSelectedData", "Download")
-      ),
-      DT::dataTableOutput("SelectedData", width="50%")
     ),
     tabItem(
       tabName = "Radar",
@@ -258,9 +137,23 @@ body <- shinydashboard::dashboardBody(
       plotlyOutput("summaryPlot_ER",width="70%")
     ),
     tabItem(
-      tabName = "Map",
-      h2("Data selected"),
-      leafletOutput("CUmap",height = 500)
+      tabName = "Flow",
+      box(title = "Start here", width=12, status="info", solidHeader=TRUE, collapsible=TRUE, collapsed=FALSE,
+          uiOutput("selectors")),
+      
+      box(title = "View/select CUs on a map", width=12, status="info", solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE,
+          uiOutput("leafletMap")),
+      
+      box(title = "View/select CUs by performance metric (parallel coordinates plot)", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
+          uiOutput("parcoordsPlot")),
+
+      box(title = "View/select CUs on a data table", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
+          div(style = 'overflow-x: scroll', uiOutput("data"))),
+      
+      box(title = "Summary report", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
+          uiOutput("summary"))
+      
+      
     )
   )
 )
