@@ -2,6 +2,11 @@
 # Developed by B. MacDonald
 # Feb 13, 2019
 
+# need to comment this out for running on shinyapps.io since
+# this will try to install into the server root
+# instead, make sure latest version is installed locally before deploying
+#devtools::install_github("brigitte-dorner/parcoords")
+
 list.of.packages <- c("shiny",
                       "shinydashboard",
                       "tibble",
@@ -19,20 +24,15 @@ list.of.packages <- c("shiny",
                       "ini",
                       "xfun",
                       "readxl",
-                      "markdown")
+                      "markdown",
+                      "parcoords",
+                      "crosstalk")
 # 
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+#if(length(new.packages)) install.packages(new.packages)
 lapply(list.of.packages, require, character.only = TRUE)
 # 
-# #if(!"parcoords" %in% installed.packages()[,"Package"]) devtools::install_github("timelyportfolio/parcoords")
-devtools::install_github("brigitte-dorner/parcoords")
-# #if(!"ezR" %in% installed.packages()[,"Package"]) devtools::install_github("jerryzhujian9/ezR")
-library(parcoords)
-library(shinydashboard)
-library(forcats)
-library(crosstalk)
-#library("ezR")
+
 
 # ==========Define server components ================
 
@@ -47,12 +47,6 @@ function(input, output,session){
   sumfun <- function(x){sum(!is.na(x)) > 0}
   #------------------- Data processing ------------------
   
-  # data.start <- readxl::read_excel("data/FR SK metrics.xls")
-  # data.start$Lower.Ratio <- suppressWarnings(as.double(data.start$Lower.Ratio))
-  # data.start$Upper.Ratio <- suppressWarnings(as.double(data.start$Upper.Ratio))
-  # data.start$Recent.ER <- suppressWarnings(as.double(data.start$Recent.ER))
-  # data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
-  # data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
   data.new <- reactive({
     req(input$selected_species, input$selected_watershed, input$selected_year)
     df <- data.start  %>% filter(Base.Unit.Species %in% input$selected_species) %>%

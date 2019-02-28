@@ -13,15 +13,12 @@
 # ====================== Define UI Components =========================
 
 
-#library(ezR)
 library(shinydashboard)
 library(shinyWidgets)
 library(parcoords)
 library(plotly)
 library(markdown)
 library(leaflet)
-
-#data.start <- readxl::read_excel("data/FR SK metrics.xls")
 
 sidebar <- shinydashboard::dashboardSidebar(
   shinydashboard::sidebarMenu(
