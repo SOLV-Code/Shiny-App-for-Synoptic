@@ -2,6 +2,8 @@
 # Developed by B. MacDonald
 # Feb 13, 2019
 
+#devtools::install_github("brigitte-dorner/parcoords")
+
 list.of.packages <- c("shiny",
                       "shinydashboard",
                       "tibble",
@@ -26,11 +28,7 @@ list.of.packages <- c("shiny",
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 #if(length(new.packages)) install.packages(new.packages)
 lapply(list.of.packages, require, character.only = TRUE)
-# 
-# #if(!"parcoords" %in% installed.packages()[,"Package"]) devtools::install_github("timelyportfolio/parcoords")
-#devtools::install_github("brigitte-dorner/parcoords")
 
-library(parcoords)
 
 dotHistogram <- function(ds, cat, selected=NULL) {
   if (is.SharedData(ds)) {

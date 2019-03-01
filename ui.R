@@ -15,8 +15,10 @@
 library(shinydashboard)
 library(shinyWidgets)
 library(markdown)
-
-#data.start <- readxl::read_excel("data/FR SK metrics.xls")
+library(plotly)
+library(parcoords)
+library(leaflet)
+library(DT)
 
 sidebar <- shinydashboard::dashboardSidebar(
   shinydashboard::sidebarMenu(
