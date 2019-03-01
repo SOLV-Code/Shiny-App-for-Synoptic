@@ -2,6 +2,8 @@
 # Developed by B. MacDonald
 # Feb 13, 2019
 
+#devtools::install_github("brigitte-dorner/parcoords")
+
 list.of.packages <- c("shiny",
                       "shinydashboard",
                       "tibble",
@@ -19,21 +21,50 @@ list.of.packages <- c("shiny",
                       "ini",
                       "xfun",
                       "readxl",
-                      "markdown")
+                      "markdown",
+                      "parcoords",
+                      "crosstalk")
 # 
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+#if(length(new.packages)) install.packages(new.packages)
 lapply(list.of.packages, require, character.only = TRUE)
-# 
-# #if(!"parcoords" %in% installed.packages()[,"Package"]) devtools::install_github("timelyportfolio/parcoords")
-devtools::install_github("brigitte-dorner/parcoords")
-# #if(!"ezR" %in% installed.packages()[,"Package"]) devtools::install_github("jerryzhujian9/ezR")
-library(parcoords)
-library(shinydashboard)
-library(forcats)
-library(crosstalk)
-#library("ezR")
 
+
+dotHistogram <- function(ds, cat, selected=NULL) {
+  if (is.SharedData(ds)) {
+    selected <- ds$selection()
+    ds <- ds$data()
+  } 
+  n <- nrow(ds)
+  cats <- levels(as.factor(ds[, cat]))
+  ds$x <- ds$y <- rep(NA, n)
+  if (is.null(selected)) {selected <- rep(TRUE, n)}
+  for (i in 1:length(cats)) {
+    cinds <- ds[ ,cat] == cats[i] # all rows in this category
+    ds$y[cinds] <- i 
+    sels <- cinds & selected # the selected rows in this category
+    not.sels <- cinds & !selected # the rows in this category not selected
+    n.sels <- sum(sels)
+    n.notsels <- sum(not.sels)
+    if (any(sels)) { ds$x[sels] <- 1:n.sels } # first show the selected points
+    if (any(not.sels)) { ds$x[not.sels] <- (n.sels+1):(n.sels+n.notsels) } # now the unselected
+  }
+  ds$color <- ifelse(selected, "red", "white")
+  ds$label <- row.names(ds)
+  # create a shared dataset for use with crosstalk
+  sharedHisto <- SharedData$new(ds, group="CUmetrics")
+  p <- plot_ly(sharedHisto, x=~x, y=~y, height = 200, type="scatter", mode="markers", text=~label, hoverinfo="text",
+               marker = list(size = 10,
+                             color = ~color,
+                             line = list(color = 'rgba(0, 0, 0, .8)', width = 2))) %>%
+       layout(yaxis = list(title="", 
+                           zeroline = FALSE, 
+                           tickvals = 1:length(cats), 
+                           ticktext=cats, 
+                           showgrid=FALSE),
+           xaxis = list(visible = FALSE))
+  p
+}
 # ==========Define server components ================
 
 
@@ -45,16 +76,16 @@ function(input, output,session){
   sId <- function(pre, post) {paste(pre, post, sep=".")}
   # sum columns using select_if function of dplyr to remove empty columns
   sumfun <- function(x){sum(!is.na(x)) > 0}
-  #------------------- Data processing ------------------
+
+  # need to be able to build data.new without using information from parcoords or other tabs
+  # since those tabs will only get rendered once the user clicks on them
+  # make initial default available through a reactive value
+  values <- reactiveValues(selected_year = max(data.start$Year), select_change = "Annual")
+  observeEvent(input$selected_year, {values$selected_year <- input$selected_year})
+  observeEvent(input$select_change, {values$select_change <- input$select_change})
   
-  # data.start <- readxl::read_excel("data/FR SK metrics.xls")
-  # data.start$Lower.Ratio <- suppressWarnings(as.double(data.start$Lower.Ratio))
-  # data.start$Upper.Ratio <- suppressWarnings(as.double(data.start$Upper.Ratio))
-  # data.start$Recent.ER <- suppressWarnings(as.double(data.start$Recent.ER))
-  # data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
-  # data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
   data.new <- reactive({
-    req(input$selected_species, input$selected_watershed, input$selected_year)
+    req(input$selected_species, input$selected_watershed)
     df <- data.start  %>% filter(Base.Unit.Species %in% input$selected_species) %>%
                           #dplyr::select_if(colSums(!is.na(.)) > 0)
                           dplyr::select_if(sumfun)
@@ -65,7 +96,7 @@ function(input, output,session){
                    dplyr::select_if(sumfun)
     }
     
-    if(input$select_change == "Change" ){                     ########## WILL NEED TO SET THIS UP SO IT UPDATES METRICS AUTOMATICALLY WITHOUT CHANGING THIS - LOOK TO METRICS FILE FOR LIST OF NAMES
+    if(values$select_change == "Change" ){                     ########## WILL NEED TO SET THIS UP SO IT UPDATES METRICS AUTOMATICALLY WITHOUT CHANGING THIS - LOOK TO METRICS FILE FOR LIST OF NAMES
       func <- function(x){x-dplyr::lag(x, default=dplyr::first(x))}
       
       df <- df %>% group_by(Base.Unit.CU.ShortName) %>%
@@ -76,8 +107,8 @@ function(input, output,session){
         filter(Year== max(Year)) %>%
         select(-WSP.status)
     } 
-    if(input$select_change=="Annual"){
-      df <- df %>% filter(Year %in% input$selected_year)
+    if(values$select_change=="Annual"){
+      df <- df %>% filter(Year %in% values$selected_year)
     }
     df <- df %>% select(-Year)
     as.data.frame(df)
@@ -111,7 +142,7 @@ function(input, output,session){
   })
   
   # create a shared dataset for use with crosstalk
-  sharedDS <- SharedData$new(data.par)
+  sharedDS <- SharedData$new(data.par, group="CUmetrics")
   
   # create dimensions list with auxiliary information on numeric metrics to pass on to parcoords
   # each element in dims is a list with a set of parameters specific to dims[[metric]], where 'metric'
@@ -200,7 +231,7 @@ function(input, output,session){
     df
   })
   
-  observeEvent({input$select_change}, {
+  observeEvent({values$select_change}, {
     df <- data.par()
     for (m in names(df)) {
       if (sId("yrange", m) %in% names(input)) {
@@ -229,8 +260,8 @@ function(input, output,session){
   # update available selections for the radar plot metrics
   data.metrics <- reactive({
     df <- as.data.frame(data.par()) 
-    if(input$select_change=="Annual") {df2 <- df %>% select(-c(WSP.status, FAZ, Recent.ER, Management.Timing))}
-    if(input$select_change == "Change") {df2 <- df %>% select(-c(WSP.numeric, FAZ, Recent.ER, Management.Timing))}
+    if(values$select_change=="Annual") {df2 <- df %>% select(-c(WSP.status, FAZ, Recent.ER, Management.Timing))}
+    if(values$select_change == "Change") {df2 <- df %>% select(-c(WSP.numeric, FAZ, Recent.ER, Management.Timing))}
     df2
   })
   
@@ -414,8 +445,9 @@ function(input, output,session){
     }
   })
   
-  observeEvent({sharedDS$selection()}, {proxySelectedData %>% selectRows(selectedRows())})
-  observeEvent({input$reset_brush}, {proxySelectedData %>% selectRows(NULL)})
+  observeEvent(sharedDS$selection(), {
+    proxySelectedData %>% selectRows(selectedRows())},
+               ignoreNULL = FALSE) # make sure this handler fires when selection is reset to NULL
   
   # helper function for converting representation of a selection of rows in a Shiny input to
   # the corresponding selection in crosstalk:
@@ -476,7 +508,7 @@ function(input, output,session){
   #------------------- Summary Plots Tab ------------------
   
   # Summary Plots tab
-  summary.prep <- function(variable=variable, type=input$selected_type, change=input$select_change){ # type = "Proportion" or "Number"
+  summary.prep <- function(variable=variable, type=input$selected_type, change=values$select_change){ # type = "Proportion" or "Number"
     #   subset_data <-subset(data.start, !duplicated(Base.Unit.CU.ShortName) )
     subset_data <- data.new()
     brushed_data <- brushed.data()
@@ -525,22 +557,177 @@ function(input, output,session){
   observeEvent({
     brushed.data()
     input$selected_type},{
-      p.1 <- summary.prep(variable="Management.Timing", type=input$selected_type, change=input$select_change)
+      p.1 <- summary.prep(variable="Management.Timing", type=input$selected_type, change=values$select_change)
       
       output$summaryPlot_MT <- renderPlotly({p.1})
       
-      p.2 <- summary.prep(variable="FAZ", type=input$selected_type,change=input$select_change)
+      p.2 <- summary.prep(variable="FAZ", type=input$selected_type,change=values$select_change)
       output$summaryPlot_FAZ <- renderPlotly({p.2})
       
-      if(input$select_change=="Annual") p.3 <- summary.prep(variable="WSP.status", type=input$selected_type, change=input$select_change)
-      if(input$select_change=="Change") p.3 <- summary.prep(variable="WSP.numeric", type=input$selected_type, change=input$select_change)
+      if(values$select_change=="Annual") p.3 <- summary.prep(variable="WSP.status", type=input$selected_type, change=values$select_change)
+      if(values$select_change=="Change") p.3 <- summary.prep(variable="WSP.numeric", type=input$selected_type, change=values$select_change)
       output$summaryPlot_WSP <- renderPlotly({p.3})
       
-      p.4 <-  summary.prep(variable="Recent.ER", type=input$selected_type,change=input$select_change)
+      p.4 <-  summary.prep(variable="Recent.ER", type=input$selected_type,change=values$select_change)
       
       output$summaryPlot_ER <- renderPlotly({p.4})
     }
   )
+  
+  #------------------- Map  ------------------
+  
+  # create a shared dataset for use with crosstalk, with labels and lat-long info attached,
+  # and linked to sharedDS used with parcoords
+  
+  data.spatial <- reactive({withLatLong(withLabels(data.par()))})
+  sharedDSspatial <- SharedData$new(data.spatial, group="CUmetrics")
+  
+  #colorPal <- colorFactor(c("black", "red", "green", "blue"), 
+  #                        domain=c("Early_Summer", "Summer", "Late", "Estu"))
+  
+  output$CUmap <- renderLeaflet({ 
+    leaflet(sharedDSspatial) %>%
+    addTiles() %>%
+    addCircleMarkers(lat = ~lat, lng = ~ long,
+                     color = "black",
+                     layerId = ~labels,
+                     label = ~htmlEscape(labels) 
+    #                color = ~colorPal(Management.Timing),
+    #                stroke = FALSE,
+    #                fillOpacity = 0.4
+    )
+    #addLegend(pal=colorPal,
+    #          values=~Management.Timing,
+    #          position="bottomleft")
+  })
+  
+
+  # toggle CU selection when corresponding marker is clicked
+  observeEvent(input$CUmap_marker_click, 
+               {
+                 # get current selection from crosstalk shared data
+                 CUs <- sharedDSspatial$key()
+                 sel <- sharedDSspatial$selection()
+                 if (is.null(sel)) {sel <- rep(TRUE, length(CUs))} # a NULL selection means everything is selected
+                 names(sel) <- CUs
+                 # toggle selection
+                 sel[input$CUmap_marker_click$id] <- !sel[input$CUmap_marker_click$id]
+                 if(all(sel)) {sel <- NULL}
+                 # set the crosstalk selection
+                 sharedDSspatial$selection(sel)
+               }
+  )
+
+  #-------------------  Summary  ------------------
+  
+  output$summary.Management.Timing <- renderPlotly({dotHistogram(sharedDS, "Management.Timing")})
+  output$summary.FAZ <- renderPlotly({dotHistogram(sharedDS, "FAZ")})
+  output$summary.WSP.Status <- renderPlotly({dotHistogram(sharedDS, "WSP.status")})
+  #output$summary.Recent.ER <- renderPlotly({dotHistogram(sharedDS, "Recent.ER")})
+  
+  #-------------------  Flow  ------------------
+  
+  output$selectors <- renderUI({
+    tagList(
+      fluidRow(
+        column(width=3,
+               selectInput( inputId="selected_species",					 
+                   label="Selected Species:",
+                   choices = levels(factor(data.start$Base.Unit.Species)),
+                   selected="SK",
+                   multiple=FALSE)),
+        column(width=3,
+               selectInput( inputId="selected_watershed",					 
+                   label="Selected Watershed:",
+                   choices =levels(factor(data.start$BaseUnit.Watershed)),
+                   selected="Fraser",
+                   multiple=FALSE) )
+        # column(width=3,
+        #        selectInput(inputId="selected_metrics", 
+        #                    label="Selected Metrics:", 
+        #                    choices=names(data.start)[4:ncol(data.start)], 
+        #                    multiple=TRUE, 
+        #                    selected=names(data.start[4:ncol(data.start)]), 
+        #                    selectize=TRUE)),
+        # column(width=3,
+        #        selectInput(inputId="selected_cus", 
+        #                    label="Selected CUs:", 
+        #                    choices=CUs,
+        #                    multiple=TRUE, 
+        #                    selected=CUs, 
+        #                    selectize = TRUE))
+      ))
+  })
+  
+  output$leafletMap <- renderUI({leafletOutput("CUmap", height = 500)})
+ 
+  output$parcoordsPlot <- renderUI({ 
+    yrs <- unique(sort(as.numeric(data.start$Year)))
+    tagList( fluidRow(column(width = 4, h3("Step 1:")), column(width = 4, h3("Step 2:")), column(width=4, h3("Step 3:"))),
+             fluidRow(column(width = 3,  h4("Select 'Annual' to view WSP metrics for a specific year, or 'Change' to view changes in metrics between two years")),
+                      column(width = 1),
+                      conditionalPanel( "input.select_change == 'Annual'",
+                                        column(width = 3,  h4("Select year to view WSP metric values"))),
+                      conditionalPanel( "input.select_change == 'Change'",
+                                        column(width = 3,  h4("Select years to calculate change"))),
+                      column(width = 1),
+                      column(width=3, h4("Click and drag mouse over vertical axes to select CUs")),
+                      column(width=1)),
+             fluidRow(column(width=3, radioButtons( "select_change",
+                                          label="",
+                                          choiceNames = list( HTML("<p style='font-size:125%;'>Annual</p>"), 
+                                                              HTML("<p style='font-size:125%;'>Change</p>")),
+                                          choiceValues = list("Annual","Change"),
+                                          inline=TRUE,
+                                          selected="Annual")),
+                     column(width=1),
+                     conditionalPanel("input.select_change == 'Annual'",
+                                      column( width=4,
+                                              selectInput( inputId="selected_year",					 
+                                                           label="",
+                                                           choices = yrs,
+                                                           selected = yrs[1] ))),
+                     conditionalPanel("input.select_change == 'Change'",
+                                      column( width=2,
+                                              selectInput( inputId="selected_changeyear_1",					 
+                                                           label="Initial Year:",
+                                                           choices = yrs[1:(length(yrs)-1)],  # choices do not include the last year
+                                                           selected= yrs[1])),
+                                      column( width=2,
+                                              selectInput( inputId="selected_changeyear_2",					 
+                                                           label="Last Year:",
+                                                           choices = yrs[2:length(yrs)],      # choices do not include the first year
+                                                           selected = yrs[length(yrs)] ))),
+                     column(width=1)),
+              tags$div('style' = "text-align:right;", 
+                       actionButton(inputId = "reset_brush",
+                                    label="Reset Brushing",icon("paper-plane"), 
+                                    style="color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; width:180px; font-size: 130%"),
+                       actionButton(inputId = "scale_to_selected",
+                                    label="Scale to Selected",icon("search-plus"), 
+                                    style="color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; width:180px; font-size: 130%")),
+                   
+              parcoordsOutput("parcoords", height="600px"),           # 400px is defaultheight
+              uiOutput("parcoordsControls"))
+  })
+             
+  output$data <- renderUI({ 
+    tagList(tags$div('style' = "text-align:right;", downloadButton("downloadSelectedData", "Download")),
+            DT::dataTableOutput("SelectedData", width="50%"))
+    })
+    
+  output$summary <- renderUI({
+    tagList( 
+      fluidRow(
+        column(width=4, tags$div(h4("Management Timing"),
+                                 plotlyOutput("summary.Management.Timing", height=200))),
+        column(width=4, tags$div(h4("Freshwater Adaptive Zone"),
+                                 plotlyOutput("summary.FAZ", height=200))),
+        column(width=4, tags$div(h4("WSP Status"),
+                                 plotlyOutput("summary.WSP.Status"), height=200))))
+ #       column(width=6, tags$div(h4("Exploitation Rate"),
+ #                                plotlyOutput("summary.Recent.ER")))))
+  })
   
 } # end server function
 #   
