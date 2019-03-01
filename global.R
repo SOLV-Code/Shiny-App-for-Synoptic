@@ -19,6 +19,12 @@ data.start <- read.csv("data/FR SK metrics.csv")
 data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
 data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
 
+# the names of the numeric metrics
+numericMetrics <- names(data.start)[unlist(lapply(data.start, is.numeric))] 
+
+# the names of the CUs
+CUs <- unique(as.character(data.start[, "Base.Unit.CU.ShortName"]))
+
 data.latlong <- read.csv("data/FRSK_CU_Info_masterUpdate.csv")
 data.latlong <- unique(data.latlong[ ,c("Base.Unit.CU.ShortName", "Base.Unit.CU.Lat", "Base.Unit.CU.Long")])
 names(data.latlong) <- c("CU", "lat", "long")
