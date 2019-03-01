@@ -165,7 +165,7 @@ body <- shinydashboard::dashboardBody(
       tags$div('style' = "text-align:right;", 
                downloadButton("downloadAllData", "Download")
       ),
-      DT::dataTableOutput("AllData", width="50%")
+      div(style = 'overflow-x: scroll', DT::dataTableOutput("AllData", width="50%"))
     ),
     tabItem(
       tabName = "Data",
@@ -173,7 +173,7 @@ body <- shinydashboard::dashboardBody(
       tags$div('style' = "text-align:right;", 
         downloadButton("downloadSelectedData", "Download")
       ),
-      DT::dataTableOutput("SelectedData", width="50%")
+      div(style = 'overflow-x: scroll', DT::dataTableOutput("SelectedData", width="50%"))
     ),
     tabItem(
       tabName = "Radar",
