@@ -13,14 +13,12 @@
 # ====================== Define UI Components =========================
 
 
-#library(ezR)
 library(shinydashboard)
 library(shinyWidgets)
 library(parcoords)
 library(plotly)
 library(markdown)
-
-#data.start <- readxl::read_excel("data/FR SK metrics.xls")
+library(leaflet)
 
 sidebar <- shinydashboard::dashboardSidebar(
   shinydashboard::sidebarMenu(
@@ -33,6 +31,7 @@ sidebar <- shinydashboard::dashboardSidebar(
     menuItem("Radar Plots", tabName="Radar"),
     menuItem("Areas", tabName="Areas"),
     menuItem("Summary of selected data", tabName="Summary"),
+    menuItem("Map", tabName="Map"),
     br(),br(), br(),br(), br(),br(),
     br(),br(), br(),br(), br(),br(),
     br(),br(), br(),br(), br(),br(),
@@ -166,7 +165,7 @@ body <- shinydashboard::dashboardBody(
       tags$div('style' = "text-align:right;", 
                downloadButton("downloadAllData", "Download")
       ),
-      DT::dataTableOutput("AllData", width="50%")
+      div(style = 'overflow-x: scroll', DT::dataTableOutput("AllData", width="50%"))
     ),
     tabItem(
       tabName = "Data",
@@ -174,7 +173,7 @@ body <- shinydashboard::dashboardBody(
       tags$div('style' = "text-align:right;", 
         downloadButton("downloadSelectedData", "Download")
       ),
-      DT::dataTableOutput("SelectedData", width="50%")
+      div(style = 'overflow-x: scroll', DT::dataTableOutput("SelectedData", width="50%"))
     ),
     tabItem(
       tabName = "Radar",
@@ -254,6 +253,11 @@ body <- shinydashboard::dashboardBody(
                        h3("Selected CUs by Change in Exploitation Rate")
       ),
       plotlyOutput("summaryPlot_ER",width="70%")
+    ),
+    tabItem(
+      tabName = "Map",
+      h2("Data selected"),
+      leafletOutput("CUmap",height = 500)
     )
   )
 )
