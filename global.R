@@ -14,7 +14,12 @@ metricInfo <- list(
   Recent.ER = "This is an explanation of the Recent.ER metric",
   Management.Timing = "Management timing")
 
- 
+# the names of the numeric metrics
+numericMetrics <- names(data.start)[unlist(lapply(data.start, is.numeric))] 
+
+# the names of the CUs
+CUs <- unique(as.character(data.start[, "Base.Unit.CU.ShortName"]))
+
 
 # data.start <- readxl::read_excel("data/FR SK metrics.xls")
 # data.start$Lower.Ratio <- suppressWarnings(as.double(data.start$Lower.Ratio))
