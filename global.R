@@ -22,6 +22,31 @@ data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("
 # the names of the numeric metrics
 numericMetrics <- names(data.start)[unlist(lapply(data.start, is.numeric))] 
 
+# the names of the metrics users may choose from
+CUMetrics <- list("WSP Status"="WSP.status",
+                    "Recent Total"="Recent.Total", 
+                    "Recent ER"="Recent.ER",
+                    "Lower Ratio"="Lower.Ratio",
+                    "Upper Ratio"="Upper.Ratio",
+                    "Long-term Ratio"="LongTerm.Ratio",
+                    "Short-term Trend"="ShortTerm.Trend")
+CUAttributes <- list("FAZ"="FAZ",
+                     "Watershed"="BaseUnit.Watershed",
+                     "Management Timing"="Management.Timing",
+                     "CU"="Base.Unit.CU.ShortName",
+                     "Species"="Base.Unit.Species")
+
+# get the label for pretty printing, given the name of a metric
+getLabel <- function(m) {
+  colLabels <- c(CUMetrics, CUAttributes)
+  if (m %in% colLabels) {
+    names(colLabels)[which(colLabels == m)]
+  } else
+  {
+    m
+  }
+}
+
 # the names of the CUs
 CUs <- unique(as.character(data.start[, "Base.Unit.CU.ShortName"]))
 

@@ -159,12 +159,13 @@ function(input, output,session){
              d <- list() # add any information on metric m here that we want to pass on to javascript
              # if there is a checkbox for this dim; allow it to set visibility, otherwise make it always visible
              d[['hide']] <- ifelse (any(names(input) == sId("visible", m)), !input[[sId("visible", m)]], FALSE) 
+             d[['title']] <- getLabel(m)
              if (m %in% numericMetrics) {
                d[['nullValue']] <- median(dataset[, m], na.rm = T) # change this to "top" or "bottom" to show nulls above or below chart
                d[['min']] <- min(dataset[, m], na.rm = T)
                d[['max']] <- max(dataset[, m], na.rm = T)
                d[['info']] <- metricInfo[[m]]
-               if (sId("yrange", m) %in% names(input)) { # if there is an input widget for this dim, allow for it to set the ylims
+                if (sId("yrange", m) %in% names(input)) { # if there is an input widget for this dim, allow for it to set the ylims
                  d[['ymin']] <- input[[sId("yrange", m)]][1]
                  d[['ymax']] <- input[[sId("yrange", m)]][2]
                } else { # ylims not under user control
@@ -362,6 +363,7 @@ function(input, output,session){
   generateRadarPlot <- function(df, faceted = T) {
     # Long format
     df.long <- tidyr::gather(df, metricName, metricValue,-"Base.Unit.CU.ShortName")
+    df.long$metricName <- sapply(df.long$metricName, getLabel)
     p <- ggplot(df.long,  aes(x = metricName, y = metricValue,
                               group=Base.Unit.CU.ShortName,
                               color=Base.Unit.CU.ShortName,
@@ -396,7 +398,8 @@ function(input, output,session){
     df <- radar_metrics_subset()
     cols <- c("Base.Unit.CU.ShortName", "Area", names(df)[!(names(df) %in% c("Base.Unit.CU.ShortName", "Area"))])
     df.reorder <- df[, cols]
-    output$radarAreaTable <- DT::renderDataTable({ DT::datatable(df.reorder)})
+    names(df.reorder) <- sapply(names(df.reorder), getLabel)
+    output$radarAreaTable <- DT::renderDataTable({DT::datatable(df.reorder)})
     df$Area <- NULL
     output$radarPlot <- renderPlot({generateRadarPlot(df, input$radar_faceted)})
   })
@@ -420,7 +423,10 @@ function(input, output,session){
   # })
   
   
-  output$AllData <- DT::renderDataTable({DT::datatable(data.start)})
+  output$AllData <- DT::renderDataTable({
+    colnames <- as.character(sapply(names(data.start), getLabel))
+    DT::datatable(data.start, colnames=colnames)
+  })
   
   # Downloadable csv of selected dataset ----
   output$downloadAllData <- downloadHandler(
@@ -439,10 +445,11 @@ function(input, output,session){
   # shiny for data selection in table for now.
   output$SelectedData <- DT::renderDataTable({
     sel <- isolate(selectedRows())
+    colnames <- as.character(sapply(names(data.par()), getLabel))
     if (!is.null(sel)) {
-      datatable(data.par(), selection=list(selected=sel))
+      datatable(data.par(), selection=list(selected=sel), colnames=colnames)
     } else {
-      datatable(data.par())
+      datatable(data.par(), colnames=colnames)
     }
    }, server=FALSE)
   
@@ -624,16 +631,21 @@ function(input, output,session){
     yrs <- unique(sort(as.numeric(data.start$Year)))
     tagList(
       fluidRow(
-        column(width=3, selectInput( inputId="selected_species",					 
-                                     label="Selected Species:",
+        column(width=2, selectInput( inputId="selected_species",					 
+                                     label="Species:",
                                      choices = levels(factor(data.start$Base.Unit.Species)),
                                      selected="SK",
                                      multiple=FALSE)),
-        column(width=3, selectInput( inputId="selected_watershed",					 
-                                     label="Selected Watershed:",
+        column(width=2, selectInput( inputId="selected_watershed",					 
+                                     label="Watershed:",
                                      choices =levels(factor(data.start$BaseUnit.Watershed)),
                                      selected="Fraser",
                                      multiple=FALSE)),
+        column(width=3,
+               checkboxGroupInput(inputId="selected_metrics", 
+                           label="Metrics:", 
+                            choices=userMetrics, 
+                            selected=userMetrics)),
 #        fluidRow(column(width = 4, h3("Step 1:")), column(width = 4, h3("Step 2:")), column(width=4, h3("Step 3:"))),
 #        fluidRow(column(width = 3,  h4("Select 'Annual' to view WSP metrics for a specific year, or 'Change' to view changes in metrics between two years")),
 #                         column(width = 1),
@@ -648,7 +660,7 @@ function(input, output,session){
                                       label="",
                                       choices = list("Single year" = "Annual", "Change over time" ="Change"),
                                       selected="Annual")),
-        column(width=3, conditionalPanel("input.select_change == 'Annual'",
+        column(width=2, conditionalPanel("input.select_change == 'Annual'",
                                           selectInput( inputId="selected_year",					 
                                                                 label="",
                                                                 choices = yrs,
@@ -662,13 +674,7 @@ function(input, output,session){
                                                                 label="Last Year:",
                                                                 choices = yrs[2:length(yrs)],      # choices do not include the first year
                                                                 selected = yrs[length(yrs)])))
-        # column(width=3,
-        #        selectInput(inputId="selected_metrics", 
-        #                    label="Selected Metrics:", 
-        #                    choices=names(data.start)[4:ncol(data.start)], 
-        #                    multiple=TRUE, 
-        #                    selected=names(data.start[4:ncol(data.start)]), 
-        #                    selectize=TRUE)),
+
         # column(width=3,
         #        selectInput(inputId="selected_cus", 
         #                    label="Selected CUs:", 
