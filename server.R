@@ -23,7 +23,8 @@ list.of.packages <- c("shiny",
                       "readxl",
                       "markdown",
                       "parcoords",
-                      "crosstalk")
+                      "crosstalk",
+                      "sp")
 # 
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 #if(length(new.packages)) install.packages(new.packages)
@@ -80,18 +81,20 @@ function(input, output,session){
   # need to be able to build data.new without using information from parcoords or other tabs
   # since those tabs will only get rendered once the user clicks on them
   # make initial default available through a reactive value
-  values <- reactiveValues(selected_year = max(data.start$Year), select_change = "Annual")
+  values <- reactiveValues(selected_year = max(data.start$Year), 
+                           select_change = "Annual",
+                           selected_species = levels(factor(data.start$Base.Unit.Species)),
+                           selected_watershed = levels(factor(data.start$BaseUnit.Watershed)))
   observeEvent(input$selected_year, {values$selected_year <- input$selected_year})
   observeEvent(input$select_change, {values$select_change <- input$select_change})
   
   data.new <- reactive({
-    req(input$selected_species, input$selected_watershed)
-    df <- data.start  %>% filter(Base.Unit.Species %in% input$selected_species) %>%
+    df <- data.start  %>% filter(Base.Unit.Species %in% values$selected_species) %>%
                           #dplyr::select_if(colSums(!is.na(.)) > 0)
                           dplyr::select_if(sumfun)
     
-    if(input$selected_watershed != "All"){
-      df <- df %>% filter(BaseUnit.Watershed %in% input$selected_watershed) %>%
+    if(values$selected_watershed != "All"){
+      df <- df %>% filter(BaseUnit.Watershed %in% values$selected_watershed) %>%
                    #dplyr::select_if(colSums(!is.na(.)) > 0)
                    dplyr::select_if(sumfun)
     }
@@ -258,11 +261,12 @@ function(input, output,session){
   #------------------- Radar Plots ------------------
   
   # update available selections for the radar plot metrics
-  data.metrics <- reactive({
-    df <- as.data.frame(data.par()) 
-    if(values$select_change=="Annual") {df2 <- df %>% select(-c(WSP.status, FAZ, Recent.ER, Management.Timing))}
-    if(values$select_change == "Change") {df2 <- df %>% select(-c(WSP.numeric, FAZ, Recent.ER, Management.Timing))}
-    df2
+  radar.metrics <- reactive({
+    if (is.null(data.par())) {
+      return(numericMetrics)
+    } else {
+      return(names(data.par)[names(data.par()) %in% numericMetrics])
+    }
   })
   
   # Re-scale function adapted from ezR package (devtools::install_github("jerryzhujian9/ezR")
@@ -279,147 +283,158 @@ function(input, output,session){
     return(result)
   }
   
+  # convert polar to cartesian coordinates
+  cartesian <- function(r, phi = NULL) {
+    if (is.null(phi)) {phi <- cumsum(rep(360/length(r), length(r))) - 360/length(r)}
+    data.frame(x = r*cos(pi/180 * phi), y=r*sin(pi/180 * phi))
+  }
   
+  # calculate the area of the polygon defined by the spider plot of m,
+  # where m is a vector of metrics
+  # Note: I don't think this is right? should be 1/2 * sin(120 * pi/180) * ... = 1/2 * sin(pi * 2/3) * ...
+  # calcArea3 <- function(m) {sin(pi/5)/2 * (m[1]*m[2] + m[2]*m[3] + m[3]*m[1])}
+
+  # use sp package to calculate area of polygon defined by the spider plot of m,
+  # where m is a vector of metrics
+  calcArea <- function(m) {
+    p <- Polygon(cartesian(c(m, m[1]))) # Polygon expects the first point to be repeated at the end
+    p@area # Polygon is an R4 class
+  } 
   # Radar coordinates Helper Funciton so does not need to access ezR package
   coord_radar <- function (theta = "x", start = 0, direction = 1)
   {
     theta <- match.arg(theta, c("x", "y"))
     r <- ifelse (theta == "x", "y", "x")
     ggproto("CordRadar", CoordPolar, theta = theta, r = r, start = start,
-            direction = sign(direction),
-            is_linear = function(coord) TRUE)
+                   direction = sign(direction),
+                   is_linear = function(coord) TRUE)
   }
   
   observe({ 
-    updateSelectInput(session, "selected_metric_1", choices=colnames(data.metrics()), selected=colnames(data.metrics())[1])
+    updateSelectInput(session, "radar_selected_metric_1", choices=radar.metrics(), selected=radar.metrics()[1])
   })
   
-  observeEvent(
-    {input$selected_metric_1
-      data.metrics()},
-    {
-      choices_2 <- data.metrics() %>% select(-dplyr::one_of(input$selected_metric_1)) %>%
-        colnames()
-      updateSelectInput(session, "selected_metric_2", choices=choices_2, selected = choices_2[1])
-    })
+  observeEvent({
+    input$radar_selected_metric_1
+    radar.metrics
+  }, {
+    choices <- radar.metrics()[!(radar.metrics() %in% input$radar_selected_metric_1)]
+    updateSelectInput(session, "radar_selected_metric_2", choices = choices, selected = choices[1])
+  })
   
-  observeEvent(
-    {input$selected_metric_1
-      input$selected_metric_2
-      data.metrics()},
-    {
-      choices_3 <- data.metrics() %>% select(-dplyr::one_of(input$selected_metric_1,input$selected_metric_2)) %>%
-        colnames()
-      updateSelectInput(session, "selected_metric_3", choices=choices_3, selected=choices_3[1])
-    })
+  observeEvent({
+    input$radar_selected_metric_1
+    input$radar_selected_metric_2
+    radar.metrics
+  }, {
+    choices <- radar.metrics()[!(radar.metrics() %in% c(input$radar_selected_metric_1, input$radar_selected_metric_2))]
+    updateSelectInput(session, "radar_selected_metric_3", choices=choices, selected=choices[1])
+  })
+  
+  observeEvent({
+    input$radar_selected_metric_1
+    input$radar_selected_metric_2
+    input$radar_selected_metric_3
+  }, {
+    updateSelectInput(session, "radar_ranking", 
+                      choices=c("Area", input$radar_selected_metric_1, input$radar_selected_metric_2, input$radar_selected_metric_3), 
+                      selected = "Area")
+  })
   
   # Pull selected metrics data
-  metrics_subset <- reactive({
-    req(input$selected_metric_1, input$selected_metric_2, input$selected_metric_3)
-    df <- brushed.data() %>% select(dplyr::one_of("Base.Unit.CU.ShortName", input$selected_metric_1,
-                                                  input$selected_metric_2, input$selected_metric_3))
-    
+  radar_metrics_subset <- reactive({
+    req(input$radar_selected_metric_1, input$radar_selected_metric_2, input$radar_selected_metric_3)
+    df <- brushed.data() %>% select(dplyr::one_of("Base.Unit.CU.ShortName", input$radar_selected_metric_1,
+                                                  input$radar_selected_metric_2, input$radar_selected_metric_3))
     # Filter our CUs with fewer than 3 metrics for Radar plot
-    df <-  df[rowSums(!is.na(df)) >= 4 ,]             
-    
-    #2) rescale
-    #print(df)
-    data.frame(lapply(df, ez.rescale02))
-  })
-  # 
+    df <-  df[rowSums(!is.na(df)) >= 4, ]             
+    # rescale
+    df <- data.frame(lapply(df, ez.rescale02))
+    # calc areas
+    df$Area <- apply(df, 1, function(x){calcArea(as.numeric(x[2:length(x)]))})
+    # sort
+    df <- df[order(df[,input$radar_ranking], decreasing=T), ]
+    CUs <- as.character(df$Base.Unit.CU.ShortName)
+    df$Base.Unit.CU.ShortName <- ordered(CUs, levels = CUs)
+    df
+   })
+  
+  generateRadarPlot <- function(df, faceted = T) {
+    # Long format
+    df.long <- tidyr::gather(df, metricName, metricValue,-"Base.Unit.CU.ShortName")
+    p <- ggplot(df.long,  aes(x = metricName, y = metricValue,
+                              group=Base.Unit.CU.ShortName,
+                              color=Base.Unit.CU.ShortName,
+                              fill=Base.Unit.CU.ShortName,
+                              linetype=Base.Unit.CU.ShortName)) + 
+                geom_polygon(aes(), alpha=0.4, size = 1, show.legend = FALSE) +  xlab("") + ylab("") + coord_radar() +
+                scale_linetype_manual(values=rep("solid",nlevels(df.long$Base.Unit.CU.ShortName)))
+  
+    if(faceted){
+        p <- p + theme(strip.text.x = element_text(size = rel(1)),
+                       axis.ticks.x = element_blank(),
+                       axis.text.x = element_text(size = rel(0.5)),
+                       axis.ticks.y = element_blank(),
+                       axis.text.y = element_blank()) +
+                 guides(color = "none") +
+                 facet_wrap(~Base.Unit.CU.ShortName)
+     } else {
+       p <- p + theme(axis.text.x = element_text(size = rel(0.8), angle = 0),
+                      axis.ticks.y = element_blank(),
+                      axis.text.y = element_blank()) +
+                guides(color = guide_legend(ncol=2)) +
+                geom_line(aes(), size = 1)
+     }
+    return(p)
+  }
+  
+  generateRadarAreaTable <- function(df) {
+    # data table with "Area" in first column
+    output$radarAreaTable <- DT::renderDataTable({DT::datatable(df[, c("Area", names(df)[!(names(df) %in% "Area")])])})
+  }
   
   #  # Radar Plots Code of Brushed CUs
-  observeEvent(
-    {input$faceted
-      metrics_subset()},{
-        
-        # Long format
-        data.radar <- metrics_subset()
-        
-        #  select(-Management.Timing)
-        
-        df.long <- tidyr::gather(data.radar, variable,value,-"Base.Unit.CU.ShortName",factor_key = T)
-        
-        if(input$faceted == FALSE){
-          p <- ggplot(df.long,  aes(x = variable, y = value,
-                                    group = Base.Unit.CU.ShortName,
-                                    color=Base.Unit.CU.ShortName,
-                                    fill=Base.Unit.CU.ShortName,
-                                    linetype=Base.Unit.CU.ShortName)) +
-            geom_polygon(aes(), alpha=0.4, size = 1, show.legend = FALSE) +
-            xlab("") + ylab("") +
-            coord_radar()+
-            scale_linetype_manual(values=rep("solid",nlevels(factor(df.long$Base.Unit.CU.ShortName))))+
-            theme(axis.text.x = element_text(size = rel(0.8), angle = 0),
-                  axis.ticks.y = element_blank(),
-                  axis.text.y = element_blank()) +
-            guides(color = guide_legend(ncol=2)) +
-            geom_line(aes(), size = 1)
-        }
-        if(input$faceted == TRUE){
-          p <- ggplot(df.long,  aes(x = variable, y = value,
-                                    group = Base.Unit.CU.ShortName,
-                                    color=Base.Unit.CU.ShortName,
-                                    fill=Base.Unit.CU.ShortName,
-                                    linetype=Base.Unit.CU.ShortName)) +
-            geom_polygon(aes(), alpha=0.4, size = 1, show.legend = FALSE) +
-            xlab("") + ylab("") +
-            coord_radar()+
-            scale_linetype_manual(values=rep("solid",nlevels(factor(df.long$Base.Unit.CU.ShortName))))+
-            theme(strip.text.x = element_text(size = rel(1)),
-                  axis.ticks.x = element_blank(),
-                  axis.text.x = element_text(size = rel(0.8), angle = 0),
-                  axis.ticks.y = element_blank(),
-                  axis.text.y = element_blank()) +
-            guides(color = "none") +
-            facet_wrap(~Base.Unit.CU.ShortName)
-        }
-        
-        output$radarPlot <- renderPlot({p})
-        
-      })
+  observeEvent({
+    input$radar_faceted
+    radar_metrics_subset()
+  }, {
+    df <- radar_metrics_subset()
+    df$Area <- NULL
+    output$radarPlot <- renderPlot({generateRadarPlot(df, input$radar_faceted)})
+  })
   
   
   #------------------- All Data Tab ------------------
   
-  # Create another data object to show in the All Data tab
-  data.show <- eventReactive(data.new(),{
-    req(input$selected_species, input$selected_watershed, input$selected_year)
-    
-    df <- data.start  %>% filter(Base.Unit.Species %in% input$selected_species) %>%
-                          #dplyr::select_if(colSums(!is.na(.)) > 0)
-                          dplyr::select_if(sumfun)
-    if(input$selected_watershed != "All"){
-      df <- df %>% filter(BaseUnit.Watershed %in% input$selected_watershed) %>%
-                   #dplyr::select_if(colSums(!is.na(.)) > 0)
-                   dplyr::select_if(sumfun)
-    }
-    #df <- as.data.frame(df)
-    #rownames(df) <- df[,1]
-    df <- df %>% select(-dplyr::one_of("Base.Unit.Species", "BaseUnit.Watershed")) %>%  # one_of allows you to provide a list including names that may not be there
-      select(-Management.Timing, Management.Timing) %>%
-      select(-FAZ, FAZ)
-    # Must re-order rows so most full rows are first and also have a full row as the first (no NAs)
-    #na.order <- order(rowSums(is.na(df)))
-    #df <- df[na.order,]
-  })
+  # # Create another data object to show in the All Data tab
+  # data.show <- eventReactive(data.new(),{
+  #   df <- data.start  %>% filter(Base.Unit.Species %in% values$selected_species) %>%
+  #                         #dplyr::select_if(colSums(!is.na(.)) > 0)
+  #                         dplyr::select_if(sumfun)
+  #   if(input$selected_watershed != "All"){
+  #     df <- df %>% filter(BaseUnit.Watershed %in% values$selected_watershed) %>%
+  #                  #dplyr::select_if(colSums(!is.na(.)) > 0)
+  #                  dplyr::select_if(sumfun)
+  #   }
+  #   df <- df %>% select(-dplyr::one_of("Base.Unit.Species", "BaseUnit.Watershed")) %>%  # one_of allows you to provide a list including names that may not be there
+  #     select(-Management.Timing, Management.Timing) %>%
+  #     select(-FAZ, FAZ)
+  # })
   
   
-  output$AllData <- DT::renderDataTable({
-    DT::datatable(data.show())
-  })
+  output$AllData <- DT::renderDataTable({DT::datatable(data.start)})
   
   # Downloadable csv of selected dataset ----
   output$downloadAllData <- downloadHandler(
     filename = "data.csv",
-    content = function(file) {write.csv(data.show(), file, row.names = FALSE)}
+    content = function(file) {write.csv(data.start, file, row.names = FALSE)}
   )
   
   
-  #------------------- Extracted Data Tab ------------------
+  #------------------- Extracted Data Box ------------------
   
-  # show the data in a table
-  # ideally, we'd just use crosstalk here, i.e.,
+  # Show the filtered data in a table.
+  # Ideally, we'd just use crosstalk here, i.e.,
   # output$SelectedData <-  DT::renderDataTable({DT::datatable(sharedDS)}, server=FALSE)
   # but DT shows selected values (interprets selection as filter?), instead of 
   # showing full dataset with selected values highlighted. Work around this by using plain
@@ -486,26 +501,8 @@ function(input, output,session){
     })
   
   
-  #------------------- Areas Tab ------------------
   
-  
-  output$Areas <- DT::renderDataTable({
-    df <- metrics_subset()
-    
-    # Each will be the sum of 3 triangles
-    a <- df[,2]
-    b <- df[,3]
-    c <- df[,4]
-    
-    side1 <- a*b*sin(pi/5)/2
-    side2 <- b*c*sin(pi/5)/2
-    side3 <- c*a*sin(pi/5)/2
-    area <- side1 + side2 + side3
-    df <- cbind(df, Area=area)
-    DT::datatable(df)
-  })
-  
-  #------------------- Summary Plots Tab ------------------
+  #------------------- Summary Plots Box ------------------
   
   # Summary Plots tab
   summary.prep <- function(variable=variable, type=input$selected_type, change=values$select_change){ # type = "Proportion" or "Number"
@@ -539,8 +536,6 @@ function(input, output,session){
     
     if(type == "Proportion")  data.sum <- data.frame(y, selected=perc, unselected =(1-perc), text=c(paste("Total # of CUs:",as.character(total))))
     if(type =="Number")       data.sum <- data.frame(y, selected, unselected=not.selected, text=c(paste("Total # of CUs:",as.character(total))))
-    #print(data.sum)
-    #browser()
     data.sum$y <- forcats::fct_explicit_na(data.sum$y, "Unknown")
     
     # Create plot
@@ -625,23 +620,50 @@ function(input, output,session){
   output$summary.WSP.Status <- renderPlotly({dotHistogram(sharedDS, "WSP.status")})
   #output$summary.Recent.ER <- renderPlotly({dotHistogram(sharedDS, "Recent.ER")})
   
-  #-------------------  Flow  ------------------
+  #-------------------  CU selection flow  ------------------
   
-  output$selectors <- renderUI({
+  output$filters <- renderUI({
+    yrs <- unique(sort(as.numeric(data.start$Year)))
     tagList(
       fluidRow(
-        column(width=3,
-               selectInput( inputId="selected_species",					 
-                   label="Selected Species:",
-                   choices = levels(factor(data.start$Base.Unit.Species)),
-                   selected="SK",
-                   multiple=FALSE)),
-        column(width=3,
-               selectInput( inputId="selected_watershed",					 
-                   label="Selected Watershed:",
-                   choices =levels(factor(data.start$BaseUnit.Watershed)),
-                   selected="Fraser",
-                   multiple=FALSE) )
+        column(width=3, selectInput( inputId="selected_species",					 
+                                     label="Selected Species:",
+                                     choices = levels(factor(data.start$Base.Unit.Species)),
+                                     selected="SK",
+                                     multiple=FALSE)),
+        column(width=3, selectInput( inputId="selected_watershed",					 
+                                     label="Selected Watershed:",
+                                     choices =levels(factor(data.start$BaseUnit.Watershed)),
+                                     selected="Fraser",
+                                     multiple=FALSE)),
+#        fluidRow(column(width = 4, h3("Step 1:")), column(width = 4, h3("Step 2:")), column(width=4, h3("Step 3:"))),
+#        fluidRow(column(width = 3,  h4("Select 'Annual' to view WSP metrics for a specific year, or 'Change' to view changes in metrics between two years")),
+#                         column(width = 1),
+#        conditionalPanel( "input.select_change == 'Annual'",
+#                          column(width = 3,  h4("Select year to view WSP metric values"))),
+#                          conditionalPanel( "input.select_change == 'Change'",
+#                                            column(width = 3,  h4("Select years to calculate change"))),
+#                          column(width = 1),
+#                          column(width=3, h4("Click and drag mouse over vertical axes to select CUs")),
+#                          column(width=1)),
+        column(width=3, radioButtons( "select_change",
+                                      label="",
+                                      choices = list("Single year" = "Annual", "Change over time" ="Change"),
+                                      selected="Annual")),
+        column(width=3, conditionalPanel("input.select_change == 'Annual'",
+                                          selectInput( inputId="selected_year",					 
+                                                                label="",
+                                                                choices = yrs,
+                                                                selected = yrs[1] )),
+                        conditionalPanel("input.select_change == 'Change'",
+                                          selectInput( inputId="selected_changeyear_1",					 
+                                                                label="Initial Year:",
+                                                                choices = yrs[1:(length(yrs)-1)],  # choices do not include the last year
+                                                                selected= yrs[1]),
+                                           selectInput( inputId="selected_changeyear_2",					 
+                                                                label="Last Year:",
+                                                                choices = yrs[2:length(yrs)],      # choices do not include the first year
+                                                                selected = yrs[length(yrs)])))
         # column(width=3,
         #        selectInput(inputId="selected_metrics", 
         #                    label="Selected Metrics:", 
@@ -662,44 +684,7 @@ function(input, output,session){
   output$leafletMap <- renderUI({leafletOutput("CUmap", height = 500)})
  
   output$parcoordsPlot <- renderUI({ 
-    yrs <- unique(sort(as.numeric(data.start$Year)))
-    tagList( fluidRow(column(width = 4, h3("Step 1:")), column(width = 4, h3("Step 2:")), column(width=4, h3("Step 3:"))),
-             fluidRow(column(width = 3,  h4("Select 'Annual' to view WSP metrics for a specific year, or 'Change' to view changes in metrics between two years")),
-                      column(width = 1),
-                      conditionalPanel( "input.select_change == 'Annual'",
-                                        column(width = 3,  h4("Select year to view WSP metric values"))),
-                      conditionalPanel( "input.select_change == 'Change'",
-                                        column(width = 3,  h4("Select years to calculate change"))),
-                      column(width = 1),
-                      column(width=3, h4("Click and drag mouse over vertical axes to select CUs")),
-                      column(width=1)),
-             fluidRow(column(width=3, radioButtons( "select_change",
-                                          label="",
-                                          choiceNames = list( HTML("<p style='font-size:125%;'>Annual</p>"), 
-                                                              HTML("<p style='font-size:125%;'>Change</p>")),
-                                          choiceValues = list("Annual","Change"),
-                                          inline=TRUE,
-                                          selected="Annual")),
-                     column(width=1),
-                     conditionalPanel("input.select_change == 'Annual'",
-                                      column( width=4,
-                                              selectInput( inputId="selected_year",					 
-                                                           label="",
-                                                           choices = yrs,
-                                                           selected = yrs[1] ))),
-                     conditionalPanel("input.select_change == 'Change'",
-                                      column( width=2,
-                                              selectInput( inputId="selected_changeyear_1",					 
-                                                           label="Initial Year:",
-                                                           choices = yrs[1:(length(yrs)-1)],  # choices do not include the last year
-                                                           selected= yrs[1])),
-                                      column( width=2,
-                                              selectInput( inputId="selected_changeyear_2",					 
-                                                           label="Last Year:",
-                                                           choices = yrs[2:length(yrs)],      # choices do not include the first year
-                                                           selected = yrs[length(yrs)] ))),
-                     column(width=1)),
-              tags$div('style' = "text-align:right;", 
+    tagList( tags$div('style' = "text-align:right;", 
                        actionButton(inputId = "reset_brush",
                                     label="Reset Brushing",icon("paper-plane"), 
                                     style="color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; width:180px; font-size: 130%"),
@@ -727,6 +712,50 @@ function(input, output,session){
                                  plotlyOutput("summary.WSP.Status"), height=200))))
  #       column(width=6, tags$div(h4("Exploitation Rate"),
  #                                plotlyOutput("summary.Recent.ER")))))
+  })
+  
+  output$radarBox <- renderUI({
+    tagList(
+      h2("Radar plots of selected data"),
+      h5("CU metrics are plotted in proportion to each other. Metric scores have been inverted so that larger triangles depict lower scores. Only CUs with all 3 metrics are shown."),
+      br(),
+      h4("Select metrics for radar plots:"),
+      fluidRow(
+        column(width=3,
+               selectInput(inputId = "radar_selected_metric_1",
+                           label = "",
+                           choices = c("ShortTerm.Trend",  "Recent.Percentile", 
+                                       "Recent.Total", "Lower.Ratio", "Upper.Ratio"),
+                           selected = c("Recent.Total"),
+                           multiple=FALSE)),
+        column(width=3,
+               selectInput(inputId = "radar_selected_metric_2",
+                           label = "",
+                           choices = c("ShortTerm.Trend",  "Recent.Percentile", 
+                                       "Recent.Total", "Lower.Ratio", "Upper.Ratio"),
+                           selected = c("Lower.Ratio"),
+                           multiple=FALSE)),
+        column(width=3,
+               selectInput(inputId = "radar_selected_metric_3",
+                           label = "",
+                           choices = c("ShortTerm.Trend",  "Recent.Percentile", 
+                                       "Recent.Total", "Lower.Ratio", "Upper.Ratio"),
+                           selected = c("Upper.Ratio"),
+                           multiple=FALSE))),
+      fluidRow(
+        column(width=3, 
+               checkboxInput(inputId = "radar_faceted",
+                             label = "Select faceting:",
+                             value = TRUE)),
+        column(width=3,
+               selectInput(inputId = "radar_ranking",
+                           label = "Order by",
+                           choices = c("Area"),
+                           selected = c("Area"),
+                           multiple=FALSE))),
+      
+      plotOutput("radarPlot", height="550px", width="700px"),
+      DT::dataTableOutput("radarAreaTable"))
   })
   
 } # end server function
