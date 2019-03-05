@@ -388,17 +388,15 @@ function(input, output,session){
     return(p)
   }
   
-  generateRadarAreaTable <- function(df) {
-    # data table with "Area" in first column
-    output$radarAreaTable <- DT::renderDataTable({DT::datatable(df[, c("Area", names(df)[!(names(df) %in% "Area")])])})
-  }
-  
   #  # Radar Plots Code of Brushed CUs
   observeEvent({
     input$radar_faceted
     radar_metrics_subset()
   }, {
     df <- radar_metrics_subset()
+    cols <- c("Base.Unit.CU.ShortName", "Area", names(df)[!(names(df) %in% c("Base.Unit.CU.ShortName", "Area"))])
+    df.reorder <- df[, cols]
+    output$radarAreaTable <- DT::renderDataTable({ DT::datatable(df.reorder)})
     df$Area <- NULL
     output$radarPlot <- renderPlot({generateRadarPlot(df, input$radar_faceted)})
   })
@@ -753,9 +751,9 @@ function(input, output,session){
                            choices = c("Area"),
                            selected = c("Area"),
                            multiple=FALSE))),
-      
-      plotOutput("radarPlot", height="550px", width="700px"),
-      DT::dataTableOutput("radarAreaTable"))
+      plotOutput("radarPlot", height="550px", width="550px"),
+      tags$div(style = 'overflow-x: scroll', DT::dataTableOutput("radarAreaTable", width="70%"))
+    )
   })
   
 } # end server function
