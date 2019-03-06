@@ -78,56 +78,88 @@ function(input, output,session){
   # sum columns using select_if function of dplyr to remove empty columns
   sumfun <- function(x){sum(!is.na(x)) > 0}
 
-  # need to be able to build data.new without using information from parcoords or other tabs
-  # since those tabs will only get rendered once the user clicks on them
-  # make initial default available through a reactive value
-  values <- reactiveValues(selected_year = max(data.start$Year), 
+  values <- reactiveValues(select_year = max(data.start$Year), 
                            select_change = "Annual",
-                           selected_species = levels(factor(data.start$Base.Unit.Species)),
-                           selected_watershed = levels(factor(data.start$BaseUnit.Watershed)))
-  observeEvent(input$selected_year, {values$selected_year <- input$selected_year})
-  observeEvent(input$select_change, {values$select_change <- input$select_change})
+                           select_species = levels(factor(data.start$Base.Unit.Species)),
+                           select_watershed = levels(factor(data.start$BaseUnit.Watershed)),
+                           select_FAZ = levels(factor(data.start$FAZ)),
+                           select_CUs = levels(factor(data.start$Base.Unit.CU.ShortName)),
+                           select_metrics = as.character(CUMetrics),
+                           select_attribs = as.character(CUAttributes))
   
-  data.new <- reactive({
-    df <- data.start  %>% filter(Base.Unit.Species %in% values$selected_species) %>%
-                          #dplyr::select_if(colSums(!is.na(.)) > 0)
-                          dplyr::select_if(sumfun)
-    
-    if(values$selected_watershed != "All"){
-      df <- df %>% filter(BaseUnit.Watershed %in% values$selected_watershed) %>%
-                   #dplyr::select_if(colSums(!is.na(.)) > 0)
-                   dplyr::select_if(sumfun)
+  observeEvent(input$select_year, {values$select_year <- input$select_year})
+  observeEvent(input$select_change, {values$select_change <- input$select_change})
+  observeEvent(input$select_species, {values$select_species <- input$select_species})
+  observeEvent(input$select_watershed, {
+    if ("All" %in% input$select_watershed) {
+      values$select_watershed <- levels(factor(data.start$BaseUnit.Watershed))
+    } else {
+      values$select_watershed <- input$select_watershed
     }
+  })  
+  
+  observeEvent(input$select_FAZ, {
+    if ("All" %in% input$select_FAZ) {
+      values$select_FAZ <- levels(factor(data.start$FAZ))
+    } else {
+      values$select_FAZ <- input$select_FAZ
+    }
+  })
+  
+  observeEvent(input$select_CUs, {
+    if ("All" %in% input$select_CUs) {
+      values$select_CUs <- levels(factor(data.start$Base.Unit.CU.ShortName))
+    } else {
+      values$select_CUs <- input$select_CUs
+    }
+  })
+
+  observeEvent(input$select_metrics, {values$select_metrics <- input$select_metrics})
+
+  data.filtered <- reactive({
+    # Filter by species
+    df <- data.start  %>% filter(Base.Unit.Species %in% values$select_species) %>% dplyr::select_if(sumfun)
+    # Filter by watershed
+    df <- df %>% filter(BaseUnit.Watershed %in% values$select_watershed) %>% dplyr::select_if(sumfun)
+    # Filter by FAZ
+    df <- df %>% filter(FAZ %in% values$select_FAZ) %>% dplyr::select_if(sumfun)
+    # Filter by CU
+    df <- df %>% filter(Base.Unit.CU.ShortName %in% values$select_CUs) %>% dplyr::select_if(sumfun)
     
+    # calculate change in metric values if "change" selected
     if(values$select_change == "Change" ){                     ########## WILL NEED TO SET THIS UP SO IT UPDATES METRICS AUTOMATICALLY WITHOUT CHANGING THIS - LOOK TO METRICS FILE FOR LIST OF NAMES
       func <- function(x){x-dplyr::lag(x, default=dplyr::first(x))}
       
       df <- df %>% group_by(Base.Unit.CU.ShortName) %>%
-        filter(Year %in% c(input$selected_changeyear_1, input$selected_changeyear_2)) %>%
-        arrange(Year, .by_group=TRUE) %>%
-        mutate(WSP.numeric = as.numeric(WSP.status)) %>%
-        dplyr::mutate_at(.vars = vars(Recent.Total, Lower.Ratio, Upper.Ratio, LongTerm.Ratio, ShortTerm.Trend, Recent.ER, WSP.numeric), .funs= func) %>%
-        filter(Year== max(Year)) %>%
-        select(-WSP.status)
-    } 
-    if(values$select_change=="Annual"){
-      df <- df %>% filter(Year %in% values$selected_year)
+            filter(Year %in% c(input$select_changeyear_1, input$select_changeyear_2)) %>%
+            arrange(Year, .by_group=TRUE) %>%
+            mutate(WSP.numeric = as.numeric(WSP.status)) %>%
+            dplyr::mutate_at(.vars = vars(Recent.Total, Lower.Ratio, Upper.Ratio, LongTerm.Ratio, ShortTerm.Trend, Recent.ER, WSP.numeric), .funs= func) %>%
+            filter(Year== max(Year)) %>%
+            select(-WSP.status)
+    } else { # use annual values
+      df <- df %>% filter(Year %in% values$select_year)
     }
     df <- df %>% select(-Year)
-    as.data.frame(df)
+    
+    # remove any metrics and categories the user doesn't want to see
+    # make this general by keeping everything that's not explicitly excluded
+    drops <- c(as.character(CUMetrics[!(CUMetrics %in% values$select_metrics)]), 
+               as.character(CUAttributes[!(CUAttributes %in% values$select_attribs)]))
+    df <- df %>% select(-drops)
   })
   
  
   observeEvent(                            # will need to update selections once we have more than 2 years so both cannot be same year
     {input$select_changeyear_1},{ 
-      updateSelectInput(session, "selected_changeyear_2", choices=levels(as.factor( unique(data.start$Year[data.start$Year > input$selected_changeyear_1]))), 
-                        selected= levels(as.factor( unique(data.start$Year[data.start$Year > input$selected_changeyear_1])))[1] )  
+      updateSelectInput(session, "select_changeyear_2", choices=levels(as.factor( unique(data.start$Year[data.start$Year > input$select_changeyear_1]))), 
+                        selected = levels(as.factor( unique(data.start$Year[data.start$Year > input$select_changeyear_1])))[1] )  
     })    
   
   observeEvent(                            # will need to update selections once we have more than 2 years so both cannot be same year
     {input$select_changeyear_2},{ 
-      updateSelectInput(session, "selected_changeyear_1", choices=levels(as.factor( unique(data.start$Year[data.start$Year < input$selected_changeyear_2]))), 
-                        selected= levels(as.factor( unique(data.start$Year[data.start$Year < input$selected_changeyear_2])))[1] )  
+      updateSelectInput(session, "select_changeyear_1", choices=levels(as.factor( unique(data.start$Year[data.start$Year < input$select_changeyear_2]))), 
+                        selected = levels(as.factor( unique(data.start$Year[data.start$Year < input$select_changeyear_2])))[1] )  
     }) 
   
   
@@ -135,7 +167,7 @@ function(input, output,session){
   
   # Create data for the parallel plot (add row names and reorder columns and rows)
   data.par <- reactive({
-    df <- as.data.frame(data.new())   
+    df <- as.data.frame(data.filtered())   
     rownames(df) <- df[,1]  
     df <- df %>% select(-dplyr::one_of("Base.Unit.CU.ShortName", "Base.Unit.Species", "BaseUnit.Watershed")) %>%  # one_of allows you to provide a list including names that may not be there
       select(-Management.Timing, Management.Timing) %>%
@@ -227,11 +259,11 @@ function(input, output,session){
   
   brushed.data <- reactive({
     #    if(length(input$parcoords_brushed_row_names)>0){
-    #      df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% input$parcoords_brushed_row_names)
+    #      df <- data.filtered() %>% filter(Base.Unit.CU.ShortName %in% input$parcoords_brushed_row_names)
     if (any(sharedDS$selection())) {
-      df <- data.new() %>% filter(Base.Unit.CU.ShortName %in% row.names(sharedDS$data()[sharedDS$selection(),]))
+      df <- data.filtered() %>% filter(Base.Unit.CU.ShortName %in% row.names(sharedDS$data()[sharedDS$selection(),]))
     }
-    else{df <- data.new()}
+    else{df <- data.filtered()}
     df
   })
   
@@ -301,6 +333,7 @@ function(input, output,session){
     p <- Polygon(cartesian(c(m, m[1]))) # Polygon expects the first point to be repeated at the end
     p@area # Polygon is an R4 class
   } 
+  
   # Radar coordinates Helper Funciton so does not need to access ezR package
   coord_radar <- function (theta = "x", start = 0, direction = 1)
   {
@@ -312,41 +345,41 @@ function(input, output,session){
   }
   
   observe({ 
-    updateSelectInput(session, "radar_selected_metric_1", choices=radar.metrics(), selected=radar.metrics()[1])
+    updateSelectInput(session, "radar_select_metric_1", choices=radar.metrics(), selected=radar.metrics()[1])
   })
   
   observeEvent({
-    input$radar_selected_metric_1
+    input$radar_select_metric_1
     radar.metrics
   }, {
-    choices <- radar.metrics()[!(radar.metrics() %in% input$radar_selected_metric_1)]
-    updateSelectInput(session, "radar_selected_metric_2", choices = choices, selected = choices[1])
+    choices <- radar.metrics()[!(radar.metrics() %in% input$radar_select_metric_1)]
+    updateSelectInput(session, "radar_select_metric_2", choices = choices, selected = choices[1])
   })
   
   observeEvent({
-    input$radar_selected_metric_1
-    input$radar_selected_metric_2
+    input$radar_select_metric_1
+    input$radar_select_metric_2
     radar.metrics
   }, {
-    choices <- radar.metrics()[!(radar.metrics() %in% c(input$radar_selected_metric_1, input$radar_selected_metric_2))]
-    updateSelectInput(session, "radar_selected_metric_3", choices=choices, selected=choices[1])
+    choices <- radar.metrics()[!(radar.metrics() %in% c(input$radar_select_metric_1, input$radar_select_metric_2))]
+    updateSelectInput(session, "radar_select_metric_3", choices=choices, selected=choices[1])
   })
   
   observeEvent({
-    input$radar_selected_metric_1
-    input$radar_selected_metric_2
-    input$radar_selected_metric_3
+    input$radar_select_metric_1
+    input$radar_select_metric_2
+    input$radar_select_metric_3
   }, {
     updateSelectInput(session, "radar_ranking", 
-                      choices=c("Area", input$radar_selected_metric_1, input$radar_selected_metric_2, input$radar_selected_metric_3), 
+                      choices=c("Area", input$radar_select_metric_1, input$radar_select_metric_2, input$radar_select_metric_3), 
                       selected = "Area")
   })
   
   # Pull selected metrics data
   radar_metrics_subset <- reactive({
-    req(input$radar_selected_metric_1, input$radar_selected_metric_2, input$radar_selected_metric_3)
-    df <- brushed.data() %>% select(dplyr::one_of("Base.Unit.CU.ShortName", input$radar_selected_metric_1,
-                                                  input$radar_selected_metric_2, input$radar_selected_metric_3))
+    req(input$radar_select_metric_1, input$radar_select_metric_2, input$radar_select_metric_3)
+    df <- brushed.data() %>% select(dplyr::one_of("Base.Unit.CU.ShortName", input$radar_select_metric_1,
+                                                  input$radar_select_metric_2, input$radar_select_metric_3))
     # Filter our CUs with fewer than 3 metrics for Radar plot
     df <-  df[rowSums(!is.na(df)) >= 4, ]             
     # rescale
@@ -390,7 +423,7 @@ function(input, output,session){
     return(p)
   }
   
-  #  # Radar Plots Code of Brushed CUs
+  #  create contents of radar plot box 
   observeEvent({
     input$radar_faceted
     radar_metrics_subset()
@@ -406,21 +439,6 @@ function(input, output,session){
   
   
   #------------------- All Data Tab ------------------
-  
-  # # Create another data object to show in the All Data tab
-  # data.show <- eventReactive(data.new(),{
-  #   df <- data.start  %>% filter(Base.Unit.Species %in% values$selected_species) %>%
-  #                         #dplyr::select_if(colSums(!is.na(.)) > 0)
-  #                         dplyr::select_if(sumfun)
-  #   if(input$selected_watershed != "All"){
-  #     df <- df %>% filter(BaseUnit.Watershed %in% values$selected_watershed) %>%
-  #                  #dplyr::select_if(colSums(!is.na(.)) > 0)
-  #                  dplyr::select_if(sumfun)
-  #   }
-  #   df <- df %>% select(-dplyr::one_of("Base.Unit.Species", "BaseUnit.Watershed")) %>%  # one_of allows you to provide a list including names that may not be there
-  #     select(-Management.Timing, Management.Timing) %>%
-  #     select(-FAZ, FAZ)
-  # })
   
   
   output$AllData <- DT::renderDataTable({
@@ -510,9 +528,9 @@ function(input, output,session){
   #------------------- Summary Plots Box ------------------
   
   # Summary Plots tab
-  summary.prep <- function(variable=variable, type=input$selected_type, change=values$select_change){ # type = "Proportion" or "Number"
+  summary.prep <- function(variable=variable, type=input$select_type, change=values$select_change){ # type = "Proportion" or "Number"
     #   subset_data <-subset(data.start, !duplicated(Base.Unit.CU.ShortName) )
-    subset_data <- data.new()
+    subset_data <- data.filtered()
     brushed_data <- brushed.data()
     
     if(variable == "Recent.ER"){
@@ -556,19 +574,19 @@ function(input, output,session){
   # Percentage.Plots <- function(variable="Management.Timing"){
   observeEvent({
     brushed.data()
-    input$selected_type},{
-      p.1 <- summary.prep(variable="Management.Timing", type=input$selected_type, change=values$select_change)
+    input$select_type},{
+      p.1 <- summary.prep(variable="Management.Timing", type=input$select_type, change=values$select_change)
       
       output$summaryPlot_MT <- renderPlotly({p.1})
       
-      p.2 <- summary.prep(variable="FAZ", type=input$selected_type,change=values$select_change)
+      p.2 <- summary.prep(variable="FAZ", type=input$select_type,change=values$select_change)
       output$summaryPlot_FAZ <- renderPlotly({p.2})
       
-      if(values$select_change=="Annual") p.3 <- summary.prep(variable="WSP.status", type=input$selected_type, change=values$select_change)
-      if(values$select_change=="Change") p.3 <- summary.prep(variable="WSP.numeric", type=input$selected_type, change=values$select_change)
+      if(values$select_change=="Annual") p.3 <- summary.prep(variable="WSP.status", type=input$select_type, change=values$select_change)
+      if(values$select_change=="Change") p.3 <- summary.prep(variable="WSP.numeric", type=input$select_type, change=values$select_change)
       output$summaryPlot_WSP <- renderPlotly({p.3})
       
-      p.4 <-  summary.prep(variable="Recent.ER", type=input$selected_type,change=values$select_change)
+      p.4 <-  summary.prep(variable="Recent.ER", type=input$select_type,change=values$select_change)
       
       output$summaryPlot_ER <- renderPlotly({p.4})
     }
@@ -631,57 +649,58 @@ function(input, output,session){
     yrs <- unique(sort(as.numeric(data.start$Year)))
     tagList(
       fluidRow(
-        column(width=2, selectInput( inputId="selected_species",					 
-                                     label="Species:",
-                                     choices = levels(factor(data.start$Base.Unit.Species)),
-                                     selected="SK",
-                                     multiple=FALSE)),
-        column(width=2, selectInput( inputId="selected_watershed",					 
-                                     label="Watershed:",
-                                     choices =levels(factor(data.start$BaseUnit.Watershed)),
-                                     selected="Fraser",
-                                     multiple=FALSE)),
-        column(width=3,
-               checkboxGroupInput(inputId="selected_metrics", 
-                           label="Metrics:", 
-                            choices=userMetrics, 
-                            selected=userMetrics)),
-#        fluidRow(column(width = 4, h3("Step 1:")), column(width = 4, h3("Step 2:")), column(width=4, h3("Step 3:"))),
-#        fluidRow(column(width = 3,  h4("Select 'Annual' to view WSP metrics for a specific year, or 'Change' to view changes in metrics between two years")),
-#                         column(width = 1),
-#        conditionalPanel( "input.select_change == 'Annual'",
-#                          column(width = 3,  h4("Select year to view WSP metric values"))),
-#                          conditionalPanel( "input.select_change == 'Change'",
-#                                            column(width = 3,  h4("Select years to calculate change"))),
-#                          column(width = 1),
-#                          column(width=3, h4("Click and drag mouse over vertical axes to select CUs")),
-#                          column(width=1)),
-        column(width=3, radioButtons( "select_change",
-                                      label="",
-                                      choices = list("Single year" = "Annual", "Change over time" ="Change"),
-                                      selected="Annual")),
-        column(width=2, conditionalPanel("input.select_change == 'Annual'",
-                                          selectInput( inputId="selected_year",					 
-                                                                label="",
-                                                                choices = yrs,
-                                                                selected = yrs[1] )),
-                        conditionalPanel("input.select_change == 'Change'",
-                                          selectInput( inputId="selected_changeyear_1",					 
-                                                                label="Initial Year:",
-                                                                choices = yrs[1:(length(yrs)-1)],  # choices do not include the last year
-                                                                selected= yrs[1]),
-                                           selectInput( inputId="selected_changeyear_2",					 
-                                                                label="Last Year:",
-                                                                choices = yrs[2:length(yrs)],      # choices do not include the first year
-                                                                selected = yrs[length(yrs)])))
+        column(width=5, tags$b("Step1:",  "Filter your data"),
+                        fluidRow(
+                                column(width=5, selectInput( inputId="select_species",					 
+                                                             label="By Species:",
+                                                             choices=levels(factor(data.start$Base.Unit.Species)),
+                                                             selected=levels(factor(data.start$Base.Unit.Species))[1],
+                                                             multiple=FALSE),
+                                                selectInput( inputId="select_FAZ",					 
+                                                             label="By FAZ:",
+                                                             choices=c("All", levels(factor(data.start$FAZ))),
+                                                             selected="All",
+                                                             multiple=TRUE) ),
+                                column(width=7, selectInput( inputId="select_watershed",					 
+                                                             label="By Watershed:",
+                                                             choices=levels(factor(data.start$BaseUnit.Watershed)),
+                                                             selected=levels(factor(data.start$BaseUnit.Watershed))[1],
+                                                             multiple=FALSE),
+                                                selectInput( inputId="select_CUs",					 
+                                                             label="By CU:",
+                                                             choices=c("All", levels(factor(data.start$Base.Unit.CU.ShortName))),
+                                                             selected="All",
+                                                             multiple=TRUE) )
+                                )),
+        column(width=3, tags$b("Step2:", "Select metrics of interest"),
+                        fluidRow(
+                                column(width=12, checkboxGroupInput(inputId="select_metrics", 
+                                                                   label="", 
+                                                                   choices=userMetrics, 
+                                                                   selected=userMetrics) )
+                                )),
+        column(width=4, tags$b("Step3:", "Show change relative to base year?"),
+                        fluidRow(
+                                column(width=6, radioButtons( "select_change",
+                                                              label="",
+                                                              choices = list("Single year" = "Annual", "Change over time" ="Change"),
+                                                              selected="Annual") ),
+                                column(width=6, conditionalPanel("input.select_change == 'Annual'",
+                                                                 selectInput( inputId="select_year",					 
+                                                                              label="",
+                                                                              choices = yrs,
+                                                                              selected = yrs[1])),
+                                                conditionalPanel("input.select_change == 'Change'",
+                                                                 selectInput( inputId="select_changeyear_1",					 
+                                                                              label="Initial Year:",
+                                                                              choices = yrs[1:(length(yrs)-1)],  # choices do not include the last year
+                                                                              selected= yrs[1]),
+                                                                 selectInput( inputId="select_changeyear_2",					 
+                                                                              label="Last Year:",
+                                                                              choices = yrs[2:length(yrs)],      # choices do not include the first year
+                                                                              selected = yrs[length(yrs)])) )
+                        ))
 
-        # column(width=3,
-        #        selectInput(inputId="selected_cus", 
-        #                    label="Selected CUs:", 
-        #                    choices=CUs,
-        #                    multiple=TRUE, 
-        #                    selected=CUs, 
-        #                    selectize = TRUE))
       ))
   })
   
@@ -726,21 +745,21 @@ function(input, output,session){
       h4("Select metrics for radar plots:"),
       fluidRow(
         column(width=3,
-               selectInput(inputId = "radar_selected_metric_1",
+               selectInput(inputId = "radar_select_metric_1",
                            label = "",
                            choices = c("ShortTerm.Trend",  "Recent.Percentile", 
                                        "Recent.Total", "Lower.Ratio", "Upper.Ratio"),
                            selected = c("Recent.Total"),
                            multiple=FALSE)),
         column(width=3,
-               selectInput(inputId = "radar_selected_metric_2",
+               selectInput(inputId = "radar_select_metric_2",
                            label = "",
                            choices = c("ShortTerm.Trend",  "Recent.Percentile", 
                                        "Recent.Total", "Lower.Ratio", "Upper.Ratio"),
                            selected = c("Lower.Ratio"),
                            multiple=FALSE)),
         column(width=3,
-               selectInput(inputId = "radar_selected_metric_3",
+               selectInput(inputId = "radar_select_metric_3",
                            label = "",
                            choices = c("ShortTerm.Trend",  "Recent.Percentile", 
                                        "Recent.Total", "Lower.Ratio", "Upper.Ratio"),
@@ -779,7 +798,7 @@ function(input, output,session){
 #     if(length(incomplete()$Base.Unit.CU.ShortName) > 0){
 #                     output$incomplete_plots <- renderText({
 #                                               paste("The following CUs are missing metric values for",
-#                                                     input$selected_metric,
+#                                                     input$select_metric,
 #                                                     ":",
 #                                                     toString(incomplete()$Base.Unit.CU.ShortName) )
 #                      })
