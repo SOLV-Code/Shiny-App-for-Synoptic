@@ -50,10 +50,10 @@ getLabel <- function(m) {
 
 # the metrics offered as choices for the radar plot
 radarMetricOpts <- c("Short Term Trend" = "ShortTerm.Trend",  
-                     "Recent ER" = "Recent.ER", 
                      "Recent Total" = "Recent.Total", 
                      "Lower Ratio" = "Lower.Ratio", 
-                     "Upper Ratio" = "Upper.Ratio")
+                     "Upper Ratio" = "Upper.Ratio",
+                     "Long-term Ratio"="LongTerm.Ratio")
 
 # the names of the CUs
 CUs <- unique(as.character(data.start[, "Base.Unit.CU.ShortName"]))

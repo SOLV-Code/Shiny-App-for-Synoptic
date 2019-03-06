@@ -128,6 +128,8 @@ function(input, output,session){
     # make this general by keeping everything that's not explicitly excluded
     drops <- as.character(CUMetrics[!(CUMetrics %in% values$select_metrics)])
     df <- df %>% select(-drops)
+    row.names(df) <- df$Base.Unit.CU.ShortName
+    df
   })
   
   # -- some helper functions and structures for nested filtering 
@@ -326,9 +328,7 @@ function(input, output,session){
   #------------------- Radar Plots ------------------
   
   # update available selections for the radar plot metrics
-  currentRadarMetricOpts <- reactive({
-      return(names(data.filtered())[names(data.filtered()) %in% radarMetricOpts])
-  })
+  currentRadarMetricOpts <- reactive({ names(data.filtered())[names(data.filtered()) %in% radarMetricOpts] })
   
   # Re-scale function adapted from ezR package (devtools::install_github("jerryzhujian9/ezR")
   ez.rescale02 = function (x) {
@@ -358,8 +358,12 @@ function(input, output,session){
   # use sp package to calculate area of polygon defined by the spider plot of m,
   # where m is a vector of metrics
   calcArea <- function(m) {
-    p <- Polygon(cartesian(c(m, m[1]))) # Polygon expects the first point to be repeated at the end
-    p@area # Polygon is an R4 class
+    if (!is.null(m) && length(m) >= 3) {
+      p <- Polygon(cartesian(c(m, m[1]))) # Polygon expects the first point to be repeated at the end
+      p@area # Polygon is an R4 class
+    } else {
+      NA
+    }
   } 
   
   # Radar coordinates Helper Funciton so does not need to access ezR package
@@ -372,44 +376,31 @@ function(input, output,session){
                    is_linear = function(coord) TRUE)
   }
   
-  observe({ 
-    updateSelectInput(session, "radar_select_metric_1", choices=currentRadarMetricOpts(), selected=currentRadarMetricOpts()[1])
+  observeEvent(currentRadarMetricOpts(), { 
+    if (is.null(currentRadarMetricOpts()) || length(currentRadarMetricOpts()) == 0) {
+      selected <- NULL
+    } else if (length(currentRadarMetricOpts()) < 3) {
+      selected <- currentRadarMetricOpts()[1:length(currentRadarMetricOpts())]
+    } else {
+      selected <- currentRadarMetricOpts()[1:3]
+    }
+    updatePickerInput(session, "radar_select_metrics", choices=currentRadarMetricOpts(), selected=selected)
   })
   
-  observeEvent({
-    input$radar_select_metric_1
-    currentRadarMetricOpts
-  }, {
-    choices <- currentRadarMetricOpts()[!(currentRadarMetricOpts() %in% input$radar_select_metric_1)]
-    updateSelectInput(session, "radar_select_metric_2", choices = choices, selected = choices[1])
-  })
-  
-  observeEvent({
-    input$radar_select_metric_1
-    input$radar_select_metric_2
-    currentRadarMetricOpts
-  }, {
-    choices <- currentRadarMetricOpts()[!(currentRadarMetricOpts() %in% c(input$radar_select_metric_1, input$radar_select_metric_2))]
-    updateSelectInput(session, "radar_select_metric_3", choices=choices, selected=choices[1])
-  })
-  
-  observeEvent({
-    input$radar_select_metric_1
-    input$radar_select_metric_2
-    input$radar_select_metric_3
-  }, {
-    updateSelectInput(session, "radar_ranking", 
-                      choices=c("Area", input$radar_select_metric_1, input$radar_select_metric_2, input$radar_select_metric_3), 
+  observeEvent(input$radar_select_metrics, {
+    print("updating radar ranking")
+    updatePickerInput(session, "radar_ranking", 
+                      choices=c("Area", input$radar_select_metrics), 
                       selected = "Area")
   })
   
   # Pull selected metrics data
   radar_metrics_subset <- reactive({
-    req(input$radar_select_metric_1, input$radar_select_metric_2, input$radar_select_metric_3, input$radar_ranking)
-    df <- brushed.data() %>% select(dplyr::one_of("Base.Unit.CU.ShortName", input$radar_select_metric_1,
-                                                  input$radar_select_metric_2, input$radar_select_metric_3))
-    # Filter our CUs with fewer than 3 metrics for Radar plot
-    df <-  df[rowSums(!is.na(df)) >= 4, ]             
+    req(input$radar_select_metrics)
+    df <- brushed.data() %>% select(dplyr::one_of("Base.Unit.CU.ShortName", input$radar_select_metrics))
+    # Filter our CUs with nas in any of the metrics for Radar plot
+    df <-  na.omit(df)   
+    if (is.null(df) || (ncol(df) == 0) || (nrow(df) == 0)) {return(NULL)}
     # rescale
     df <- data.frame(lapply(df, ez.rescale02))
     # calc areas
@@ -418,6 +409,7 @@ function(input, output,session){
     df <- df[order(df[,input$radar_ranking], decreasing=T), ]
     CUs <- as.character(df$Base.Unit.CU.ShortName)
     df$Base.Unit.CU.ShortName <- ordered(CUs, levels = CUs)
+    row.names(df) <- CUs
     df
    })
   
@@ -457,12 +449,21 @@ function(input, output,session){
     radar_metrics_subset()
   }, {
     df <- radar_metrics_subset()
-    cols <- c("Base.Unit.CU.ShortName", "Area", names(df)[!(names(df) %in% c("Base.Unit.CU.ShortName", "Area"))])
-    df.reorder <- df[, cols]
-    names(df.reorder) <- sapply(names(df.reorder), getLabel)
-    output$radarAreaTable <- DT::renderDataTable({DT::datatable(df.reorder)})
-    df$Area <- NULL
-    output$radarPlot <- renderPlot({generateRadarPlot(df, input$radar_faceted)})
+    if (is.null(df) || ncol(df) < 5) {
+      # showModal(modalDialog("At least 3 metrics are required for Radar Plot!", easyClose = TRUE))
+      output$radarPlot <- NULL
+      output$radarAreaTable <- NULL
+    } else {
+      metrics <- names(df)[!(names(df) %in% c("Base.Unit.CU.ShortName", "Area"))]
+      # fetch the original metrics for the table - don't want to confuse users by showing scaled
+      print(row.names(df))
+      print(row.names(brushed.data()))
+      df.for.table <- cbind(df$Area, brushed.data()[row.names(df), metrics])
+      names(df.for.table) <- sapply(names(df.for.table), getLabel)
+      output$radarAreaTable <- DT::renderDataTable({DT::datatable(df.for.table)})
+      df$Area <- NULL
+      output$radarPlot <- renderPlot({generateRadarPlot(df, input$radar_faceted)})
+    }
   })
   
   
@@ -789,6 +790,13 @@ function(input, output,session){
   })
   
   output$radarBox <- renderUI({
+    if (is.null(currentRadarMetricOpts())) {
+      selected <- NULL
+    } else if (length(currentRadarMetricOpts()) <3 ) {
+      selected <- currentRadarMetricOpts()[1:length(currentRadarMetricOpts())]
+    } else {
+     selected <- currentRadarMetricOpts()[1:3] 
+    }
     tagList(
       h2("Radar plots of selected data"),
       h5("CU metrics are plotted in proportion to each other. Metric scores have been inverted so that larger triangles depict lower scores. Only CUs with all 3 metrics are shown."),
@@ -796,32 +804,20 @@ function(input, output,session){
       h4("Select metrics for radar plots:"),
       fluidRow(
         column(width=4,
-               selectInput(inputId = "radar_select_metric_1",
-                           label = "",
-                           choices = radarMetricOpts,
-                           selected = radarMetricOpts[1],
-                           multiple=FALSE)),
-        column(width=4,
-               selectInput(inputId = "radar_select_metric_2",
-                           label = "",
-                           choices = radarMetricOpts,
-                           selected = radarMetricOpts[2],
-                           multiple=FALSE)),
-        column(width=4,
-               selectInput(inputId = "radar_select_metric_3",
-                           label = "",
-                           choices = radarMetricOpts,
-                           selected = radarMetricOpts[3],
-                           multiple=FALSE))),
-      fluidRow(
+               pickerInput(inputId = "radar_select_metrics",
+                           label = "Select at least 3 of:",
+                           choices = currentRadarMetricOpts(),
+                           selected = selected,
+                           multiple=TRUE,
+                           options= list(`show-tick`=TRUE, `actions-box`=TRUE, `selected-text-format`='count', `max-options`='3'))),
         column(width=3, 
                checkboxInput(inputId = "radar_faceted",
-                             label = "Select faceting:",
+                             label = "One plot per CU:",
                              value = TRUE)),
-        column(width=3,
-               selectInput(inputId = "radar_ranking",
+        column(width=4,
+               pickerInput(inputId = "radar_ranking",
                            label = "Order by",
-                           choices = c("Area"),
+                           choices = c("Area", selected),
                            selected = c("Area"),
                            multiple=FALSE))),
       plotOutput("radarPlot", height="550px", width="550px"),
