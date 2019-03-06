@@ -680,11 +680,12 @@ function(input, output,session){
   output$filters <- renderUI({
     pickerOptsSingleSelect <- list(`show-tick`=TRUE)
     pickerOptsMultiSelect <- list(`show-tick`=TRUE, `actions-box`=TRUE, `selected-text-format`='count')
+    wellPanelStyle <- "background: white"
     yrs <- unique(sort(as.numeric(data.start$Year)))
     tagList(
       fluidRow(
         column(width=5,
-               wellPanel(tags$b("Step1:",  "Filter your data"), tags$hr(),
+               wellPanel(style = wellPanelStyle, tags$b("Step1:",  "Filter your data"), tags$hr(),
                         fluidRow(column(width=5, tags$div('By Species:')),
                                  column(width=7, pickerInput(inputId="select_species",					 
                                                              label=NULL,
@@ -722,7 +723,7 @@ function(input, output,session){
                                                             options=pickerOptsMultiSelect)))
                                 )),
         column(width=3, 
-               wellPanel(tags$b("Step2:", "Select metrics of interest"), tags$hr(),
+               wellPanel(style = wellPanelStyle, tags$b("Step2:", "Select metrics of interest"), tags$hr(),
                          fluidRow(
                                 column(width=12, pickerInput(inputId="select_metrics", 
                                                              label="", 
@@ -733,7 +734,7 @@ function(input, output,session){
                                                              options=pickerOptsMultiSelect))
                                 ))),
         column(width=4, 
-               wellPanel(tags$b("Step3:", "Show analysis for a single year, or change between years?"), tags$hr(),
+               wellPanel(style = wellPanelStyle, tags$b("Step3:", "Show analysis for a single year, or change between years?"), tags$hr(),
                          fluidRow(
                                 column(width=6, radioButtons( "select_change",
                                                               label="",
