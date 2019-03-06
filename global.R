@@ -19,42 +19,6 @@ data.start <- read.csv("data/FR SK metrics.csv")
 data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
 data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
 
-# the names of the numeric metrics
-numericMetrics <- names(data.start)[unlist(lapply(data.start, is.numeric))] 
-
-# the names of the metrics users may choose from
-CUMetrics <- list("WSP Status"="WSP.status",
-                    "Recent Total"="Recent.Total", 
-                    "Recent ER"="Recent.ER",
-                    "Lower Ratio"="Lower.Ratio",
-                    "Upper Ratio"="Upper.Ratio",
-                    "Long-term Ratio"="LongTerm.Ratio",
-                    "Short-term Trend"="ShortTerm.Trend")
-# the names of the attributes users may choose from
-CUAttributes <- list("FAZ"="FAZ",
-                     "Watershed"="BaseUnit.Watershed",
-                     "Management Timing"="Management.Timing")
-# attributes for which it doesn't make sense to let the user select whether they should be shown
-hiddenAttributes <- list("CU"="Base.Unit.CU.ShortName",
-                         "Species"="Base.Unit.Species")
-# get the label for pretty printing, given the name of a metric
-getLabel <- function(m) {
-  colLabels <- c(CUMetrics, CUAttributes, hiddenAttributes)
-  if (m %in% colLabels) {
-    names(colLabels)[which(colLabels == m)]
-  } else
-  {
-    m
-  }
-}
-
-# the metrics offered as choices for the radar plot
-radarMetricOpts <- c("Short Term Trend" = "ShortTerm.Trend",  
-                     "Recent Total" = "Recent.Total", 
-                     "Lower Ratio" = "Lower.Ratio", 
-                     "Upper Ratio" = "Upper.Ratio",
-                     "Long-term Ratio"="LongTerm.Ratio")
-
 # the names of the CUs
 CUs <- unique(as.character(data.start[, "Base.Unit.CU.ShortName"]))
 
@@ -91,4 +55,60 @@ withLabels <- function(ds, CUnames = NULL) {
   }
   return(ds)
 }
+# the names of the numeric metrics in a data frame
+numericMetrics <- function(ds) {names(ds)[unlist(lapply(ds, is.numeric))]}
+
+# the names of the metrics users may choose from
+CUMetrics <- list("WSP Status"="WSP.status",
+                    "Recent Total"="Recent.Total", 
+                    "Recent ER"="Recent.ER",
+                    "Lower Ratio"="Lower.Ratio",
+                    "Upper Ratio"="Upper.Ratio",
+                    "Long-term Ratio"="LongTerm.Ratio",
+                    "Short-term Trend"="ShortTerm.Trend")
+# the names of the attributes users may choose from
+CUAttributes <- list("FAZ"="FAZ",
+                     "Watershed"="BaseUnit.Watershed",
+                     "Management Timing"="Management.Timing")
+# attributes for which it doesn't make sense to let the user select whether they should be shown
+hiddenAttributes <- list("CU"="Base.Unit.CU.ShortName",
+                         "Species"="Base.Unit.Species")
+
+# get the label for pretty printing, given the name of a metric
+getLabel <- function(m) {
+  colLabels <- c(CUMetrics, CUAttributes, hiddenAttributes)
+  if (m %in% colLabels) {
+    names(colLabels)[which(colLabels == m)]
+  } else
+  {
+    m
+  }
+}
+
+# the metrics offered as choices for the radar plot
+radarMetricOpts <- c("Short Term Trend" = "ShortTerm.Trend",  
+                     "Recent Total" = "Recent.Total", 
+                     "Lower Ratio" = "Lower.Ratio", 
+                     "Upper Ratio" = "Upper.Ratio",
+                     "Long-term Ratio"="LongTerm.Ratio")
+
+
+customHistogramInfo <- list(
+  Annual = list( 
+    Recent.ER = list(
+      breaks = c( 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1),
+      names = c("Below 10%","10-20%","20-30%","30%-40%","40-50%", "50%-60%","60-70%","70%-80%","80-90%","Above 90%")
+      )
+    ),
+  Change = list(
+    Recent.ER = list(
+      breaks <- c(-1, -0.1, -0.05, -0.01,0.01, 0.05, 0.1, 1),
+      names <- c(">10% decrease", "5%-10% decrease", "0-5% decrease","No Change", "0-5% increase", "5-10% increase",">10 increase")
+    )
+  ))
+
+# output summaries will be generated for these metrics/attributes
+outputSummaryAttribs <- c("Management.Timing", "FAZ", "WSP.status", "Recent.ER")
+
+
 

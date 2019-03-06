@@ -31,17 +31,30 @@ new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"
 lapply(list.of.packages, require, character.only = TRUE)
 
 
-dotHistogram <- function(ds, cat, selected=NULL) {
+dotHistogram <- function(ds, cat, selected=NULL, customIntervals=NULL) {
   if (is.SharedData(ds)) {
     selected <- ds$selection()
     ds <- ds$data()
   } 
-  n <- nrow(ds)
-  cats <- levels(as.factor(ds[, cat]))
+  dcol <- ds[ ,cat]
+  n <- length(dcol)
+  if (is.numeric(dcol)) { # convert to factor by binning
+    if (!is.null(customIntervals)) {
+      dcol <- cut(dcol, breaks=customIntervals[['breaks']], labels=customIntervals[['names']])
+    } else { # use hist defaults 
+      dcol <- cut(dcol, breaks=hist(ds[ ,cat])$breaks)
+    }
+  }
+  cats <- levels(factor(dcol, exclude=NULL))
+  cats[is.na(cats)] <- 'NA'
   ds$x <- ds$y <- rep(NA, n)
   if (is.null(selected)) {selected <- rep(TRUE, n)}
   for (i in 1:length(cats)) {
-    cinds <- ds[ ,cat] == cats[i] # all rows in this category
+    if (cats[i] == 'NA') {
+      cinds <- is.na(dcol)
+    } else {
+      cinds <- !is.na(dcol) & (dcol == cats[i])
+    }
     ds$y[cinds] <- i 
     sels <- cinds & selected # the selected rows in this category
     not.sels <- cinds & !selected # the rows in this category not selected
@@ -226,7 +239,7 @@ function(input, output,session){
              # if there is a checkbox for this dim; allow it to set visibility, otherwise make it always visible
              d[['hide']] <- ifelse (any(names(input) == sId("visible", m)), !input[[sId("visible", m)]], FALSE) 
              d[['title']] <- getLabel(m)
-             if (m %in% numericMetrics) {
+             if (m %in% numericMetrics(dataset)) {
                d[['nullValue']] <- median(dataset[, m], na.rm = T) # change this to "top" or "bottom" to show nulls above or below chart
                d[['min']] <- min(dataset[, m], na.rm = T)
                d[['max']] <- max(dataset[, m], na.rm = T)
@@ -269,14 +282,14 @@ function(input, output,session){
     names(metrics) <- metrics 
     d <- dims()
     # control widgets for categorical metrics
-    catWidgets <- lapply(metrics[!(metrics %in% numericMetrics)], 
+    catWidgets <- lapply(metrics[!(metrics %in% numericMetrics(data.par()))], 
                          function(m) { 
                            column(2,tags$div(title=metricInfo[[m]],
                                              checkboxInput(inputId = sId("visible", m), 
                                                            label=m,
                                                            value=!d[[m]][['hide']], width='20px'))) })
     # control widgets for numerical metrics
-    numWidgets <- lapply(metrics[metrics %in% numericMetrics], 
+    numWidgets <- lapply(metrics[metrics %in% numericMetrics(data.par())], 
                          function(m) { 
                            column(2,tags$div(title=metricInfo[[m]],
                                              checkboxInput(inputId = sId("visible", m), 
@@ -388,7 +401,6 @@ function(input, output,session){
   })
   
   observeEvent(input$radar_select_metrics, {
-    print("updating radar ranking")
     updatePickerInput(session, "radar_ranking", 
                       choices=c("Area", input$radar_select_metrics), 
                       selected = "Area")
@@ -456,8 +468,6 @@ function(input, output,session){
     } else {
       metrics <- names(df)[!(names(df) %in% c("Base.Unit.CU.ShortName", "Area"))]
       # fetch the original metrics for the table - don't want to confuse users by showing scaled
-      print(row.names(df))
-      print(row.names(brushed.data()))
       df.for.table <- cbind(df$Area, brushed.data()[row.names(df), metrics])
       names(df.for.table) <- sapply(names(df.for.table), getLabel)
       output$radarAreaTable <- DT::renderDataTable({DT::datatable(df.for.table)})
@@ -538,8 +548,6 @@ function(input, output,session){
                                             nrow(isolate(sharedDS$data()))))
   })
   
-
-  
   # Downloadable csv of selected dataset ----
   output$downloadSelectedData <- downloadHandler(
     filename = "selection.csv", 
@@ -551,75 +559,6 @@ function(input, output,session){
         write.csv(sharedDS$data()[sharedDS$selection(), ], file, row.names = TRUE)
       }
     })
-  
-  
-  
-  #------------------- Summary Plots Box ------------------
-  
-  # Summary Plots tab
-  summary.prep <- function(variable=variable, type=input$select_type, change=values$select_change){ # type = "Proportion" or "Number"
-    #   subset_data <-subset(data.start, !duplicated(Base.Unit.CU.ShortName) )
-    subset_data <- data.filtered()
-    brushed_data <- brushed.data()
-    
-    if(variable == "Recent.ER"){
-      if(change == "Annual"){
-        breaks <- c( 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)
-        names <- c("Below 10%","10-20%","20-30%","30%-40%","40-50%", "50%-60%","60-70%","70%-80%","80-90%","Above 90%")
-      }
-      if(change =="Change"){
-        breaks <- c(-1, -0.1, -0.05, -0.01,0.01, 0.05, 0.1, 1)
-        names <- c(">10% decrease", "5%-10% decrease", "0-5% decrease","No Change", "0-5% increase", "5-10% increase",">10 increase")
-      }
-      subset_data[,variable] <- cut(subset_data[,variable], breaks=breaks, labels=names)
-      brushed_data[,variable] <- cut(brushed_data[,variable], breaks=breaks, labels=names)
-    }
-    
-    subset_data[,variable] <- factor(subset_data[,variable], exclude=NULL)
-    # subset_data[,variable] <- addNA(subset_data[,variable], ifany=TRUE)
-    # brushed_data[,variable] <- addNA(brushed_data[,variable], ifany=TRUE)
-    y <- factor(levels(subset_data[,variable]), ordered=TRUE, levels=levels(subset_data[,variable]), exclude=NULL)
-    total <- as.vector(table(subset_data[,variable], useNA="ifany"))
-    
-    brush_full_selection <- factor(brushed_data[,variable], levels = levels(subset_data[,variable]), exclude=NULL)
-    selected <- as.vector(table(brush_full_selection,useNA = "ifany"))
-    not.selected <- total-selected
-    perc <- selected/total
-    
-    if(type == "Proportion")  data.sum <- data.frame(y, selected=perc, unselected =(1-perc), text=c(paste("Total # of CUs:",as.character(total))))
-    if(type =="Number")       data.sum <- data.frame(y, selected, unselected=not.selected, text=c(paste("Total # of CUs:",as.character(total))))
-    data.sum$y <- forcats::fct_explicit_na(data.sum$y, "Unknown")
-    
-    # Create plot
-    p <- plot_ly(data.sum, x = ~selected, y = ~y, text=~text, type = 'bar', orientation = 'h', name = 'Selected', 
-                 marker = list(color = "darkred")) %>% 
-      add_trace(x = ~unselected, name = 'Unselected', 
-                marker = list(color = "rgba(128,128,128,0.6)")) %>%        # last number is transparenct;  colours for plotly @ https://reeddesign.co.uk/test/namedcolors.html
-      layout(barmode = 'stack', xaxis = list(title = c(paste(input$selected_type, "of CUs"))), 
-             yaxis = list(title = variable), margin = list(l = 130, r = 50, b = 50, t = 50, pad = 4))
-    
-  }
-  
-  # Percentage.Plots <- function(variable="Management.Timing"){
-  observeEvent({
-    brushed.data()
-    input$select_type},{
-      p.1 <- summary.prep(variable="Management.Timing", type=input$select_type, change=values$select_change)
-      
-      output$summaryPlot_MT <- renderPlotly({p.1})
-      
-      p.2 <- summary.prep(variable="FAZ", type=input$select_type,change=values$select_change)
-      output$summaryPlot_FAZ <- renderPlotly({p.2})
-      
-      if(values$select_change=="Annual") p.3 <- summary.prep(variable="WSP.status", type=input$select_type, change=values$select_change)
-      if(values$select_change=="Change") p.3 <- summary.prep(variable="WSP.numeric", type=input$select_type, change=values$select_change)
-      output$summaryPlot_WSP <- renderPlotly({p.3})
-      
-      p.4 <-  summary.prep(variable="Recent.ER", type=input$select_type,change=values$select_change)
-      
-      output$summaryPlot_ER <- renderPlotly({p.4})
-    }
-  )
   
   #------------------- Map  ------------------
   
@@ -667,11 +606,33 @@ function(input, output,session){
 
   #-------------------  Summary  ------------------
   
-  output$summary.Management.Timing <- renderPlotly({dotHistogram(sharedDS, "Management.Timing")})
-  output$summary.FAZ <- renderPlotly({dotHistogram(sharedDS, "FAZ")})
-  output$summary.WSP.Status <- renderPlotly({dotHistogram(sharedDS, "WSP.status")})
-  #output$summary.Recent.ER <- renderPlotly({dotHistogram(sharedDS, "Recent.ER")})
+  outputSummaries <- reactive({
+    req(input$select_change)
+    intervalInfo <- customHistogramInfo[[input$select_change]]
+    plots <- list()
+    for (a in outputSummaryAttribs) {
+      if (!is.null(intervalInfo[[a]])) {
+        iInfo <- intervalInfo[[a]]
+      } else {
+        iInfo <- NULL
+      }
+      plots[[a]] <- dotHistogram(sharedDS, a, customIntervals=iInfo)
+    }
+    plots
+  })
   
+  # recreate summaries if the selection changes
+  observeEvent(sharedDS$selection(), {
+    for(a in names(outputSummaries())) {
+        local({ 
+          lc_a <- a
+          output[[sId(lc_a, 'summary')]] <- renderPlotly({outputSummaries()[[lc_a]]}) 
+        })
+    }
+  })
+  
+  
+          
   #-------------------  CU selection flow  ------------------
   
   output$filters <- renderUI({
@@ -776,17 +737,12 @@ function(input, output,session){
             DT::dataTableOutput("SelectedData", width="50%"))
     })
     
+  # build the UI widgets
   output$summary <- renderUI({
-    tagList( 
-      fluidRow(
-        column(width=4, tags$div(h4("Management Timing"),
-                                 plotlyOutput("summary.Management.Timing", height=200))),
-        column(width=4, tags$div(h4("Freshwater Adaptive Zone"),
-                                 plotlyOutput("summary.FAZ", height=200))),
-        column(width=4, tags$div(h4("WSP Status"),
-                                 plotlyOutput("summary.WSP.Status"), height=200))))
- #       column(width=6, tags$div(h4("Exploitation Rate"),
- #                                plotlyOutput("summary.Recent.ER")))))
+    summaryCols <- lapply(outputSummaryAttribs, 
+                          function(a) {column(width=4, tags$div(h4(getLabel(a)),
+                                              plotlyOutput(sId(a, 'summary'), height=200)))})
+    fluidRow(do.call(tagList, summaryCols))
   })
   
   output$radarBox <- renderUI({
@@ -828,24 +784,4 @@ function(input, output,session){
 } # end server function
 #   
 
-# 
-# # Add observer to write to screen if metric = NA
-#  incomplete <- reactive({
-#        metrics_subset() %>%  filter(!complete.cases(.)) %>%
-#                         select(Base.Unit.CU.ShortName)
-#  })    
-#  
-# observeEvent(incomplete(),{
-#     if(length(incomplete()$Base.Unit.CU.ShortName) == 0 ){
-#                     output$incomplete_plots <- renderText({paste("")})
-#     }
-#     if(length(incomplete()$Base.Unit.CU.ShortName) > 0){
-#                     output$incomplete_plots <- renderText({
-#                                               paste("The following CUs are missing metric values for",
-#                                                     input$select_metric,
-#                                                     ":",
-#                                                     toString(incomplete()$Base.Unit.CU.ShortName) )
-#                      })
-#     }
-# })
-# # 
+
