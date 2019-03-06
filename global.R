@@ -30,15 +30,16 @@ CUMetrics <- list("WSP Status"="WSP.status",
                     "Upper Ratio"="Upper.Ratio",
                     "Long-term Ratio"="LongTerm.Ratio",
                     "Short-term Trend"="ShortTerm.Trend")
+# the names of the attributes users may choose from
 CUAttributes <- list("FAZ"="FAZ",
                      "Watershed"="BaseUnit.Watershed",
-                     "Management Timing"="Management.Timing",
-                     "CU"="Base.Unit.CU.ShortName",
-                     "Species"="Base.Unit.Species")
-
+                     "Management Timing"="Management.Timing")
+# attributes for which it doesn't make sense to let the user select whether they should be shown
+hiddenAttributes <- list("CU"="Base.Unit.CU.ShortName",
+                         "Species"="Base.Unit.Species")
 # get the label for pretty printing, given the name of a metric
 getLabel <- function(m) {
-  colLabels <- c(CUMetrics, CUAttributes)
+  colLabels <- c(CUMetrics, CUAttributes, hiddenAttributes)
   if (m %in% colLabels) {
     names(colLabels)[which(colLabels == m)]
   } else

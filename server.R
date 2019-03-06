@@ -80,40 +80,21 @@ function(input, output,session){
 
   values <- reactiveValues(select_year = max(data.start$Year), 
                            select_change = "Annual",
-                           select_species = levels(factor(data.start$Base.Unit.Species)),
-                           select_watershed = levels(factor(data.start$BaseUnit.Watershed)),
-                           select_FAZ = levels(factor(data.start$FAZ)),
-                           select_CUs = levels(factor(data.start$Base.Unit.CU.ShortName)),
+                           select_species = unique(as.character(data.start$Base.Unit.Species)),
+                           select_watershed = unique(as.character(data.start$BaseUnit.Watershed)),
+                           select_FAZ = unique(as.character(data.start$FAZ)),
+                           select_management_timing = unique(as.character(data.start$Management.Timing)),
+                           select_CUs = unique(as.character(data.start$Base.Unit.CU.ShortName)),
                            select_metrics = as.character(CUMetrics),
                            select_attribs = as.character(CUAttributes))
   
   observeEvent(input$select_year, {values$select_year <- input$select_year})
   observeEvent(input$select_change, {values$select_change <- input$select_change})
   observeEvent(input$select_species, {values$select_species <- input$select_species})
-  observeEvent(input$select_watershed, {
-    if ("All" %in% input$select_watershed) {
-      values$select_watershed <- levels(factor(data.start$BaseUnit.Watershed))
-    } else {
-      values$select_watershed <- input$select_watershed
-    }
-  })  
-  
-  observeEvent(input$select_FAZ, {
-    if ("All" %in% input$select_FAZ) {
-      values$select_FAZ <- levels(factor(data.start$FAZ))
-    } else {
-      values$select_FAZ <- input$select_FAZ
-    }
-  })
-  
-  observeEvent(input$select_CUs, {
-    if ("All" %in% input$select_CUs) {
-      values$select_CUs <- levels(factor(data.start$Base.Unit.CU.ShortName))
-    } else {
-      values$select_CUs <- input$select_CUs
-    }
-  })
-
+  observeEvent(input$select_watershed, {values$select_watershed <- input$select_watershed})  
+  observeEvent(input$select_FAZ, {values$select_FAZ <- input$select_FAZ})
+  observeEvent(input$select_management_timing, {values$select_management_timing <- input$select_management_timing})
+  observeEvent(input$select_CUs, {values$select_CUs <- input$select_CUs})
   observeEvent(input$select_metrics, {values$select_metrics <- input$select_metrics})
 
   data.filtered <- reactive({
@@ -123,9 +104,10 @@ function(input, output,session){
     df <- df %>% filter(BaseUnit.Watershed %in% values$select_watershed) %>% dplyr::select_if(sumfun)
     # Filter by FAZ
     df <- df %>% filter(FAZ %in% values$select_FAZ) %>% dplyr::select_if(sumfun)
+    # Filter by Management Timing
+    df <- df %>% filter(Management.Timing %in% values$select_management_timing) %>% dplyr::select_if(sumfun)
     # Filter by CU
     df <- df %>% filter(Base.Unit.CU.ShortName %in% values$select_CUs) %>% dplyr::select_if(sumfun)
-    
     # calculate change in metric values if "change" selected
     if(values$select_change == "Change" ){                     ########## WILL NEED TO SET THIS UP SO IT UPDATES METRICS AUTOMATICALLY WITHOUT CHANGING THIS - LOOK TO METRICS FILE FOR LIST OF NAMES
       func <- function(x){x-dplyr::lag(x, default=dplyr::first(x))}
@@ -140,26 +122,76 @@ function(input, output,session){
     } else { # use annual values
       df <- df %>% filter(Year %in% values$select_year)
     }
-    df <- df %>% select(-Year)
+    if (!is.null(df)) {df <- df %>% select(-Year)}
     
     # remove any metrics and categories the user doesn't want to see
     # make this general by keeping everything that's not explicitly excluded
-    drops <- c(as.character(CUMetrics[!(CUMetrics %in% values$select_metrics)]), 
-               as.character(CUAttributes[!(CUAttributes %in% values$select_attribs)]))
+    drops <- as.character(CUMetrics[!(CUMetrics %in% values$select_metrics)])
     df <- df %>% select(-drops)
   })
   
- 
+  # -- some helper functions and structures for nested filtering 
+  # a list of data attributes and corresponding selector input widgets
+  inputIds <- list('Base.Unit.Species' = 'select_species',
+                   'BaseUnit.Watershed' = 'select_watershed',
+                   'FAZ' = 'select_FAZ',
+                   'Management.Timing' = 'select_management_timing',
+                   'Base.Unit.CU.ShortName' = 'select_CUs')
+  
+  # given a list of data attributes and a data frame, 
+  # update the associated selector widgets to show the choices corresponding
+  # to the values available in the data frame for the given attributes
+  updatePickerInputs <- function(attribs, df) {
+    for (a in attribs) {
+        pickerOpts <- unique(as.character(df[ , a]))
+        updatePickerInput(session, inputIds[[a]], choices=pickerOpts, selected=pickerOpts)
+    }
+  }
+  
+  # given a list of data attributes and a data frame, 
+  # filter data frame based on the set of selector values
+  # associated with thegiven data attributes  
+  getFilteredDF <- function(attribs, df) {
+    selection <- rep(T, nrow(df))
+    for (a in attribs) {
+      selection <- selection & (df[, a] %in% values[[inputIds[[a]]]])
+    }
+    df[selection, ]
+  }
+  
+  # -- logic for nested filtering of data:
+  # all other filters are limited to what's available for the selected species
+  observeEvent(values$select_species, {
+    df <- getFilteredDF(c('Base.Unit.Species'), data.start)
+    updatePickerInputs(c('BaseUnit.Watershed', 'FAZ', 'Management.Timing', 'Base.Unit.CU.ShortName'), df) 
+  })
+  
+  # watershed limits what FAZs and CUs are available
+  observeEvent(values$select_watershed, {
+    df <- getFilteredDF(c('Base.Unit.Species', 'BaseUnit.Watershed', 'Management.Timing'), data.start)
+    updatePickerInputs(c('FAZ', 'Base.Unit.CU.ShortName'), df) 
+  })
+  
+  # FAZ an Management Timing limit what CUs are available
+  observeEvent({
+    values$select_FAZ
+    values$select_management_timing
+  }, {
+    df <- getFilteredDF(c('Base.Unit.Species', 'BaseUnit.Watershed','Management.Timing', 'FAZ'), data.start)
+    updatePickerInputs(c('Base.Unit.CU.ShortName'), df) 
+  })
+  
+
   observeEvent(                            # will need to update selections once we have more than 2 years so both cannot be same year
     {input$select_changeyear_1},{ 
-      updateSelectInput(session, "select_changeyear_2", choices=levels(as.factor( unique(data.start$Year[data.start$Year > input$select_changeyear_1]))), 
-                        selected = levels(as.factor( unique(data.start$Year[data.start$Year > input$select_changeyear_1])))[1] )  
+      updateSelectInput(session, "select_changeyear_2", choices=unique(as.character( unique(data.start$Year[data.start$Year > input$select_changeyear_1]))), 
+                        selected = unique(as.character(data.start$Year[data.start$Year > input$select_changeyear_1]))[1] )  
     })    
   
   observeEvent(                            # will need to update selections once we have more than 2 years so both cannot be same year
     {input$select_changeyear_2},{ 
-      updateSelectInput(session, "select_changeyear_1", choices=levels(as.factor( unique(data.start$Year[data.start$Year < input$select_changeyear_2]))), 
-                        selected = levels(as.factor( unique(data.start$Year[data.start$Year < input$select_changeyear_2])))[1] )  
+      updateSelectInput(session, "select_changeyear_1", choices=unique(as.character( unique(data.start$Year[data.start$Year < input$select_changeyear_2]))), 
+                        selected = unique(as.character(data.start$Year[data.start$Year < input$select_changeyear_2]))[1] )  
     }) 
   
   
@@ -646,41 +678,63 @@ function(input, output,session){
   #-------------------  CU selection flow  ------------------
   
   output$filters <- renderUI({
+    pickerOptsSingleSelect <- list(`show-tick`=TRUE)
+    pickerOptsMultiSelect <- list(`show-tick`=TRUE, `actions-box`=TRUE, `selected-text-format`='count')
     yrs <- unique(sort(as.numeric(data.start$Year)))
     tagList(
       fluidRow(
-        column(width=5, tags$b("Step1:",  "Filter your data"),
-                        fluidRow(
-                                column(width=5, selectInput( inputId="select_species",					 
-                                                             label="By Species:",
-                                                             choices=levels(factor(data.start$Base.Unit.Species)),
-                                                             selected=levels(factor(data.start$Base.Unit.Species))[1],
-                                                             multiple=FALSE),
-                                                selectInput( inputId="select_FAZ",					 
-                                                             label="By FAZ:",
-                                                             choices=c("All", levels(factor(data.start$FAZ))),
-                                                             selected="All",
-                                                             multiple=TRUE) ),
-                                column(width=7, selectInput( inputId="select_watershed",					 
-                                                             label="By Watershed:",
-                                                             choices=levels(factor(data.start$BaseUnit.Watershed)),
-                                                             selected=levels(factor(data.start$BaseUnit.Watershed))[1],
-                                                             multiple=FALSE),
-                                                selectInput( inputId="select_CUs",					 
-                                                             label="By CU:",
-                                                             choices=c("All", levels(factor(data.start$Base.Unit.CU.ShortName))),
-                                                             selected="All",
-                                                             multiple=TRUE) )
+        column(width=5,
+               wellPanel(tags$b("Step1:",  "Filter your data"), tags$hr(),
+                        fluidRow(column(width=5, tags$div('By Species:')),
+                                 column(width=7, pickerInput(inputId="select_species",					 
+                                                             label=NULL,
+                                                             choices=unique(as.character(data.start$Base.Unit.Species)),
+                                                             selected=unique(as.character(data.start$Base.Unit.Species))[1],
+                                                             multiple=FALSE,
+                                                             options=pickerOptsSingleSelect))),
+                        fluidRow(column(width=5, tags$div('By Watershed:')),
+                                 column(width=7, pickerInput(inputId="select_watershed",					 
+                                                             label=NULL,
+                                                             choices=unique(as.character(data.start$BaseUnit.Watershed)),
+                                                             selected=unique(as.character(data.start$BaseUnit.Watershed)),
+                                                             multiple=TRUE,
+                                                             options=pickerOptsMultiSelect))),
+                       fluidRow(column(width=5, tags$div('By FAZ:')),
+                                column(width=7, pickerInput(inputId="select_FAZ",					 
+                                                            label=NULL,
+                                                            choices=unique(as.character(data.start$FAZ)),
+                                                            selected=unique(as.character(data.start$FAZ)),
+                                                            multiple=TRUE,
+                                                            options=pickerOptsMultiSelect))),
+                       fluidRow(column(width=5, tags$div('By Management Timing:')),
+                                column(width=7, pickerInput(inputId="select_management_timing",					 
+                                                            label=NULL,
+                                                            choices=unique(as.character(data.start$Management.Timing)),
+                                                            selected=unique(as.character(data.start$Management.Timing)),
+                                                            multiple=TRUE,
+                                                            options=pickerOptsMultiSelect))),
+                       fluidRow(column(width=5, tags$div('By CU:')),
+                                column(width=7, pickerInput(inputId="select_CUs",					 
+                                                            label=NULL,
+                                                            choices=unique(as.character(data.start$Base.Unit.CU.ShortName)),
+                                                            selected=unique(as.character(data.start$Base.Unit.CU.ShortName)),
+                                                            multiple=TRUE,
+                                                            options=pickerOptsMultiSelect)))
                                 )),
-        column(width=3, tags$b("Step2:", "Select metrics of interest"),
-                        fluidRow(
-                                column(width=12, checkboxGroupInput(inputId="select_metrics", 
-                                                                   label="", 
-                                                                   choices=userMetrics, 
-                                                                   selected=userMetrics) )
-                                )),
-        column(width=4, tags$b("Step3:", "Show change relative to base year?"),
-                        fluidRow(
+        column(width=3, 
+               wellPanel(tags$b("Step2:", "Select metrics of interest"), tags$hr(),
+                         fluidRow(
+                                column(width=12, pickerInput(inputId="select_metrics", 
+                                                             label="", 
+                                                             choices=list('Metrics' = CUMetrics,
+                                                                          'Attributes' = CUAttributes),
+                                                             selected=c(CUMetrics, CUAttributes),
+                                                             multiple=TRUE,
+                                                             options=pickerOptsMultiSelect))
+                                ))),
+        column(width=4, 
+               wellPanel(tags$b("Step3:", "Show analysis for a single year, or change between years?"), tags$hr(),
+                         fluidRow(
                                 column(width=6, radioButtons( "select_change",
                                                               label="",
                                                               choices = list("Single year" = "Annual", "Change over time" ="Change"),
@@ -699,7 +753,7 @@ function(input, output,session){
                                                                               label="Last Year:",
                                                                               choices = yrs[2:length(yrs)],      # choices do not include the first year
                                                                               selected = yrs[length(yrs)])) )
-                        ))
+                        )))
 
       ))
   })
