@@ -326,12 +326,8 @@ function(input, output,session){
   #------------------- Radar Plots ------------------
   
   # update available selections for the radar plot metrics
-  radar.metrics <- reactive({
-    if (is.null(data.par())) {
-      return(numericMetrics)
-    } else {
-      return(names(data.par)[names(data.par()) %in% numericMetrics])
-    }
+  currentRadarMetricOpts <- reactive({
+      return(names(data.filtered())[names(data.filtered()) %in% radarMetricOpts])
   })
   
   # Re-scale function adapted from ezR package (devtools::install_github("jerryzhujian9/ezR")
@@ -377,23 +373,23 @@ function(input, output,session){
   }
   
   observe({ 
-    updateSelectInput(session, "radar_select_metric_1", choices=radar.metrics(), selected=radar.metrics()[1])
+    updateSelectInput(session, "radar_select_metric_1", choices=currentRadarMetricOpts(), selected=currentRadarMetricOpts()[1])
   })
   
   observeEvent({
     input$radar_select_metric_1
-    radar.metrics
+    currentRadarMetricOpts
   }, {
-    choices <- radar.metrics()[!(radar.metrics() %in% input$radar_select_metric_1)]
+    choices <- currentRadarMetricOpts()[!(currentRadarMetricOpts() %in% input$radar_select_metric_1)]
     updateSelectInput(session, "radar_select_metric_2", choices = choices, selected = choices[1])
   })
   
   observeEvent({
     input$radar_select_metric_1
     input$radar_select_metric_2
-    radar.metrics
+    currentRadarMetricOpts
   }, {
-    choices <- radar.metrics()[!(radar.metrics() %in% c(input$radar_select_metric_1, input$radar_select_metric_2))]
+    choices <- currentRadarMetricOpts()[!(currentRadarMetricOpts() %in% c(input$radar_select_metric_1, input$radar_select_metric_2))]
     updateSelectInput(session, "radar_select_metric_3", choices=choices, selected=choices[1])
   })
   
@@ -409,7 +405,7 @@ function(input, output,session){
   
   # Pull selected metrics data
   radar_metrics_subset <- reactive({
-    req(input$radar_select_metric_1, input$radar_select_metric_2, input$radar_select_metric_3)
+    req(input$radar_select_metric_1, input$radar_select_metric_2, input$radar_select_metric_3, input$radar_ranking)
     df <- brushed.data() %>% select(dplyr::one_of("Base.Unit.CU.ShortName", input$radar_select_metric_1,
                                                   input$radar_select_metric_2, input$radar_select_metric_3))
     # Filter our CUs with fewer than 3 metrics for Radar plot
@@ -799,26 +795,23 @@ function(input, output,session){
       br(),
       h4("Select metrics for radar plots:"),
       fluidRow(
-        column(width=3,
+        column(width=4,
                selectInput(inputId = "radar_select_metric_1",
                            label = "",
-                           choices = c("ShortTerm.Trend",  "Recent.Percentile", 
-                                       "Recent.Total", "Lower.Ratio", "Upper.Ratio"),
-                           selected = c("Recent.Total"),
+                           choices = radarMetricOpts,
+                           selected = radarMetricOpts[1],
                            multiple=FALSE)),
-        column(width=3,
+        column(width=4,
                selectInput(inputId = "radar_select_metric_2",
                            label = "",
-                           choices = c("ShortTerm.Trend",  "Recent.Percentile", 
-                                       "Recent.Total", "Lower.Ratio", "Upper.Ratio"),
-                           selected = c("Lower.Ratio"),
+                           choices = radarMetricOpts,
+                           selected = radarMetricOpts[2],
                            multiple=FALSE)),
-        column(width=3,
+        column(width=4,
                selectInput(inputId = "radar_select_metric_3",
                            label = "",
-                           choices = c("ShortTerm.Trend",  "Recent.Percentile", 
-                                       "Recent.Total", "Lower.Ratio", "Upper.Ratio"),
-                           selected = c("Upper.Ratio"),
+                           choices = radarMetricOpts,
+                           selected = radarMetricOpts[3],
                            multiple=FALSE))),
       fluidRow(
         column(width=3, 
