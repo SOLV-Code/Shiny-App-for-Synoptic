@@ -741,16 +741,16 @@ function(input, output,session){
                                                               choices = list("Single year" = "Annual", "Change over time" ="Change"),
                                                               selected="Annual") ),
                                 column(width=6, conditionalPanel("input.select_change == 'Annual'",
-                                                                 selectInput( inputId="select_year",					 
+                                                                 pickerInput( inputId="select_year",					 
                                                                               label="",
                                                                               choices = yrs,
                                                                               selected = yrs[1])),
                                                 conditionalPanel("input.select_change == 'Change'",
-                                                                 selectInput( inputId="select_changeyear_1",					 
+                                                                 pickerInput( inputId="select_changeyear_1",					 
                                                                               label="Initial Year:",
                                                                               choices = yrs[1:(length(yrs)-1)],  # choices do not include the last year
                                                                               selected= yrs[1]),
-                                                                 selectInput( inputId="select_changeyear_2",					 
+                                                                 pickerInput( inputId="select_changeyear_2",					 
                                                                               label="Last Year:",
                                                                               choices = yrs[2:length(yrs)],      # choices do not include the first year
                                                                               selected = yrs[length(yrs)])) )
