@@ -1,5 +1,6 @@
 
-# explanatory information for the different metrics
+# ----- explanatory information for the different metrics ---------
+
 metricInfo <- list(
   Base.Unit.CU.ShortName = "Conservation Unit",
   Base.Unit.Species = "Species Code (Sk = Sockeye, Ck = Chinook, ...)",
@@ -14,23 +15,27 @@ metricInfo <- list(
   Recent.ER = "This is an explanation of the Recent.ER metric",
   Management.Timing = "Management timing")
 
-
+# ------------------- put together initial data set -------------------
+# Hack alert!! Get the data from two different files. The first one covers
+# only Fraser sockeye and has a complete list of metrics, but no lat-long information.
+# The second one covers a much wider range of species/CUs and provides the lat-long information.
+# Cross-referencing these by Base.Unit.CU.ShortName is tricky, since there is overlap in CU names 
+# for Chinook and sockeye.
+# For now, make this problem go away by removing duplicates in the lat-long data. 
+# Ultimately, lat-long info should be attached in a pre-processing script, though.
 data.start <- read.csv("data/FR SK metrics.csv")
 data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
 data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
 
-# the names of the CUs
 CUs <- unique(as.character(data.start[, "Base.Unit.CU.ShortName"]))
-
 data.latlong <- read.csv("data/FRSK_CU_Info_masterUpdate.csv")
 data.latlong <- unique(data.latlong[ ,c("Base.Unit.CU.ShortName", "Base.Unit.CU.Lat", "Base.Unit.CU.Long")])
 names(data.latlong) <- c("CU", "lat", "long")
 data.latlong$CU <- as.character(data.latlong$CU)
-# Hack alert!! Some overlap here in Base.Unit.CU.ShortName for Chinook and Sockeye
-# For now, make this go away by removing duplicates. Ultimately, lat-long info should be attached
-# in a pre-processing script.
-data.latlong <- data.latlong[!duplicated(data.latlong$CU), ]
+data.latlong <- data.latlong[!duplicated(data.latlong$CU), ] 
 row.names(data.latlong) <- data.latlong$CU
+
+# --------------------- Helper functions for data restructuring ---------
 
 # pass through a CU metrics table and return with lat-long columns attached
 # if CUnames is given, looks for CU names is CUnames column
@@ -55,8 +60,8 @@ withLabels <- function(ds, CUnames = NULL) {
   }
   return(ds)
 }
-# the names of the numeric metrics in a data frame
-numericMetrics <- function(ds) {names(ds)[unlist(lapply(ds, is.numeric))]}
+
+# ------------ Data filtering --------------
 
 # the names of the metrics users may choose from
 CUMetrics <- list("WSP Status"="WSP.status",
@@ -66,13 +71,47 @@ CUMetrics <- list("WSP Status"="WSP.status",
                     "Upper Ratio"="Upper.Ratio",
                     "Long-term Ratio"="LongTerm.Ratio",
                     "Short-term Trend"="ShortTerm.Trend")
+
 # the names of the attributes users may choose from
 CUAttributes <- list("FAZ"="FAZ",
                      "Watershed"="BaseUnit.Watershed",
                      "Management Timing"="Management.Timing")
+
 # attributes for which it doesn't make sense to let the user select whether they should be shown
 hiddenAttributes <- list("CU"="Base.Unit.CU.ShortName",
                          "Species"="Base.Unit.Species")
+
+
+# ------------------------ UI customization -----------------
+
+# show the following axes in parcoords, in the order specified here
+metricOrderParcoords <- c(as.character(CUMetrics), "Management.Timing", "FAZ") 
+
+# histogram summaries will be generated for these metrics/attributes in the order specified
+histoSummaryAttribs <- c("Management.Timing", "FAZ", "WSP.status", "Recent.ER")
+
+# this list specifies the information necessary to construct a histogram from a numeric metric 
+customHistogramInfo <- list(
+  Annual = list( 
+    Recent.ER = list(
+      breaks = c( 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1),
+      names = c("Below 10%","10-20%","20-30%","30%-40%","40-50%", "50%-60%","60-70%","70%-80%","80-90%","Above 90%")
+      )
+    ),
+  Change = list(
+    Recent.ER = list(
+      breaks = c(-1, -0.1, -0.05, -0.01,0.01, 0.05, 0.1, 1),
+      names = c(">10% decrease", "5%-10% decrease", "0-5% decrease","No Change", "0-5% increase", "5-10% increase",">10 increase")
+    )
+  ))
+
+# the metrics offered as choices for the radar plot
+radarMetricOpts <- c("Short Term Trend" = "ShortTerm.Trend",  
+                     "Recent Total" = "Recent.Total", 
+                     "Lower Ratio" = "Lower.Ratio", 
+                     "Upper Ratio" = "Upper.Ratio",
+                     "Long-term Ratio"="LongTerm.Ratio")
+
 
 # get the label for pretty printing, given the name of a metric
 getLabel <- function(m) {
@@ -84,31 +123,4 @@ getLabel <- function(m) {
     m
   }
 }
-
-# the metrics offered as choices for the radar plot
-radarMetricOpts <- c("Short Term Trend" = "ShortTerm.Trend",  
-                     "Recent Total" = "Recent.Total", 
-                     "Lower Ratio" = "Lower.Ratio", 
-                     "Upper Ratio" = "Upper.Ratio",
-                     "Long-term Ratio"="LongTerm.Ratio")
-
-
-customHistogramInfo <- list(
-  Annual = list( 
-    Recent.ER = list(
-      breaks = c( 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1),
-      names = c("Below 10%","10-20%","20-30%","30%-40%","40-50%", "50%-60%","60-70%","70%-80%","80-90%","Above 90%")
-      )
-    ),
-  Change = list(
-    Recent.ER = list(
-      breaks <- c(-1, -0.1, -0.05, -0.01,0.01, 0.05, 0.1, 1),
-      names <- c(">10% decrease", "5%-10% decrease", "0-5% decrease","No Change", "0-5% increase", "5-10% increase",">10 increase")
-    )
-  ))
-
-# output summaries will be generated for these metrics/attributes
-outputSummaryAttribs <- c("Management.Timing", "FAZ", "WSP.status", "Recent.ER")
-
-
 

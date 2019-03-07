@@ -52,29 +52,29 @@ body <- shinydashboard::dashboardBody(
     tabItem(
       tabName = "AllData",
       h2("Data"),
-      tags$div('style' = "text-align:right;", downloadButton("downloadAllData", "Download")),
-      tags$div(style = 'overflow-x: scroll',  DT::dataTableOutput("AllData", width="70%"))
+      tags$div('style' = "text-align:right;", downloadButton("allData_Download", "Download")),
+      tags$div(style = 'overflow-x: scroll',  DT::dataTableOutput("allData_Table", width="70%"))
     ),
       
     tabItem(
       tabName = "CUSelection",
       box(title = "Start here", width=12, status="info", solidHeader=TRUE, collapsible=TRUE, collapsed=FALSE,
-          uiOutput("filters")),
+          uiOutput("box_DataFilters")),
       
       box(title = "View/select CUs on a map", width=12, status="info", solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE,
-          uiOutput("leafletMap")),
+          uiOutput("box_LeafletMap")),
       
       box(title = "View/select CUs by performance metric (parallel coordinates plot)", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
-          uiOutput("parcoordsPlot")),
+          uiOutput("box_Parcoords")),
 
       box(title = "View/select CUs on a data table", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
-          div(style = 'overflow-x: scroll', uiOutput("data"))),
+          div(style = 'overflow-x: scroll', uiOutput("box_Data"))),
       
       box(title = "Summary report", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
-          uiOutput("summary")),
+          uiOutput("box_HistoSummary")),
       
       box(title = "Radar plots", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
-          uiOutput("radarBox"))
+          uiOutput("box_RadarPlots"))
     )
   )
 )
