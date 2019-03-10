@@ -23,30 +23,28 @@ metricInfo <- list(
 # for Chinook and sockeye.
 # For now, make this problem go away by removing duplicates in the lat-long data. 
 # Ultimately, lat-long info should be attached in a pre-processing script, though.
-data.start <- read.csv("data/FR SK metrics.csv")
+data.start <- read.csv("data/FR SK metrics.csv", stringsAsFactors=F)
 data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
 data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
 
-CUs <- unique(as.character(data.start[, "Base.Unit.CU.ShortName"]))
-data.latlong <- read.csv("data/FRSK_CU_Info_masterUpdate.csv")
-data.latlong <- unique(data.latlong[ ,c("Base.Unit.CU.ShortName", "Base.Unit.CU.Lat", "Base.Unit.CU.Long")])
-names(data.latlong) <- c("CU", "lat", "long")
-data.latlong$CU <- as.character(data.latlong$CU)
-data.latlong <- data.latlong[!duplicated(data.latlong$CU), ] 
-row.names(data.latlong) <- data.latlong$CU
+data.years <- as.character(sort(unique(as.numeric(data.start$Year))))
+data.by.year <- lapply(data.years, function(yr) {
+  ds <- data.start[data.start$Year == yr, ]
+  row.names(ds) <- ds[, "Base.Unit.CU.ShortName"]
+  ds
+})
+names(data.by.year) <- data.years
+
+# Lookup table for joining metrics and spatial information
+data.spatialLookup <- read.csv("data/SpatialLookup.csv", stringsAsFactors = F)
+
+# CU polygon data
+require(rgdal)
+data.CUpolygons <- readOGR(dsn="data/Lake_Type_Sockeye_Salmon_CU_Shape/Lake_Type_Sockeye_Salmon_CU_Boundary",
+                      layer="Lake_Type_Sockeye_Salmon_CU_Boundary_En", stringsAsFactors=F, verbose=F)
+data.CUpolygons <- spTransform(data.CUpolygons, CRS("+proj=longlat +datum=WGS84"))
 
 # --------------------- Helper functions for data restructuring ---------
-
-# pass through a CU metrics table and return with lat-long columns attached
-# if CUnames is given, looks for CU names is CUnames column
-# otherwise assumes that the ds row names are the CU names 
-withLatLong <- function(ds, CUnames = NULL) {
-  if (is.null(CUnames)) {
-    return(cbind(ds, data.latlong[row.names(ds), c("lat", "long")]))
-  } else {
-    return(cbind(ds, data.latlong[ds[, CUnames], ]))
-  }
-}
 
 # pass through a CU metrics table and add a 'labels' column
 # CUlabels should be a named vector that specified the label for each CU
@@ -124,3 +122,9 @@ getLabel <- function(m) {
   }
 }
 
+# the metrics to include in the map labels
+mapLabelMetrics <-  c("Short Term Trend" = "ShortTerm.Trend",  
+                   "Recent Total" = "Recent.Total", 
+                   "Lower Ratio" = "Lower.Ratio", 
+                   "Upper Ratio" = "Upper.Ratio",
+                   "Long-term Ratio"="LongTerm.Ratio")
