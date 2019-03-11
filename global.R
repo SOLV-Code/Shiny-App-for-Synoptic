@@ -6,14 +6,18 @@ metricInfo <- list(
   Base.Unit.Species = "Species Code (Sk = Sockeye, Ck = Chinook, ...)",
   FAZ = "Freshwater Adaptive Zone",
   BaseUnit.Watershed = "Watershed",
-  Recent.Total = "This is an explanation of the Recent.Total metric",
-  Lower.Ratio = "This is an explanation of the Lower.Ratio metric",
-  Upper.Ratio = "This is an explanation of the Upper.Ratio metric",
-  LongTerm.Ratio = "This is an explanation of the LongTerm.Ratio metric",
-  LongTerm.Trend = "This is an explanation of the LongTerm.Trend metric",
-  WSP.status = "This is an explanation of the WSP.status metric",
-  Recent.ER = "This is an explanation of the Recent.ER metric",
-  Management.Timing = "Management timing")
+  Recent.Total = "Recent.Total: average effective total spawner abundance across the last generation (log space)",
+  Lower.Ratio = "Lower.Ratio: ratio of the most recent generation of effective total spawners (ETS) to the lower WSP benchmark for abundance. 
+                  Values <1 indicates that the recent abundance falls below this biological benchmark.",
+  Upper.Ratio = "Upper.Ratio: ratio of the most recent generation of effective total spawners (ETS) to the upper WSP benchmark for abundance.
+                  Values <1 indicates that the recent abundance falls below this biological benchmark.)",
+  LongTerm.Ratio = "LongTerm.Ratio: ratio of the most recent generation of effective female spawners to the historical average (geometric)
+                    Values <1 indicate that the recent abundnace is below average.",
+  ShortTerm.Trend = "ShortTerm.Trend: slope of the most recent three generations of effective female spawners (using a geometric generational running average)",
+  WSP.status = "WSP.status: the integrated Wild Salmon Policy Status derived by integrating metrics through an expert-driven workshop 
+                  (UD = Undetermined, R = Red, RA = Red/Amber, A = Amber, AG = Amber/Green, G = Green)",
+  Recent.ER = "Recent.ER: the average exploitation rate over the most recent generation",
+  Management.Timing = "Management timing: return timing of the spawning migration used for fisheries management purposes")
 
 # ------------------- put together initial data set -------------------
 # Hack alert!! Get the data from two different files. The first one covers
