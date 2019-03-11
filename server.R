@@ -121,13 +121,13 @@ function(input, output, session){
   observeEvent(values$dataFilters_select_species, {
     df <- getFilteredDF(c('Base.Unit.Species'), data.start)
     updatePickerInputs(c('BaseUnit.Watershed', 'FAZ', 'Management.Timing', 'Base.Unit.CU.ShortName'), df) 
-  })
+  }, ignoreNULL = FALSE)
   
   # watershed limits what FAZs and CUs are available
   observeEvent(values$dataFilters_select_watershed, {
     df <- getFilteredDF(c('Base.Unit.Species', 'BaseUnit.Watershed', 'Management.Timing'), data.start)
     updatePickerInputs(c('FAZ', 'Base.Unit.CU.ShortName'), df) 
-  })
+  }, ignoreNULL = FALSE)
   
   # FAZ an Management Timing limit what CUs are available
   observeEvent({
@@ -136,7 +136,7 @@ function(input, output, session){
   }, {
     df <- getFilteredDF(c('Base.Unit.Species', 'BaseUnit.Watershed','Management.Timing', 'FAZ'), data.start)
     updatePickerInputs(c('Base.Unit.CU.ShortName'), df) 
-  })
+  }, ignoreNULL = FALSE)
   
 
   observeEvent(                            # will need to update selections once we have more than 2 years so both cannot be same year
@@ -220,7 +220,7 @@ function(input, output, session){
                                                             pickerInput( inputId="dataFilters_select_year",					 
                                                                          label="",
                                                                          choices = yrs,
-                                                                         selected = yrs[1])),
+                                                                         selected = yrs[length(yrs)])),
                                   conditionalPanel("input.dataFilters_select_change == 'Change'",
                                                    pickerInput( inputId="dataFilters_select_changeyear_1",					 
                                                                 label="Initial Year:",
@@ -276,6 +276,9 @@ function(input, output, session){
     # additional columns to drop
     drops <- c(drops, "Year", "Base.Unit.CU.ShortName")
     df[ ,drops] <- NULL
+    if (ncol(df) == 1) {
+      df <- as.data.frame(df)
+    }
     #if (ncol(df) < 2) {df <- NULL}
     df
   })
@@ -337,8 +340,13 @@ function(input, output, session){
 
   # remove CUs from the current selection
   data.removeFromSelection <- function(CUs) {
-    sel <- which(data.currentSelection()[!(data.currentSelection() %in% CUs)] )
+    if (any(!(data.currentSelection() %in% CUs))) {
+      sel <- data.currentSelection()[!(data.currentSelection() %in% CUs)]
+    } else {
+      sel <- NULL 
+    }
     data.currentSelection(sel)
+    
   }
   
   #------------------- Parallel Coordinate Plot ------------------
@@ -804,69 +812,92 @@ function(input, output, session){
     'black-fish' = makeIcon("fish-black.png", "fish-black.png", iconHeight=24, iconWidth=24)
   )
   
+  # marks up the spatial data frame to highlight currently selected items
+  withSpatialSelection <- function(df) {
+    # current selection, to be used as a group in leaflet
+    df$selected <- ifelse(df$Base.Unit.CU.ShortName %in% isolate(data.currentSelection()), 'selected', 'not selected')
+    # icons
+    df$icon <- ifelse(df$selected == 'selected', 'red-fish', 'black-fish')
+    df
+  }
+  
   data.spatial <- reactive({
     df <- data.filtered()
-    # attach the information in the lookup table
-    df$Base.Unit.CU.ShortName <- row.names(df)
-    df <- merge(df, data.spatialLookup, all.x=T, all.y=F, by=c("Base.Unit.CU.ShortName"))
-    row.names(df) <- df$Base.Unit.CU.ShortName
-    # put together a information pane for each CU, to be shown on mouse-over on the map
-    if (values$dataFilters_select_year == data.years[1]) {
-      df$popup <- makePopupCol(df, NULL)
+    if (is.data.frame(df) && nrow(df) > 0) {
+      # attach the information in the lookup table
+      df$Base.Unit.CU.ShortName <- row.names(df)
+      df <- merge(df, data.spatialLookup, all.x=T, all.y=F, by=c("Base.Unit.CU.ShortName"))
+      row.names(df) <- df$Base.Unit.CU.ShortName
+      # put together a information pane for each CU, to be shown on mouse-over on the map
+      if (values$dataFilters_select_year == data.years[1]) {
+        df$popup <- makePopupCol(df, NULL)
+      } else {
+        df$popup <- makePopupCol(df, data.by.year[[data.years[1]]][row.names(df), ])
+      }
+      # add selection info
+      df <- withSpatialSelection(df) 
+      # CU polyons
+      CUpolys <- sp::merge(data.CUpolygons, df, by=c("CU_INDEX"), all.x=FALSE, all.y=FALSE) 
+      # groups for map; use species, and/or management timing if Fraser sox selected
+      CUpolys$grp <- as.character(levelLabels[['Base.Unit.Species']][as.character(CUpolys$Base.Unit.Species)])
+      if (("Management.Timing" %in% names(CUpolys)) && any(!is.na(CUpolys$Management.Timing)) ) {
+        fraserSox <- CUpolys$Base.Unit.Species == "SK" & CUpolys$BaseUnit.Watershed == "Fraser"
+        CUpolys$grp[which(fraserSox)] <-as.character(levelLabels[['Management.Timing']][as.character(CUpolys$Management.Timing[fraserSox])])
+      }
+      CUpolys$grp <- factor(CUpolys$grp, levels <- c(as.character(levelLabels[['Management.Timing']]),
+                                                     as.character(levelLabels[['Base.Unit.Species']])))
+      # jitter the marker locations so all will be visible
+      CUpolys$latitude <- jitter(CUpolys$latitude, factor=10)
+      CUpolys$longitude <- jitter(CUpolys$longitude, factor=10)
+      CUpolys
     } else {
-      df$popup <- makePopupCol(df, data.by.year[[data.years[1]]][row.names(df), ])
+      NULL
     }
-    
-    # icons
-    df$icon<- rep('black-fish', nrow(df))
-    df[isolate(data.currentSelection()), 'icon'] <- 'red-fish'
-    
-    # CU polyons
-    CUpolys <- sp::merge(data.CUpolygons, df, by=c("CU_INDEX"), all.x=FALSE, all.y=FALSE) 
-    CUpolys$RT <- CUpolys$Management.Timing
-    levels(CUpolys$RT) <- c("Early Stuart", "Early Summer", "Summer", "Late")
-    CUpolys
   })
+
 
   output$CUmap <- renderLeaflet({
     leaflet.data <- data.spatial()
-    sel <- which(leaflet.data$Base.Unit.CU.ShortName %in% data.currentSelection())
-    leaflet.data[sel, 'icon'] <- 'red-fish'
-    print(leaflet.data$icon)
-    pal <- colorFactor("Spectral", levels=levels(leaflet.data$RT), ordered=T)
-    print(summary(leaflet.data))
-     leafletOutput <- try(  leaflet(leaflet.data) %>%
+    if (!is.null(leaflet.data)) {
+      leaflet.data <- withSpatialSelection(leaflet.data)
+      groups <- levels(leaflet.data$grp) 
+      groups <- groups[groups %in% unique(leaflet.data$grp)]
+      pal <- colorFactor("Spectral", levels=levels(leaflet.data$grp), ordered=T)
+      leafletOutput <- try({leaflet(leaflet.data) %>%
                             addMarkers(lng=~longitude, lat=~latitude, 
                                        layerId = ~Base.Unit.CU.ShortName, 
                                        icon = ~fishIcons[icon],
-                                       group = 'markers',
-                                       label = ~lapply(popup, HTML)) %>%
-                            addPolygons(fillColor=~pal(RT), 
+                                       group = ~selected,
+                                      label = ~lapply(popup, HTML)) %>%
+                            addPolygons(fillColor=~pal(grp), 
                                         fillOpacity = 1,
                                         stroke=T,
                                         color="black",
                                         weight=2,
                                         opacity= 0.5, 
                                         layerId = ~Base.Unit.CU.ShortName,
-                                        group = ~RT,
+                                        group = ~grp,
                                         label = ~lapply(popup, HTML),
                                         highlight = highlightOptions(weight = 10, color="red", bringToFront = TRUE))  %>% 
                             addTiles(group="base")  %>%
-                            addLegend(position="bottomright", pal=pal, title="Management Timing",
-                                      values=~RT, 
+                            addLegend(position="bottomright", pal=pal, title="",
+                                      values=~grp, 
                                       opacity=1) %>%
-                            addLayersControl(overlayGroups = c("markers", levels(leaflet.data$RT)),
+                            addLayersControl(overlayGroups = c("selected", "not selected", groups),
                                              options = layersControlOptions(collapsed = FALSE))
-                          )
-     if (!inherits(leafletOutput, "try-error")) {
-       leafletOutput
-     } else {
-       NULL
-     }
+                          })
+      if (!inherits(leafletOutput, "try-error")) {
+         leafletOutput
+      } else {
+         NULL
+      }
+    } else {
+      NULL
+    }
   })
   
+  # use this to make changes to the leaflet map without re-rendering the whole thing
   CUmapProxy <- leafletProxy('CUmap')
-
   
   # toggle CU selection when corresponding marker is clicked
   observeEvent(input$CUmap_marker_click, 
@@ -874,12 +905,31 @@ function(input, output, session){
                  CU <- input$CUmap_marker_click$id
                  if (CU %in% data.currentSelection()) {
                    data.removeFromSelection(CU)
+                   icon <- fishIcons['black-fish']
                   } else {
                    data.addToSelection(CU)
-                 }
+                   icon <- fishIcons['red-fish']
+                  }
+                  marker <- isolate(data.spatial()[data.spatial()$Base.Unit.CU.ShortName == CU, ])
+                  CUmapProxy %>% removeMarker(layerId = CU) %>%
+                                 addMarkers(lng=marker$longitude, lat=marker$latitude, 
+                                             layerId = CU, 
+                                             icon = icon,
+                                             group = 'selected',
+                                             label = HTML(marker$popup))
                }
   )
-
+  
+  # we don't have a record of which markers need to change color, so redraw them all here
+  observeEvent(data.currentSelection(), {
+    df <- withSpatialSelection(data.spatial())
+    CUmapProxy %>% addMarkers(data=df, lng=~longitude, lat=~latitude, 
+                              layerId = ~Base.Unit.CU.ShortName, 
+                              icon = ~fishIcons[icon],
+                              group = ~selected,
+                              label = ~lapply(popup, HTML))
+  })
+   
   output$box_LeafletMap <- renderUI({leafletOutput("CUmap", height = 500)})
   
   #-------------------  Histogram Summary  ------------------

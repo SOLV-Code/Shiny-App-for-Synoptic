@@ -15,10 +15,7 @@
 library(shinydashboard)
 library(shinyWidgets)
 library(markdown)
-library(plotly)
-library(parcoords)
-library(leaflet)
-library(DT)
+
 
 sidebar <- shinydashboard::dashboardSidebar(
   shinydashboard::sidebarMenu(

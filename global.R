@@ -23,7 +23,7 @@ metricInfo <- list(
 # for Chinook and sockeye.
 # For now, make this problem go away by removing duplicates in the lat-long data. 
 # Ultimately, lat-long info should be attached in a pre-processing script, though.
-data.start <- read.csv("data/FR SK metrics.csv", stringsAsFactors=F)
+data.start <- read.csv("data/FR SK metrics.csv")
 data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
 data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
 
@@ -121,6 +121,15 @@ getLabel <- function(m) {
     m
   }
 }
+
+# labels for levels of individual data columns
+levelLabels <- list(
+  Management.Timing = list(Estu="Fraser Sockeye Early Stuart", 
+                           Early_Summer="Fraser Sockeye Early Summer", 
+                           Summer="Fraser Sockeye Summer", 
+                           Late="Fraser Sockeye Late"),
+  Base.Unit.Species = list(SK = "Sockeye", CK = "Chinook")
+)
 
 # the metrics to include in the map labels
 mapLabelMetrics <-  c("Short Term Trend" = "ShortTerm.Trend",  
