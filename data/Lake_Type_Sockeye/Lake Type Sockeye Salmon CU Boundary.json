@@ -1,0 +1,1346 @@
+[
+ {
+   "FID": 0,
+   "CU INDEX": "SEL-01-01",
+   "CU NAME": "Osoyoos",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 1
+ },
+ {
+   "FID": 1,
+   "CU INDEX": "SEL-03-01",
+   "CU NAME": "Chilliwack_Early Summer",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 2
+ },
+ {
+   "FID": 2,
+   "CU INDEX": "SEL-03-02",
+   "CU NAME": "Cultus_Late Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 3
+ },
+ {
+   "FID": 3,
+   "CU INDEX": "SEL-03-03",
+   "CU NAME": "Harrison-downstream migrating_Late Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 4
+ },
+ {
+   "FID": 4,
+   "CU INDEX": "SEL-03-04",
+   "CU NAME": "Harrison-upstream migrating_Late Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 5
+ },
+ {
+   "FID": 5,
+   "CU INDEX": "SEL-03-05",
+   "CU NAME": "Pitt_Early Summer Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 6
+ },
+ {
+   "FID": 6,
+   "CU INDEX": "SEL-04-01",
+   "CU NAME": "Lillooet/Harrison_Late Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 7
+ },
+ {
+   "FID": 7,
+   "CU INDEX": "SEL-05-02",
+   "CU NAME": "Nahatlatch_Early Summer timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 8
+ },
+ {
+   "FID": 8,
+   "CU INDEX": "SEL-06-01",
+   "CU NAME": "Anderson/Seton_Early Summer Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 9
+ },
+ {
+   "FID": 9,
+   "CU INDEX": "SEL-06-02",
+   "CU NAME": "Chilko_Early Summer Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 10
+ },
+ {
+   "FID": 10,
+   "CU INDEX": "SEL-06-03",
+   "CU NAME": "Chilko_Summer Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 11
+ },
+ {
+   "FID": 11,
+   "CU INDEX": "SEL-06-07",
+   "CU NAME": "Francois/Fraser_Summer Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 12
+ },
+ {
+   "FID": 12,
+   "CU INDEX": "SEL-06-10",
+   "CU NAME": "Quesnel_Summer Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 13
+ },
+ {
+   "FID": 13,
+   "CU INDEX": "SEL-06-11",
+   "CU NAME": "Seton_Late Timing",
+   "CU TYPE": "Bin",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 14
+ },
+ {
+   "FID": 14,
+   "CU INDEX": "SEL-06-13",
+   "CU NAME": "Takla/Trembleur/Stuart_Summer Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 15
+ },
+ {
+   "FID": 15,
+   "CU INDEX": "SEL-06-14",
+   "CU NAME": "Takla/Trembleur_Early Stuart Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 16
+ },
+ {
+   "FID": 16,
+   "CU INDEX": "SEL-06-16",
+   "CU NAME": "Taseko_Early Summer Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 17
+ },
+ {
+   "FID": 17,
+   "CU INDEX": "SEL-06-20",
+   "CU NAME": "Nadina/Francois_Early Summer Timing",
+   "CU TYPE": "VREQ[Bin]",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 18
+ },
+ {
+   "FID": 18,
+   "CU INDEX": "SEL-07-01",
+   "CU NAME": "Bowron_Early Summer Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 19
+ },
+ {
+   "FID": 19,
+   "CU INDEX": "SEL-09-03",
+   "CU NAME": "Shuswap Complex-Late Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 20
+ },
+ {
+   "FID": 20,
+   "CU INDEX": "SEL-10-01",
+   "CU NAME": "Kamloops_Early Summer Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 22
+ },
+ {
+   "FID": 21,
+   "CU INDEX": "SEL-10-03",
+   "CU NAME": "North Barriere_Early Summer Timing",
+   "CU TYPE": "Bin",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 23
+ },
+ {
+   "FID": 22,
+   "CU INDEX": "SEL-11-01",
+   "CU NAME": "Fulmore",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 24
+ },
+ {
+   "FID": 23,
+   "CU INDEX": "SEL-11-02",
+   "CU NAME": "Heydon",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 25
+ },
+ {
+   "FID": 24,
+   "CU INDEX": "SEL-11-03",
+   "CU NAME": "Kakweiken",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 26
+ },
+ {
+   "FID": 25,
+   "CU INDEX": "SEL-11-04",
+   "CU NAME": "Loose",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 27
+ },
+ {
+   "FID": 26,
+   "CU INDEX": "SEL-11-05",
+   "CU NAME": "Mackenzie",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 28
+ },
+ {
+   "FID": 27,
+   "CU INDEX": "SEL-11-06",
+   "CU NAME": "Phillips",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 29
+ },
+ {
+   "FID": 28,
+   "CU INDEX": "SEL-11-07",
+   "CU NAME": "Sakinaw",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 30
+ },
+ {
+   "FID": 29,
+   "CU INDEX": "SEL-11-09",
+   "CU NAME": "Tzoonie",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 31
+ },
+ {
+   "FID": 30,
+   "CU INDEX": "SEL-12-01",
+   "CU NAME": "Ida/Bonanza",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 33
+ },
+ {
+   "FID": 31,
+   "CU INDEX": "SEL-12-02",
+   "CU NAME": "Nahwitti",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 34
+ },
+ {
+   "FID": 32,
+   "CU INDEX": "SEL-12-03",
+   "CU NAME": "Nimpkish",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 35
+ },
+ {
+   "FID": 33,
+   "CU INDEX": "SEL-12-05",
+   "CU NAME": "Quatse",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 36
+ },
+ {
+   "FID": 34,
+   "CU INDEX": "SEL-12-06",
+   "CU NAME": "Schoen",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 37
+ },
+ {
+   "FID": 35,
+   "CU INDEX": "SEL-12-07",
+   "CU NAME": "Shushartie",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 38
+ },
+ {
+   "FID": 36,
+   "CU INDEX": "SEL-12-08",
+   "CU NAME": "Woss",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 39
+ },
+ {
+   "FID": 37,
+   "CU INDEX": "SEL-12-09",
+   "CU NAME": "Vernon",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 40
+ },
+ {
+   "FID": 38,
+   "CU INDEX": "SEL-13-01",
+   "CU NAME": "Alice",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 41
+ },
+ {
+   "FID": 39,
+   "CU INDEX": "SEL-13-02",
+   "CU NAME": "Canoe Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 42
+ },
+ {
+   "FID": 40,
+   "CU INDEX": "SEL-13-03",
+   "CU NAME": "Cecilia",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 43
+ },
+ {
+   "FID": 41,
+   "CU INDEX": "SEL-13-04",
+   "CU NAME": "Cheewat",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 44
+ },
+ {
+   "FID": 42,
+   "CU INDEX": "SEL-13-05",
+   "CU NAME": "Clayoquot",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 45
+ },
+ {
+   "FID": 43,
+   "CU INDEX": "SEL-13-06",
+   "CU NAME": "Deserted",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 46
+ },
+ {
+   "FID": 44,
+   "CU INDEX": "SEL-13-07",
+   "CU NAME": "Fairy",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 47
+ },
+ {
+   "FID": 45,
+   "CU INDEX": "SEL-13-08",
+   "CU NAME": "Great Central",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 48
+ },
+ {
+   "FID": 46,
+   "CU INDEX": "SEL-13-09",
+   "CU NAME": "Henderson",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 49
+ },
+ {
+   "FID": 47,
+   "CU INDEX": "SEL-13-10",
+   "CU NAME": "Hesquiat",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 50
+ },
+ {
+   "FID": 48,
+   "CU INDEX": "SEL-13-11",
+   "CU NAME": "Hobiton",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 51
+ },
+ {
+   "FID": 49,
+   "CU INDEX": "SEL-13-12",
+   "CU NAME": "Jansen",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 52
+ },
+ {
+   "FID": 50,
+   "CU INDEX": "SEL-13-13",
+   "CU NAME": "Kanim",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 53
+ },
+ {
+   "FID": 51,
+   "CU INDEX": "SEL-13-14",
+   "CU NAME": "Kennedy",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 54
+ },
+ {
+   "FID": 52,
+   "CU INDEX": "SEL-13-15",
+   "CU NAME": "Maggie",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 55
+ },
+ {
+   "FID": 53,
+   "CU INDEX": "SEL-13-16",
+   "CU NAME": "Megin",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 56
+ },
+ {
+   "FID": 54,
+   "CU INDEX": "SEL-13-17",
+   "CU NAME": "Muchalat",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 57
+ },
+ {
+   "FID": 55,
+   "CU INDEX": "SEL-13-18",
+   "CU NAME": "Muriel",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 58
+ },
+ {
+   "FID": 56,
+   "CU INDEX": "SEL-13-19",
+   "CU NAME": "Nitinat",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 59
+ },
+ {
+   "FID": 57,
+   "CU INDEX": "SEL-13-20",
+   "CU NAME": "O'Connell",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 60
+ },
+ {
+   "FID": 58,
+   "CU INDEX": "SEL-13-22",
+   "CU NAME": "Park River",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 61
+ },
+ {
+   "FID": 59,
+   "CU INDEX": "SEL-13-23",
+   "CU NAME": "Power",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 62
+ },
+ {
+   "FID": 60,
+   "CU INDEX": "SEL-13-25",
+   "CU NAME": "Sproat",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 63
+ },
+ {
+   "FID": 61,
+   "CU INDEX": "SEL-13-26",
+   "CU NAME": "William/Brink",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 64
+ },
+ {
+   "FID": 62,
+   "CU INDEX": "SEL-15-01",
+   "CU NAME": "Long",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 65
+ },
+ {
+   "FID": 63,
+   "CU INDEX": "SEL-15-02",
+   "CU NAME": "Owikeno",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 66
+ },
+ {
+   "FID": 64,
+   "CU INDEX": "SEL-15-04",
+   "CU NAME": "Wannock[Owikeno]",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 68
+ },
+ {
+   "FID": 65,
+   "CU INDEX": "SEL-16-01",
+   "CU NAME": "South Atnarko Lakes",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 69
+ },
+ {
+   "FID": 66,
+   "CU INDEX": "SEL-17-01",
+   "CU NAME": "Ain/Skundale/Ian",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 70
+ },
+ {
+   "FID": 67,
+   "CU INDEX": "SEL-17-02",
+   "CU NAME": "Awun",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 71
+ },
+ {
+   "FID": 68,
+   "CU INDEX": "SEL-17-03",
+   "CU NAME": "Fairfax",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 72
+ },
+ {
+   "FID": 69,
+   "CU INDEX": "SEL-17-04",
+   "CU NAME": "Jalun",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 73
+ },
+ {
+   "FID": 70,
+   "CU INDEX": "SEL-17-06",
+   "CU NAME": "Mathers",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 74
+ },
+ {
+   "FID": 71,
+   "CU INDEX": "SEL-17-07",
+   "CU NAME": "Mercer",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 75
+ },
+ {
+   "FID": 72,
+   "CU INDEX": "SEL-17-08",
+   "CU NAME": "Skidegate",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 76
+ },
+ {
+   "FID": 73,
+   "CU INDEX": "SEL-17-09",
+   "CU NAME": "Yakoun",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 77
+ },
+ {
+   "FID": 74,
+   "CU INDEX": "SEL-17-10",
+   "CU NAME": "Marie",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 78
+ },
+ {
+   "FID": 75,
+   "CU INDEX": "SEL-18-02",
+   "CU NAME": "Canoona",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 79
+ },
+ {
+   "FID": 76,
+   "CU INDEX": "SEL-18-04",
+   "CU NAME": "Evelyn",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 80
+ },
+ {
+   "FID": 77,
+   "CU INDEX": "SEL-18-05",
+   "CU NAME": "Kainet Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 81
+ },
+ {
+   "FID": 78,
+   "CU INDEX": "SEL-18-06",
+   "CU NAME": "Kimsquit",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 82
+ },
+ {
+   "FID": 79,
+   "CU INDEX": "SEL-18-07",
+   "CU NAME": "Kitkiata",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 83
+ },
+ {
+   "FID": 80,
+   "CU INDEX": "SEL-18-08",
+   "CU NAME": "Kitlope",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 84
+ },
+ {
+   "FID": 81,
+   "CU INDEX": "SEL-18-09",
+   "CU NAME": "Pine River",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 85
+ },
+ {
+   "FID": 82,
+   "CU INDEX": "SEL-19-01",
+   "CU NAME": "Banks",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 86
+ },
+ {
+   "FID": 83,
+   "CU INDEX": "SEL-19-02",
+   "CU NAME": "Bloomfield",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 87
+ },
+ {
+   "FID": 84,
+   "CU INDEX": "SEL-19-03",
+   "CU NAME": "Bolton Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 88
+ },
+ {
+   "FID": 85,
+   "CU INDEX": "SEL-19-04",
+   "CU NAME": "Bonilla",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 89
+ },
+ {
+   "FID": 86,
+   "CU INDEX": "SEL-19-09",
+   "CU NAME": "Tuwartz",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 90
+ },
+ {
+   "FID": 87,
+   "CU INDEX": "SEL-19-10",
+   "CU NAME": "Fannie Cove",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 91
+ },
+ {
+   "FID": 88,
+   "CU INDEX": "SEL-19-11",
+   "CU NAME": "Curtis Inlet",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 92
+ },
+ {
+   "FID": 89,
+   "CU INDEX": "SEL-19-14",
+   "CU NAME": "Devon",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 93
+ },
+ {
+   "FID": 90,
+   "CU INDEX": "SEL-19-17",
+   "CU NAME": "Elsie/Hoy",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 94
+ },
+ {
+   "FID": 91,
+   "CU INDEX": "SEL-19-18",
+   "CU NAME": "End Hill Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 95
+ },
+ {
+   "FID": 92,
+   "CU INDEX": "SEL-19-20",
+   "CU NAME": "Freeda/Brodie",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 96
+ },
+ {
+   "FID": 93,
+   "CU INDEX": "SEL-19-23",
+   "CU NAME": "Higgins Lagoon",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 97
+ },
+ {
+   "FID": 94,
+   "CU INDEX": "SEL-19-25",
+   "CU NAME": "Kdelmashan Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 98
+ },
+ {
+   "FID": 95,
+   "CU INDEX": "SEL-19-26",
+   "CU NAME": "Keecha",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 99
+ },
+ {
+   "FID": 96,
+   "CU INDEX": "SEL-19-27",
+   "CU NAME": "Kent Inlet Lagoon Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 100
+ },
+ {
+   "FID": 97,
+   "CU INDEX": "SEL-19-31",
+   "CU NAME": "Kildidt Lagoon Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 101
+ },
+ {
+   "FID": 98,
+   "CU INDEX": "SEL-19-32",
+   "CU NAME": "Kisameet",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 102
+ },
+ {
+   "FID": 99,
+   "CU INDEX": "SEL-19-33",
+   "CU NAME": "Koeye",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 103
+ },
+ {
+   "FID": 100,
+   "CU INDEX": "SEL-19-34",
+   "CU NAME": "Kooryet",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 104
+ },
+ {
+   "FID": 101,
+   "CU INDEX": "SEL-19-36",
+   "CU NAME": "Kwakwa Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 105
+ },
+ {
+   "FID": 102,
+   "CU INDEX": "SEL-19-38",
+   "CU NAME": "Limestone Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 106
+ },
+ {
+   "FID": 103,
+   "CU INDEX": "SEL-19-40",
+   "CU NAME": "Mary Cove Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 107
+ },
+ {
+   "FID": 104,
+   "CU INDEX": "SEL-19-43",
+   "CU NAME": "Mikado",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 108
+ },
+ {
+   "FID": 105,
+   "CU INDEX": "SEL-19-45",
+   "CU NAME": "Namu",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 109
+ },
+ {
+   "FID": 106,
+   "CU INDEX": "SEL-19-46",
+   "CU NAME": "Port John",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 110
+ },
+ {
+   "FID": 107,
+   "CU INDEX": "SEL-19-47",
+   "CU NAME": "Powles Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 111
+ },
+ {
+   "FID": 108,
+   "CU INDEX": "SEL-19-49",
+   "CU NAME": "Prudhomme",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 112
+ },
+ {
+   "FID": 109,
+   "CU INDEX": "SEL-19-51",
+   "CU NAME": "Ryan Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 113
+ },
+ {
+   "FID": 110,
+   "CU INDEX": "SEL-19-52",
+   "CU NAME": "Salter",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 114
+ },
+ {
+   "FID": 111,
+   "CU INDEX": "SEL-19-53",
+   "CU NAME": "Scoular/Kilpatrick",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 115
+ },
+ {
+   "FID": 112,
+   "CU INDEX": "SEL-19-54",
+   "CU NAME": "Shawatlan",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 116
+ },
+ {
+   "FID": 113,
+   "CU INDEX": "SEL-19-57",
+   "CU NAME": "Spencer Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 117
+ },
+ {
+   "FID": 114,
+   "CU INDEX": "SEL-19-59",
+   "CU NAME": "Talamoosa Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 118
+ },
+ {
+   "FID": 115,
+   "CU INDEX": "SEL-19-60",
+   "CU NAME": "Tankeeah River",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 119
+ },
+ {
+   "FID": 116,
+   "CU INDEX": "SEL-19-62",
+   "CU NAME": "Tsimtack Lakes",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 120
+ },
+ {
+   "FID": 117,
+   "CU INDEX": "SEL-19-64",
+   "CU NAME": "Tuno Creek West",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 121
+ },
+ {
+   "FID": 118,
+   "CU INDEX": "SEL-19-66",
+   "CU NAME": "Wale Creek",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 122
+ },
+ {
+   "FID": 119,
+   "CU INDEX": "SEL-19-70",
+   "CU NAME": "Yeo",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 123
+ },
+ {
+   "FID": 120,
+   "CU INDEX": "SEL-20-01",
+   "CU NAME": "Alastair",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 124
+ },
+ {
+   "FID": 121,
+   "CU INDEX": "SEL-20-02",
+   "CU NAME": "Aldrich",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 125
+ },
+ {
+   "FID": 122,
+   "CU INDEX": "SEL-20-03",
+   "CU NAME": "Dennis",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 126
+ },
+ {
+   "FID": 123,
+   "CU INDEX": "SEL-20-04",
+   "CU NAME": "Ecstall/Lower",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 127
+ },
+ {
+   "FID": 124,
+   "CU INDEX": "SEL-20-05",
+   "CU NAME": "Johnston",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 128
+ },
+ {
+   "FID": 125,
+   "CU INDEX": "SEL-20-06",
+   "CU NAME": "Kitsumkalum",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 129
+ },
+ {
+   "FID": 126,
+   "CU INDEX": "SEL-20-07",
+   "CU NAME": "Lakelse",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 130
+ },
+ {
+   "FID": 127,
+   "CU INDEX": "SEL-20-08",
+   "CU NAME": "Mcdonell",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 131
+ },
+ {
+   "FID": 128,
+   "CU INDEX": "SEL-21-01",
+   "CU NAME": "Atna",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 132
+ },
+ {
+   "FID": 129,
+   "CU INDEX": "SEL-21-02",
+   "CU NAME": "Babine",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 133
+ },
+ {
+   "FID": 130,
+   "CU INDEX": "SEL-21-03",
+   "CU NAME": "Bulkley",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 134
+ },
+ {
+   "FID": 131,
+   "CU INDEX": "SEL-21-05",
+   "CU NAME": "Kitwancool",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 135
+ },
+ {
+   "FID": 132,
+   "CU INDEX": "SEL-21-06",
+   "CU NAME": "Maxan",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 136
+ },
+ {
+   "FID": 133,
+   "CU INDEX": "SEL-21-07",
+   "CU NAME": "Morice",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 137
+ },
+ {
+   "FID": 134,
+   "CU INDEX": "SEL-21-09",
+   "CU NAME": "Stephens",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 138
+ },
+ {
+   "FID": 135,
+   "CU INDEX": "SEL-21-11",
+   "CU NAME": "Tahlo/Morrison",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 139
+ },
+ {
+   "FID": 136,
+   "CU INDEX": "SEL-21-12",
+   "CU NAME": "Footsore/Hodder",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 140
+ },
+ {
+   "FID": 137,
+   "CU INDEX": "SEL-22-01",
+   "CU NAME": "Asitika",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 141
+ },
+ {
+   "FID": 138,
+   "CU INDEX": "SEL-22-02",
+   "CU NAME": "Azuklotz",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 142
+ },
+ {
+   "FID": 139,
+   "CU INDEX": "SEL-22-03",
+   "CU NAME": "Bear",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 143
+ },
+ {
+   "FID": 140,
+   "CU INDEX": "SEL-22-04",
+   "CU NAME": "Damshilgwit",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 144
+ },
+ {
+   "FID": 141,
+   "CU INDEX": "SEL-22-05",
+   "CU NAME": "Johanson",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 145
+ },
+ {
+   "FID": 142,
+   "CU INDEX": "SEL-22-06",
+   "CU NAME": "Kluatantan",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 146
+ },
+ {
+   "FID": 143,
+   "CU INDEX": "SEL-22-07",
+   "CU NAME": "Kluayaz",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 147
+ },
+ {
+   "FID": 144,
+   "CU INDEX": "SEL-22-08",
+   "CU NAME": "Motase",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 148
+ },
+ {
+   "FID": 145,
+   "CU INDEX": "SEL-22-09",
+   "CU NAME": "Sicintine",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 149
+ },
+ {
+   "FID": 146,
+   "CU INDEX": "SEL-22-10",
+   "CU NAME": "Slamgeesh",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 150
+ },
+ {
+   "FID": 147,
+   "CU INDEX": "SEL-22-11",
+   "CU NAME": "Spawning",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 151
+ },
+ {
+   "FID": 148,
+   "CU INDEX": "SEL-22-12",
+   "CU NAME": "Sustut",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 152
+ },
+ {
+   "FID": 149,
+   "CU INDEX": "SEL-24-01",
+   "CU NAME": "Bowser",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 153
+ },
+ {
+   "FID": 150,
+   "CU INDEX": "SEL-24-02",
+   "CU NAME": "Damdochax/Wiminasik",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 154
+ },
+ {
+   "FID": 151,
+   "CU INDEX": "SEL-24-03",
+   "CU NAME": "Fred Wright",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 155
+ },
+ {
+   "FID": 152,
+   "CU INDEX": "SEL-24-04",
+   "CU NAME": "Kwinageese",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 156
+ },
+ {
+   "FID": 153,
+   "CU INDEX": "SEL-24-05",
+   "CU NAME": "Meziadin",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 157
+ },
+ {
+   "FID": 154,
+   "CU INDEX": "SEL-24-06",
+   "CU NAME": "Oweegee",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 158
+ },
+ {
+   "FID": 155,
+   "CU INDEX": "SEL-25-01",
+   "CU NAME": "Border",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 159
+ },
+ {
+   "FID": 156,
+   "CU INDEX": "SEL-26-01",
+   "CU NAME": "Christina",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 160
+ },
+ {
+   "FID": 157,
+   "CU INDEX": "SEL-26-02",
+   "CU NAME": "Tahltan",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 161
+ },
+ {
+   "FID": 158,
+   "CU INDEX": "SEL-26-03",
+   "CU NAME": "Chutine",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 162
+ },
+ {
+   "FID": 159,
+   "CU INDEX": "SEL-27-01",
+   "CU NAME": "Whiting",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 163
+ },
+ {
+   "FID": 160,
+   "CU INDEX": "SEL-28-01",
+   "CU NAME": "Kuthai",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 164
+ },
+ {
+   "FID": 161,
+   "CU INDEX": "SEL-28-02",
+   "CU NAME": "Little Trapper",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 165
+ },
+ {
+   "FID": 162,
+   "CU INDEX": "SEL-28-03",
+   "CU NAME": "Tatsamenie",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 166
+ },
+ {
+   "FID": 163,
+   "CU INDEX": "SEL-28-05",
+   "CU NAME": "King Salmon",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 167
+ },
+ {
+   "FID": 164,
+   "CU INDEX": "SEL-30-01",
+   "CU NAME": "Blanchard",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 168
+ },
+ {
+   "FID": 165,
+   "CU INDEX": "SEL-30-02",
+   "CU NAME": "Klukshu",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 169
+ },
+ {
+   "FID": 166,
+   "CU INDEX": "SEL-30-03",
+   "CU NAME": "Neskatahin",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 170
+ },
+ {
+   "FID": 167,
+   "CU INDEX": "SEL-09-02",
+   "CU NAME": "Shuswap Complex -Early Summer Timing",
+   "CU TYPE": "Current",
+   "SP_QUAL": "SEL",
+   "OBJECTID": 171
+ }
+]

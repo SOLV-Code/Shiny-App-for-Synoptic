@@ -1,0 +1,222 @@
+[
+ {
+   "FID": 0,
+   "INDEX_UC": "SEL-03-01",
+   "NOM_UC": "CHILLIWACK-EARLY SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "AMBER/GREEN",
+   "LAT_UC": 49.04891899,
+   "LONG_UC": -121.4323052,
+   "OBJECTID": 1
+ },
+ {
+   "FID": 1,
+   "INDEX_UC": "SEL-03-02",
+   "NOM_UC": "CULTUS-LATE TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "RED",
+   "LAT_UC": 49.07507039,
+   "LONG_UC": -121.9817234,
+   "OBJECTID": 2
+ },
+ {
+   "FID": 2,
+   "INDEX_UC": "SEL-03-03",
+   "NOM_UC": "HARRISON-DOWNSTREAM MIGRATING-LATE TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "AMBER/GREEN",
+   "LAT_UC": 49.59035828,
+   "LONG_UC": -121.9514039,
+   "OBJECTID": 3
+ },
+ {
+   "FID": 3,
+   "INDEX_UC": "SEL-03-04",
+   "NOM_UC": "HARRISON-UPSTREAM MIGRATING-LATE TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "RED",
+   "LAT_UC": 49.32220914,
+   "LONG_UC": -121.8791355,
+   "OBJECTID": 4
+ },
+ {
+   "FID": 4,
+   "INDEX_UC": "SEL-03-05",
+   "NOM_UC": "PITT-EARLY SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "GREEN",
+   "LAT_UC": 49.55770694,
+   "LONG_UC": -122.6238591,
+   "OBJECTID": 5
+ },
+ {
+   "FID": 5,
+   "INDEX_UC": "SEL-04-01",
+   "NOM_UC": "LILLOOET/HARRISON-LATE TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "AMBER",
+   "LAT_UC": 50.40062152,
+   "LONG_UC": -122.8326871,
+   "OBJECTID": 6
+ },
+ {
+   "FID": 6,
+   "INDEX_UC": "SEL-05-02",
+   "NOM_UC": "NAHATLATCH-EARLY SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "AMBER",
+   "LAT_UC": 49.9911652,
+   "LONG_UC": -121.6167063,
+   "OBJECTID": 7
+ },
+ {
+   "FID": 7,
+   "INDEX_UC": "SEL-06-01",
+   "NOM_UC": "ANDERSON/SETON-EARLY SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "AMBER/GREEN",
+   "LAT_UC": 50.57788313,
+   "LONG_UC": -122.4459747,
+   "OBJECTID": 8
+ },
+ {
+   "FID": 8,
+   "INDEX_UC": "SEL-06-02",
+   "NOM_UC": "CHILKO-EARLY SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "GREEN",
+   "LAT_UC": 51.10225386,
+   "LONG_UC": -124.0318793,
+   "OBJECTID": 9
+ },
+ {
+   "FID": 9,
+   "INDEX_UC": "SEL-06-03",
+   "NOM_UC": "CHILKO-SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "GREEN",
+   "LAT_UC": 51.7701601,
+   "LONG_UC": -123.9216045,
+   "OBJECTID": 10
+ },
+ {
+   "FID": 10,
+   "INDEX_UC": "SEL-06-07",
+   "NOM_UC": "FRANCOIS/FRASER-SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "AMBER/GREEN",
+   "LAT_UC": 54.02308289,
+   "LONG_UC": -125.0102828,
+   "OBJECTID": 11
+ },
+ {
+   "FID": 11,
+   "INDEX_UC": "SEL-06-10",
+   "NOM_UC": "QUESNEL-SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "RED/AMBER",
+   "LAT_UC": 52.60459731,
+   "LONG_UC": -120.9086453,
+   "OBJECTID": 12
+ },
+ {
+   "FID": 12,
+   "INDEX_UC": "SEL-06-11",
+   "NOM_UC": "SETON-LATE TIMING",
+   "TYPE_UC": "Bin",
+   "ÉTAT_PSS": "RED",
+   "LAT_UC": 50.70803014,
+   "LONG_UC": -122.2700586,
+   "OBJECTID": 13
+ },
+ {
+   "FID": 13,
+   "INDEX_UC": "SEL-06-13",
+   "NOM_UC": "TAKLA/TREMBLEUR/STUART-SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "RED/AMBER",
+   "LAT_UC": 54.75653928,
+   "LONG_UC": -124.9440666,
+   "OBJECTID": 14
+ },
+ {
+   "FID": 14,
+   "INDEX_UC": "SEL-06-14",
+   "NOM_UC": "TAKLA/TREMBLEUR-EARLY STUART TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "RED",
+   "LAT_UC": 55.2967611,
+   "LONG_UC": -125.8410348,
+   "OBJECTID": 15
+ },
+ {
+   "FID": 15,
+   "INDEX_UC": "SEL-06-16",
+   "NOM_UC": "TASEKO-EARLY SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "RED",
+   "LAT_UC": 51.45184515,
+   "LONG_UC": -123.6557842,
+   "OBJECTID": 16
+ },
+ {
+   "FID": 16,
+   "INDEX_UC": "SEL-06-20",
+   "NOM_UC": "NADINA/FRANCOIS-EARLY SUMMER TIMING",
+   "TYPE_UC": "VREQ[Bin]",
+   "ÉTAT_PSS": "AMBER/GREEN",
+   "LAT_UC": 53.93668624,
+   "LONG_UC": -126.7846704,
+   "OBJECTID": 17
+ },
+ {
+   "FID": 17,
+   "INDEX_UC": "SEL-07-01",
+   "NOM_UC": "BOWRON-EARLY SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "RED",
+   "LAT_UC": 53.35678949,
+   "LONG_UC": -121.4043183,
+   "OBJECTID": 18
+ },
+ {
+   "FID": 18,
+   "INDEX_UC": "SEL-09-02",
+   "NOM_UC": "SHUSWAP COMPLEX-EARLY SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "AMBER",
+   "LAT_UC": 51.00353871,
+   "LONG_UC": -119.1041473,
+   "OBJECTID": 19
+ },
+ {
+   "FID": 19,
+   "INDEX_UC": "SEL-09-03",
+   "NOM_UC": "SHUSWAP COMPLEX-LATE TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "AMBER/GREEN",
+   "LAT_UC": 50.91737166,
+   "LONG_UC": -119.229787,
+   "OBJECTID": 20
+ },
+ {
+   "FID": 20,
+   "INDEX_UC": "SEL-10-01",
+   "NOM_UC": "KAMLOOPS-EARLY SUMMER TIMING",
+   "TYPE_UC": "Current",
+   "ÉTAT_PSS": "AMBER",
+   "LAT_UC": 51.547477,
+   "LONG_UC": -119.9810365,
+   "OBJECTID": 21
+ },
+ {
+   "FID": 21,
+   "INDEX_UC": "SEL-10-03",
+   "NOM_UC": "NORTH BARRIERE-EARLY SUMMER TIMING",
+   "TYPE_UC": "Bin",
+   "ÉTAT_PSS": "AMBER",
+   "LAT_UC": 51.33891799,
+   "LONG_UC": -119.8004076,
+   "OBJECTID": 22
+ }
+]
