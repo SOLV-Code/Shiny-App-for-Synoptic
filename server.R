@@ -90,25 +90,6 @@ function(input, output, session){
                             ")))
                             }
 
-  output$distPlot <- renderPlot({
-    hist(rnorm(input$obs), col = 'darkgray', border = 'white')
-    
-    output$rendered <-   renderUI({
-      checkboxGroupInput("qualdim", 
-                         label = "Checkbox",
-                         choiceNames  = c("cb1", "cb2"),
-                         choiceValues = c("check1", "check2"),
-                         selected = c("check2"))
-    })
-    
-    output$tooltips <-   renderUI({
-      list(
-        makeCheckboxTooltip(checkboxValue = "check1", buttonLabel = "?", buttonId = "btn1", Tooltip = "tt1!"),
-        makeCheckboxTooltip(checkboxValue = "check2", buttonLabel = "?", buttonId = "btn2", Tooltip = "tt2!")
-      )
-    })
-    
-  })
 # ------------- Data filtering --------------------------  
 
   filter <- reactiveValues()

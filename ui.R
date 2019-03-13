@@ -107,11 +107,6 @@ tags$head(tags$style(
       box(title = "Radar plots", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
           uiOutput("box_RadarPlots")),
       
-       
-      sliderInput("obs", "Number of observations:", min = 10, max = 500, value = 100),
-      uiOutput("rendered"),
-      uiOutput("tooltips"),
-      plotOutput("distPlot"),
       uiOutput("FilterMFTooltips")
       
     )
