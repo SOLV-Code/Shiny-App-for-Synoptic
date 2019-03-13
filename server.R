@@ -65,15 +65,15 @@ arrangeColumns <- function(ds, colOrder=NULL, hide=NULL) {
 # Define server logic 
 function(input, output, session){
   
+  # Add tooltip to checkbox input. Borrowed from
+  #https://stackoverflow.com/questions/36670065/tooltip-in-shiny-ui-for-help-text
   makeCheckboxTooltip <- function(checkboxValue, buttonLabel, buttonId, Tooltip){
     tags$script(HTML(paste0("
                             $(document).ready(function() {
                             var inputElements = document.getElementsByTagName('input');
                             for(var i = 0; i < inputElements.length; i++) {
-                            
                             var input = inputElements[i];
                             if(input.getAttribute('value') == '", checkboxValue, "' && input.getAttribute('value') != 'null') {
-                            
                             var button = document.createElement('button');
                             button.setAttribute('id', '", buttonId, "');
                             button.setAttribute('type', 'button');
@@ -82,13 +82,33 @@ function(input, output, session){
                             button.appendChild(document.createTextNode('", buttonLabel, "'));
                             
                             input.parentElement.parentElement.appendChild(button);
-                            shinyBS.addTooltip('", buttonId, "', \"tooltip\", {\"placement\": \"right\", \"trigger\": \"click\", \"title\": \"", Tooltip, "\"}) 
+                            shinyBS.addTooltip('", buttonId, "', \"tooltip\", {\"placement\": \"right\", \"trigger\": \"click\", \"title\": \"", Tooltip, "\"})
+                            console.log(button)
                             };
                             }
                             });
                             ")))
-     }
+                            }
 
+  output$distPlot <- renderPlot({
+    hist(rnorm(input$obs), col = 'darkgray', border = 'white')
+    
+    output$rendered <-   renderUI({
+      checkboxGroupInput("qualdim", 
+                         label = "Checkbox",
+                         choiceNames  = c("cb1", "cb2"),
+                         choiceValues = c("check1", "check2"),
+                         selected = c("check2"))
+    })
+    
+    output$tooltips <-   renderUI({
+      list(
+        makeCheckboxTooltip(checkboxValue = "check1", buttonLabel = "?", buttonId = "btn1", Tooltip = "tt1!"),
+        makeCheckboxTooltip(checkboxValue = "check2", buttonLabel = "?", buttonId = "btn2", Tooltip = "tt2!")
+      )
+    })
+    
+  })
 # ------------- Data filtering --------------------------  
 
   filter <- reactiveValues()
@@ -180,10 +200,17 @@ function(input, output, session){
     names(metricChoices$Metrics) = as.character(lapply(metricChoices$Metrics, GetLabel))
     names(metricChoices$Attributes) = as.character(lapply(metricChoices$Attributes, GetLabel))
     allMetricChoices <- c(metricChoices$Metrics, metricChoices$Attributes)
-    print(allMetricChoices)
+    metricHelp <- lapply(as.character(allMetricChoices), function(m) {
+              print(MetricInfo[[m]])
+             makeCheckboxTooltip(checkboxValue = m,
+                                 buttonLabel = "?",
+                                 buttonId = sId("dataFiltersMetricHelp", which(as.character(allMetricChoices) == m)),
+                                 Tooltip = htmlEscape(MetricInfo[[m]], attribute=TRUE))
+              })
+
     tagList(
       fluidRow(
-        column(width=5,
+        column(width=4,
                wellPanel(style = WellPanelStyle, tags$b("Step1:",  "Filter your data"), tags$hr(),
                          lapply(FilterAttributes[FilterAttributes %in% names(data.start)], 
                                 function(attrib) {
@@ -205,7 +232,7 @@ function(input, output, session){
                                   fluidRow(column(width=5, tags$div(paste("By ", GetLabel(attrib), ":", sep=""))),
                                             column(width=7, picker))
                                 }))),
-        column(width=3, 
+        column(width=4, 
                wellPanel(style = WellPanelStyle, tags$b("Step2:", "Select metrics and/or attributes of interest"), tags$hr(),
                          fluidRow(
                            # column(width=12, pickerInput(inputId="dataFilters_metrics",
@@ -217,7 +244,8 @@ function(input, output, session){
                             column(width=12, 
                                    checkboxGroupInput(inputId="dataFilters_metrics", label = "", 
                                                       choices=allMetricChoices,
-                                                      selected=as.character(allMetricChoices)))
+                                                      selected=as.character(allMetricChoices)),
+                                   metricHelp)
                          ))),
         column(width=4, 
                wellPanel(style = WellPanelStyle, tags$b("Step3:", "Show analysis for a single year, or change between years?"), tags$hr(),
@@ -244,20 +272,11 @@ function(input, output, session){
         
       ))
   })
+
+
   
-  # output$FilterMFTooltips <- renderUI({
-  #          makeCheckboxTooltip(checkboxValue = "FAZ",
-  #                              buttonLabel = "?",
-  #                              buttonId = sId("dataFilters_help", "FAZ"),
-  #                              Tooltip = "xx")
-  #   
-    # lapply(c(FilterMFMetrics, FilterMFAttributes), function(m) {
-    #        makeCheckboxTooltip(checkboxValue = as.character(m),
-    #                            buttonLabel = "?",
-    #                            buttonId = sId("dataFilters_help", m),
-    #                            Tooltip = "xx")#MetricInfo[[m]])
-    #         })
-#  })
+  
+
   
   # ----------------- Shared data structures used in several widgets ---------------
   

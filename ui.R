@@ -63,6 +63,9 @@ tags$head(tags$style(
 tags$head(tags$style(
   HTML('.content-wrapper {color: #000000 !important;}')
 )),
+tags$head(tags$style(
+  HTML('.tooltip-inner {width: 400px !important;}')
+)),
 
   tabItems(
     tabItem(
@@ -102,9 +105,15 @@ tags$head(tags$style(
           uiOutput("box_HistoSummary")),
       
       box(title = "Radar plots", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
-          uiOutput("box_RadarPlots"))
+          uiOutput("box_RadarPlots")),
       
-#      uiOutput("FilterMFTooltips")
+       
+      sliderInput("obs", "Number of observations:", min = 10, max = 500, value = 100),
+      uiOutput("rendered"),
+      uiOutput("tooltips"),
+      plotOutput("distPlot"),
+      uiOutput("FilterMFTooltips")
+      
     )
   )
 )
