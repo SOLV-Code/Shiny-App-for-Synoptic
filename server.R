@@ -1133,29 +1133,29 @@ function(input, output, session){
     }
     
     # 'dot' plot
-    p.dots <- plot_ly(df, x=~x, y=~y, height = 200, type="scatter", mode="markers", text=~label, hoverinfo="text",
+    p.dots <- plotly::plot_ly(df, x=~x, y=~y, height = 200, type="scatter", mode="markers", text=~label, hoverinfo="text",
                     marker = list(size = 10,
                                   color = ~color,
                                   line = list(color = 'rgba(0, 0, 0, .8)', width = 2))) %>%
-            layout(yaxis = list(title="", 
-                            zeroline = FALSE, 
-                            tickvals = 1:length(bins), 
-                            ticktext=sapply(bins, GetLabel), 
-                            showgrid=FALSE),
-            xaxis = list(visible = FALSE))
+              plotly::layout(yaxis = list(title="", 
+                                          zeroline = FALSE, 
+                                          tickvals = 1:length(bins), 
+                                          ticktext=sapply(bins, GetLabel), 
+                                          showgrid=FALSE),
+                             xaxis = list(visible = FALSE))
     # barplot
-    p.bars <- plot_ly(dfbars, y=~y, x=~x.sel, height = 200, type="bar", orientation='h',
-                   name="selected", text=~x.sel.l, hoverinfo="text", 
-                   marker = list( color = 'red',
-                                 line = list(color = 'rgba(0, 0, 0, .8)', width = 2))) %>%
-            add_trace(x = ~x.notsel, 
-                   name = "not selected", text=~x.notsel.l, hoverinfo="text",
-                   marker = list( color = 'white',
-                                  line = list(color = 'rgba(0, 0, 0, .8)', width = 2))) %>%
-            layout(yaxis = list(title="", zeroline = FALSE, showgrid=FALSE),
-                   xaxis = list(visible = FALSE),
-                   barmode = 'stack',
-                   showlegend=F)
+    p.bars <- plotly::plot_ly(dfbars, y=~y, x=~x.sel, height = 200, type="bar", orientation='h',
+                              name="selected", text=~x.sel.l, hoverinfo="text", 
+                              marker = list( color = 'red',
+                                             line = list(color = 'rgba(0, 0, 0, .8)', width = 2))) %>%
+              plotly::add_trace(x = ~x.notsel, 
+                                name = "not selected", text=~x.notsel.l, hoverinfo="text",
+                                marker = list( color = 'white',
+                                                line = list(color = 'rgba(0, 0, 0, .8)', width = 2))) %>%
+              plotly::layout(yaxis = list(title="", zeroline = FALSE, showgrid=FALSE),
+                             xaxis = list(visible = FALSE),
+                             barmode = 'stack',
+                             showlegend=F)
     list(dots=p.dots, bars=p.bars)
   }
   
@@ -1197,7 +1197,7 @@ function(input, output, session){
       for(a in names(summaries)) {
         local({ 
            lc_a <- a
-           output[[sId('summary', lc_a)]] <- renderPlotly({summaries[[lc_a]][[input$summary_type]]}) 
+           output[[sId('summary', lc_a)]] <- plotly::renderPlotly({summaries[[lc_a]][[input$summary_type]]}) 
         })
       }
   })
@@ -1217,7 +1217,7 @@ function(input, output, session){
     plots <- lapply(summaryAttribs, function(a) {
               column(width=4, tags$div(title=MetricInfo[[a]],
                                        h4(GetLabel(a)),
-                                       plotlyOutput(sId('summary', a), height=200)))})
+                                       plotly::plotlyOutput(sId('summary', a), height=200)))})
   
     tagList(fluidRow(column(width=3, cntrl)),
             fluidRow(do.call(tagList, plots)))
