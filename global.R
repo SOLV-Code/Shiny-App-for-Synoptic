@@ -34,10 +34,10 @@ Labels <- list(Base.Unit.CU.ShortName = "CU",
                Upper.Ratio = "Upper Ratio",
                LongTerm.Ratio = "Long-term Ratio",
                ShortTerm.Trend = "Short-term Trend",
-               Estu="Sockeye EStu", 
-               Early_Summer="Sockeye ES", 
-               Summer="Sockeye S", 
-               Late="Sockeye Late")
+               EStu="EStu", 
+               Early_Summer="ES", 
+               Summer="S", 
+               Late="Late")
   
 # get the label for pretty printing, given the name of a metric, attribute, or attribute category
 GetLabel <- function(m) {
@@ -48,6 +48,28 @@ GetLabel <- function(m) {
     m
   }
 }
+
+# get named choices for a metric or attribute, given the name of the metric 
+# and a data frame with a column of values for that metric
+GetNamedChoices  <- function(m, df) {
+  if (!(m %in% names(df))) {
+    NULL
+  } else {
+    if (all(is.na(df[, m]))) {
+      list('NA' = 'NA')
+    } else {
+      if (is.factor(df[, m])) {
+        choices <- levels(df[, m]) 
+        choices <- choices[choices %in% df[, m]]
+      } else {
+        unique(as.character(df[, m]))
+      }
+      names(choices) <- sapply(choices, GetLabel)
+      choices
+    }
+  }
+}
+
 # ------------------- put together initial data set -------------------
 # Hack alert!! Get the data from two different files. The first one covers
 # only Fraser sockeye and has a complete list of metrics, but no lat-long information.
@@ -153,7 +175,7 @@ HistoCustomInfo <- list(
   Change = list(
     Recent.ER = list(
       breaks = c(-1, -0.1, -0.05, -0.01,0.01, 0.05, 0.1, 1),
-      names = c(">10% decrease", "5%-10% decrease", "0-5% decrease","No Change", "0-5% increase", "5-10% increase",">10 increase")
+      names = c(">10% decr", "5%-10% decr", "0-5% decr","No Change", "0-5% incr", "5-10% incr",">10% incr")
     )
   ))
 

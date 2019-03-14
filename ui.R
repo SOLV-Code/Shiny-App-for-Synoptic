@@ -67,6 +67,13 @@ tags$head(tags$style(
   HTML('.tooltip-inner {width: 400px !important;}')
 )),
 
+tags$head(tags$style(
+  HTML('.scroll-container {
+          width: 1200px;   
+          overflow: auto;    
+          scrollbar-base-color:#ffeaff
+       }'))),
+
   tabItems(
     tabItem(
       tabName = "DISCLAIM",
@@ -96,7 +103,7 @@ tags$head(tags$style(
           uiOutput("box_LeafletMap")),
       
       box(title = "View/select CUs by performance metric (parallel coordinates plot)", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
-          uiOutput("box_Parcoords")),
+          div(style = 'overflow-x: scroll', uiOutput("box_Parcoords"))),
 
       box(title = "View/select CUs on a data table", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
           div(style = 'overflow-x: scroll', uiOutput("box_SelectedDataTable"))),
@@ -105,10 +112,7 @@ tags$head(tags$style(
           uiOutput("box_HistoSummary")),
       
       box(title = "Radar plots", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
-          uiOutput("box_RadarPlots")),
-      
-      uiOutput("FilterMFTooltips")
-      
+          uiOutput("box_RadarPlots"))
     )
   )
 )

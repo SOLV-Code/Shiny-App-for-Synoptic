@@ -119,8 +119,8 @@ function(input, output, session){
   # to the values available in the data frame for the given attributes
   updatePickerInputs <- function(attribs, df) {
     for (a in attribs[attribs %in% names(df)]) {
-        pickerOpts <- unique(as.character(df[ , a]))
-        updatePickerInput(session, sId("dataFilters", a), choices=pickerOpts, selected=pickerOpts)
+      choices <- GetNamedChoices(a, df)
+      updatePickerInput(session, sId("dataFilters", a), choices=choices, selected=choices)
     }
   }
   
@@ -160,7 +160,7 @@ function(input, output, session){
 
   observeEvent(                            
     {input$dataFilters_changeyear_1},{ 
-      choices <- data.years[as.numeric(data.years) < input$dataFilters_changeyear_2]
+      choices <- data.years[as.numeric(data.years) > as.numeric(input$dataFilters_changeyear_1)]
       updatePickerInput(session, "dataFilters_changeyear_2", 
                         choices=choices, 
                         selected=choices[1])  
@@ -168,7 +168,7 @@ function(input, output, session){
   
   observeEvent(                            # will need to update selections once we have more than 2 years so both cannot be same year
     {input$dataFilters_changeyear_2},{ 
-      choices <- data.years[as.numeric(data.years) < input$dataFilters_changeyear_2]
+      choices <- data.years[as.numeric(data.years) < as.numeric(input$dataFilters_changeyear_2)]
       updatePickerInput(session, "dataFilters_changeyear_1", 
                         choices=choices, 
                         selected=choices[1] )  
@@ -182,8 +182,7 @@ function(input, output, session){
     names(metricChoices$Attributes) = as.character(lapply(metricChoices$Attributes, GetLabel))
     allMetricChoices <- c(metricChoices$Metrics, metricChoices$Attributes)
     metricHelp <- lapply(as.character(allMetricChoices), function(m) {
-              print(MetricInfo[[m]])
-             makeCheckboxTooltip(checkboxValue = m,
+                          makeCheckboxTooltip(checkboxValue = m,
                                  buttonLabel = "?",
                                  buttonId = sId("dataFiltersMetricHelp", which(as.character(allMetricChoices) == m)),
                                  Tooltip = htmlEscape(MetricInfo[[m]], attribute=TRUE))
@@ -193,20 +192,20 @@ function(input, output, session){
       fluidRow(
         column(width=4,
                wellPanel(style = WellPanelStyle, tags$b("Step1:",  "Filter your data"), tags$hr(),
-                         lapply(FilterAttributes[FilterAttributes %in% names(data.start)], 
-                                function(attrib) {
+                         lapply(FilterAttributes[FilterAttributes %in% names(data.start)], function(attrib) {
+                                  choices <- GetNamedChoices(attrib, data.start)
                                   if (attrib %in% FilterSingleChoiceAttributes) { 
                                     picker <- pickerInput(inputId=sId("dataFilters", attrib),					 
                                                           label=NULL,
-                                                          choices=unique(as.character(data.start[, attrib])),
-                                                          selected=unique(as.character(data.start[, attrib]))[1],
+                                                          choices=choices,
+                                                          selected=choices[1],
                                                           multiple=FALSE,
                                                           options=PickerOptsSingleSelect)
                                   } else {
                                     picker <- pickerInput(inputId=sId("dataFilters", attrib),					 
                                                           label=NULL,
-                                                          choices=unique(as.character(data.start[, attrib])),
-                                                          selected=unique(as.character(data.start[, attrib])),
+                                                          choices=choices,
+                                                          selected=choices,
                                                           multiple=TRUE,
                                                           options=PickerOptsMultiSelect)
                                   }
@@ -384,34 +383,45 @@ function(input, output, session){
     }
   }
   
-  inRange <- function(val, range) {!is.na(val) && val >= min(range) && val <= max(range)}
+  inRange <- function(v, range) {!is.na(v) & v >= range[1] & v <= range[2]}
   
   output$box_DataSelectors <- renderUI({
     tagList(
       tags$b("Use these widgets to generate a selection of CUs 'of concern' that can be compared to the full (filtered) dataset"),
       fluidRow(
         column(width=5,
-               wellPanel(style = WellPanelStyle, tags$h4("Select by Attribute"), tags$hr(),
+               wellPanel(style = WellPanelStyle, 
+                         fluidRow(column(width=7, tags$h4("Select by Attribute")),
+                                  column(width=5, checkboxInput("dataSelectors_allAttribs", 
+                                                                label="All",
+                                                                value=F))),
+                         tags$hr(),
                          fluidRow(lapply(SelectAttributes[SelectAttributes %in% names(data.filtered())], 
                                          function(m) {
-                                            if (m %in% names(filter)) {
-                                              choices <- filter[[m]]
-                                            } else {
-                                              f <- factor(data.filtered()[,m])
-                                              choices <- levels(f)
-                                            }
                                             pickerInput(inputId=sId("dataSelectors", m),					 
                                                         label=GetLabel(m),
-                                                        choices=choices,
+                                                        choices=GetNamedChoices(m, data.filtered()),
                                                         selected=NULL,
                                                         multiple=TRUE,
                                                         options=PickerOptsMultiSelect)
                                         }))),
                fluidRow(
+                 column(width=12, radioGroupButtons("dataSelectors_selectionType", label = NULL,
+                                            choices = c("Combine", "Intersect"),
+                                            selected = "Combine",
+                                            status = "primary",
+                                            size = "normal", 
+                                            justified = TRUE,
+                                            individual = FALSE)),
                  column(width=6, actionButton("dataSelectors_addToSelection",label="Add to Selection", style=ButtonStyle)),
                  column(width=6, actionButton("dataSelectors_resetSelectors",label="Reset Selectors", style=ButtonStyle)))),
         column(width=7, 
-               wellPanel(style = WellPanelStyle, tags$h4("Select by Metric Range"), tags$hr(),
+               wellPanel(style = WellPanelStyle, 
+                         fluidRow(column(width=7, tags$h4("Select by Metric Range")),
+                                  column(width=5, checkboxInput("dataSelectors_allRanges", 
+                                                                label="All",
+                                                                value=F))),
+                         tags$hr(),
                          fluidRow(lapply(numericMetrics(data.filtered()), 
                                          function(m) {column(width=12, 
                                                              fluidRow(column(width=5, tags$b(GetLabel(m)), `style` = "line-height:50px;"),
@@ -423,15 +433,42 @@ function(input, output, session){
   
   observeEvent(input$dataSelectors_addToSelection,{
     df <- data.filtered()
-    # apply selection criteria - use OR here to let users add CUs as they go through the widgets 
-    selected <- rep(F, nrow(df))
-    for (a in SelectAttributes[SelectAttributes %in% names(df)]) {
-      selected <- selected | as.character(df[,a]) %in% input[[sId("dataSelectors", a)]]
+    if (input$dataSelectors_selectionType == "Combine") {
+      st <- 'or' # string selection together using logic 'or'
+    } else {
+      st <- 'and' # string selection together using logic 'and'
     }
-    for (m in numericMetrics(df)) {
-      selected <- selected | inRange(df[, m], input[[sId('dataSelectors', m)]]) 
-      if (input[[sId('dataSelectors_IncludeNAs', m)]]) {
-         selected <- selected | is.na(df[, m]) 
+      
+    combine <- function(type, sel1, sel2) {
+      if (type == "or") {
+        sel1 | sel2
+      } else {
+        sel1 & sel2
+      }
+    }
+      
+    # apply selection criteria - use OR here to let users add CUs as they go through the widgets 
+    if (st == 'or') {
+        selected <- rep(F, nrow(df)) # start with empty selection, add to it
+    } else { # start with all selected, remove any that are not within the current range
+      selected <- rep(T, nrow(df))
+    }
+    if (input$dataSelectors_allAttribs) {
+      selected <- combine(st, selected, rep(T, nrow(df)))
+    } else {
+      for (a in SelectAttributes[SelectAttributes %in% names(df)]) {
+       selected <- combine(st, selected, as.character(df[,a]) %in% input[[sId("dataSelectors", a)]])
+      }
+    }
+    if (input$dataSelectors_allRanges) {
+      selected <- combine(st, selected, rep(T, nrow(df)))
+    } else {       
+      for (m in numericMetrics(df)) {
+        sels <- inRange(df[, m], input[[sId('dataSelectors', m)]])
+        if (input[[sId('dataSelectors_IncludeNAs', m)]]) { # add na values
+          sels <- sels | is.na(df[, m])
+        }
+        selected <- combine(st, selected, sels)
       }
     }
     if (any(selected)) {
@@ -441,19 +478,14 @@ function(input, output, session){
   
   observeEvent(input$dataSelectors_resetSelectors, {
     for (a in SelectAttributes[SelectAttributes %in% names(data.filtered())]) {
-      if (a %in% names(filter)) {
-        choices <- filter[[a]]
-      } else {
-        f <- factor(data.filtered()[,a])
-        choices <- levels(f)
-      }
-      
-      updatePickerInput(session, sId("dataSelectors", a), selected=NULL, choices=choices)
+      updatePickerInput(session, sId("dataSelectors", a), selected=NULL, choices=GetNamedChoices(a, data.filtered()))
     }
     for (m in numericMetrics(data.filtered())) {
       updateCheckboxInput(session, sId('dataSelectors_IncludeNAs', m), value=F)
       resetSlider(m)
     }
+    updateCheckboxInput(session, "dataSelectors_allAttribs", label="All", value=F)
+    updateCheckboxInput(session, "dataSelectors_allRanges", label="All", value=F)
   })
   
   #------------------- Map  ------------------
@@ -472,13 +504,19 @@ function(input, output, session){
   # create one row with information on the given metric
   makePopupTableRow <- function(metric, end, start) {
     if (is.null(start)) {
-      tr <- tags$tr(tags$td(GetLabel(metric)), tags$td(as.character(end)), tags$td(''))
+      tr <- tags$tr(tags$td(GetLabel(metric)), 
+                    tags$td(as.character(round(as.numeric(end), 2))), 
+                    tags$td(''))
     } else {
       if (is.na(start) || is.na(end)) {
-        tr <- tags$tr(tags$td(GetLabel(metric)), tags$td('NA'), tags$td(''))
+        tr <- tags$tr(tags$td(GetLabel(metric)), 
+                      tags$td('NA'), 
+                      tags$td(''))
       } else {
         change <- (end - start)/start
-        tr <- tags$tr(tags$td(GetLabel(metric)), tags$td(end), tags$td(HTML(makeArrow(polarAngle(change)))))
+        tr <- tags$tr(tags$td(GetLabel(metric)), 
+                      tags$td(as.character(round(as.numeric(end), 2))), 
+                      tags$td(HTML(makeArrow(polarAngle(change)))))
       }
     }
     tr
@@ -506,7 +544,7 @@ function(input, output, session){
     })
   }
   
-  fishIcons <- iconList(
+  fishIcons <- leaflet::iconList(
     'red-fish' = makeIcon("fish-red.png", "fish-red.png", iconHeight=24, iconWidth=24),
     'black-fish' = makeIcon("fish-black.png", "fish-black.png", iconHeight=24, iconWidth=24)
   )
@@ -549,8 +587,8 @@ function(input, output, session){
       CUpolys$grp <- factor(CUpolys$grp, levels <- c(as.character(MapLevelLabels[['Management.Timing']]),
                                                      as.character(MapLevelLabels[['Base.Unit.Species']])))
       # jitter the marker locations so all will be visible
-      CUpolys$latitude <- jitter(CUpolys$latitude, factor=10)
-      CUpolys$longitude <- jitter(CUpolys$longitude, factor=10)
+      CUpolys$latitude <- jitter(CUpolys$latitude, factor=0.050)
+      CUpolys$longitude <- jitter(CUpolys$longitude, factor=0.050)
       CUpolys
     } else {
       NULL
@@ -696,8 +734,8 @@ function(input, output, session){
   })
  
  
-  output$parcoords_Plot <- renderParcoords({ p <- try(
-                                                parcoords(data=sharedDS.parcoords,
+  output$parcoords_Plot <- parcoords::renderParcoords({ p <- try(
+                                                parcoords::parcoords(data=sharedDS.parcoords,
                                                   autoresize=TRUE,
                                                   color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Management.Timing"),
                                                   rownames=T,
@@ -807,7 +845,8 @@ function(input, output, session){
                                    label="Scale to Selected",icon("search-plus"), 
                                    style=ButtonStyle)),
              
-             parcoordsOutput("parcoords_Plot", height="600px"),           # 400px is defaultheight
+    #         tags$div(`class` = 'scroll-container', `style`="width: 500px; height=600px; overflow: auto; border: 1px solid;",
+                      parcoords::parcoordsOutput("parcoords_Plot", height="600px"),           # 400px is defaultheight
              uiOutput("parcoords_Controls"))
   })
   
