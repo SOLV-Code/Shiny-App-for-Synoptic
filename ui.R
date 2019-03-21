@@ -15,27 +15,65 @@
 library(shinydashboard)
 library(shinyWidgets)
 library(markdown)
+library(shinyBS)
 
 
 sidebar <- shinydashboard::dashboardSidebar(
+  
   shinydashboard::sidebarMenu(
-    #   id = "tabs",
+    id = "tabs",
     menuItem("DISCLAIMER", tabName="DISCLAIM"),
     menuItem("CU Status Summary", tabName="CUSelection"),
     menuItem("View Full Data", tabName="AllData"),
-    br(),br(), br(),br(), br(),br(),
-    br(),br(), br(),br(), br(),br(),
-    br(),br(), br(),br(), br(),br(),
-    hr(),# Two line breaks for visual separation
-    h5("Built with",
-       img(src = "https://www.rstudio.com/wp-content/uploads/2014/04/shiny.png", height = "30px"),
-       "by",
-       img(src="https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray.png", height="30px"),
-       ".")
+    
+    conditionalPanel("input.tabs == 'CUSelection'",
+                     tags$hr(),
+                     actionButton("sidebarMenu_clearSelection", label = "Clear Selection", style=ButtonStyle)),
+    
+    tags$div(
+      `style` = "position: absolute; bottom: 0;",
+      hr(),
+      h5("Built with",
+        img(src = "https://www.rstudio.com/wp-content/uploads/2014/04/shiny.png", height = "30px"),
+        "by",
+        img(src="https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray.png", height="30px"),
+        ".")
+    )
   )
 )
 
-body <- shinydashboard::dashboardBody(
+body <- shinydashboard::dashboardBody(`style` = "min-height: 400px",
+  shinyjs::useShinyjs(),
+  tags$head(HTML("<script type='text/javascript' src='sbs/shinyBS.js'></script>")),
+
+tags$head(tags$style(
+  HTML('.skin-blue {min-height: 400px !important;}')
+)),
+tags$head(tags$style(HTML('
+        .skin-blue .main-header .logo {
+                            background-color: #3c8dbc;
+                            }
+                            .skin-blue .main-header .logo:hover {
+                            background-color: #3c8dbc;
+                            }
+                            '))),
+tags$head(tags$style(
+  HTML('.content-wrapper {height: auto !important; position:relative; overflow-x:hidden; overflow-y:hidden}')
+)),
+tags$head(tags$style(
+  HTML('.content-wrapper {color: #000000 !important;}')
+)),
+tags$head(tags$style(
+  HTML('.tooltip-inner {width: 400px !important;}')
+)),
+
+tags$head(tags$style(
+  HTML('.scroll-container {
+          width: 1200px;   
+          overflow: auto;    
+          scrollbar-base-color:#ffeaff
+       }'))),
+
   tabItems(
     tabItem(
       tabName = "DISCLAIM",
@@ -55,22 +93,25 @@ body <- shinydashboard::dashboardBody(
       
     tabItem(
       tabName = "CUSelection",
-      box(title = "Start here", width=12, status="info", solidHeader=TRUE, collapsible=TRUE, collapsed=FALSE,
+      box(title = "Start here", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=FALSE, status=BoxHeaderStatus,
           uiOutput("box_DataFilters")),
       
-      box(title = "View/select CUs on a map", width=12, status="info", solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE,
+      box(title = "Select CUs by attributes and/or metric values", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE, status=BoxHeaderStatus,
+          uiOutput("box_DataSelectors")),
+      
+      box(title = "View/select CUs on a map", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE, status=BoxHeaderStatus,
           uiOutput("box_LeafletMap")),
       
-      box(title = "View/select CUs by performance metric (parallel coordinates plot)", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
-          uiOutput("box_Parcoords")),
+      box(title = "View/select CUs by performance metric (parallel coordinates plot)", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
+          div(style = 'overflow-x: scroll', uiOutput("box_Parcoords"))),
 
-      box(title = "View/select CUs on a data table", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
-          div(style = 'overflow-x: scroll', uiOutput("box_Data"))),
+      box(title = "View/select CUs on a data table", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
+          div(style = 'overflow-x: scroll', uiOutput("box_SelectedDataTable"))),
       
-      box(title = "Summary report", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
+      box(title = "Summary report", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
           uiOutput("box_HistoSummary")),
       
-      box(title = "Radar plots", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
+      box(title = "Radar plots", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
           uiOutput("box_RadarPlots"))
     )
   )

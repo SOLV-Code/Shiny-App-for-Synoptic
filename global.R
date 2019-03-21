@@ -1,7 +1,7 @@
 
 # ----- explanatory information for the different metrics ---------
 
-metricInfo <- list(
+MetricInfo <- list(
   Base.Unit.CU.ShortName = "Conservation Unit",
   Base.Unit.Species = "Species Code (Sk = Sockeye, Ck = Chinook, ...)",
   FAZ = "Freshwater Adaptive Zone",
@@ -18,6 +18,57 @@ metricInfo <- list(
                   (UD = Undetermined, R = Red, RA = Red/Amber, A = Amber, AG = Amber/Green, G = Green)",
   Recent.ER = "Recent.ER: the average exploitation rate over the most recent generation",
   Management.Timing = "Management timing: return timing of the spawning migration used for fisheries management purposes")
+
+# add labels here for any names or categories that should be shown with pretty labels
+Labels <- list(Base.Unit.CU.ShortName = "CU",
+               Base.Unit.Species = "Species",
+               Sk = "Sockeye",
+               Ck = "Chinook",
+               FAZ="FAZ",
+               BaseUnit.Watershed = "Watershed",
+               Management.Timing = "Management Timing",
+               WSP.status = "WSP Status",
+               Recent.Total = "Recent Total", 
+               Recent.ER = "Recent ER",
+               Lower.Ratio = "Lower Ratio",
+               Upper.Ratio = "Upper Ratio",
+               LongTerm.Ratio = "Long-term Ratio",
+               ShortTerm.Trend = "Short-term Trend",
+               EStu="EStu", 
+               Early_Summer="ES", 
+               Summer="S", 
+               Late="Late")
+  
+# get the label for pretty printing, given the name of a metric, attribute, or attribute category
+GetLabel <- function(m) {
+  if (m %in% names(Labels)) {
+    Labels[[m]]
+  } else
+  {
+    m
+  }
+}
+
+# get named choices for a metric or attribute, given the name of the metric 
+# and a data frame with a column of values for that metric
+GetNamedChoices  <- function(m, df) {
+  if (!(m %in% names(df))) {
+    NULL
+  } else {
+    if (all(is.na(df[, m]))) {
+      list('NA' = 'NA')
+    } else {
+      if (is.factor(df[, m])) {
+        choices <- levels(df[, m]) 
+        choices <- choices[choices %in% df[, m]]
+      } else {
+        choices <- unique(as.character(df[, m]))
+      }
+      names(choices) <- sapply(choices, GetLabel)
+      choices
+    }
+  }
+}
 
 # ------------------- put together initial data set -------------------
 # Hack alert!! Get the data from two different files. The first one covers
@@ -54,7 +105,7 @@ data.CUpolygons <- spTransform(data.CUpolygons, CRS("+proj=longlat +datum=WGS84"
 # CUlabels should be a named vector that specified the label for each CU
 # if CUlabels is given, uses the labels from CUlabels
 # otherwise assumes that the ds row names are to be used as the labels 
-withLabels <- function(ds, CUnames = NULL) {
+WithLabels <- function(ds, CUnames = NULL) {
   if (is.null(CUnames)) {
     ds$labels <- row.names(ds)
   } else {
@@ -63,37 +114,58 @@ withLabels <- function(ds, CUnames = NULL) {
   return(ds)
 }
 
-# ------------ Data filtering --------------
-
-# the names of the metrics users may choose from
-CUMetrics <- list("WSP Status"="WSP.status",
-                    "Recent Total"="Recent.Total", 
-                    "Recent ER"="Recent.ER",
-                    "Lower Ratio"="Lower.Ratio",
-                    "Upper Ratio"="Upper.Ratio",
-                    "Long-term Ratio"="LongTerm.Ratio",
-                    "Short-term Trend"="ShortTerm.Trend")
-
-# the names of the attributes users may choose from
-CUAttributes <- list("FAZ"="FAZ",
-                     "Watershed"="BaseUnit.Watershed",
-                     "Management Timing"="Management.Timing")
-
-# attributes for which it doesn't make sense to let the user select whether they should be shown
-hiddenAttributes <- list("CU"="Base.Unit.CU.ShortName",
-                         "Species"="Base.Unit.Species")
-
-
 # ------------------------ UI customization -----------------
 
-# show the following axes in parcoords, in the order specified here
-metricOrderParcoords <- c(as.character(CUMetrics), "Management.Timing", "FAZ") 
+# ------------------ Common Styles ---------
+BoxHeaderStatus = 'primary'
+WellPanelStyle <- "background: white"
+PickerOptsSingleSelect <- list(`show-tick`=TRUE)
+PickerOptsMultiSelect <- list(`show-tick`=TRUE, `actions-box`=TRUE, `selected-text-format`='count')
+ButtonStyle <- "color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; font-size: 100%"
 
+# ------------ Data Filtering UI --------------
+# attribute filter customization
+# the names of the attributes users may filter by, shown in this order
+FilterAttributes <- c("Base.Unit.Species", "FAZ", "BaseUnit.Watershed", "Management.Timing")
+# allow only a single choice for these attributes:
+FilterSingleChoiceAttributes <- c("Base.Unit.Species")
+
+# metric selector customization
+# the names of the metrics users may choose from
+FilterMFMetrics <- c("WSP.status", "WSP.numeric", "Recent.Total", "Recent.ER",
+                     "Lower.Ratio","Upper.Ratio","LongTerm.Ratio",
+                     "ShortTerm.Trend")
+
+# the names of the attributes users may choose from
+FilterMFAttributes <- c("FAZ", "BaseUnit.Watershed", "Management.Timing")
+
+# attributes for which it doesn't make sense to let the user select whether they should be shown
+FilterMFhiddenAttributes <- c("Base.Unit.CU.ShortName", "Base.Unit.Species")
+
+# ---------------- Data Selector UI ------------------
+
+SelectAttributes <- c('Base.Unit.CU.ShortName',
+                   'BaseUnit.Watershed',
+                   'FAZ',
+                   'Management.Timing',
+                   'WSP.status')
+
+# ---------------- Parcoords UI ------------------
+# show the following axes in parcoords, in the order specified here
+ParcoordsMetricOrder <- c("Recent.Total", "Recent.ER",
+                          "Lower.Ratio","Upper.Ratio","LongTerm.Ratio",
+                          "ShortTerm.Trend",
+                          "WSP.status", "WSP.numeric", "Management.Timing", "FAZ") 
+
+# ---------------- Historgram Summaries UI ------------------
 # histogram summaries will be generated for these metrics/attributes in the order specified
-histoSummaryAttribs <- c("Management.Timing", "FAZ", "WSP.status", "Recent.ER")
+HistoSummaryAttribs <- c("Management.Timing", "FAZ", "WSP.status", "Recent.ER")
+
+# the number of CUs afte which display switches to bars by default
+HistoMaxDots <- 40
 
 # this list specifies the information necessary to construct a histogram from a numeric metric 
-customHistogramInfo <- list(
+HistoCustomInfo <- list(
   Annual = list( 
     Recent.ER = list(
       breaks = c( 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1),
@@ -103,31 +175,20 @@ customHistogramInfo <- list(
   Change = list(
     Recent.ER = list(
       breaks = c(-1, -0.1, -0.05, -0.01,0.01, 0.05, 0.1, 1),
-      names = c(">10% decrease", "5%-10% decrease", "0-5% decrease","No Change", "0-5% increase", "5-10% increase",">10 increase")
+      names = c(">10% decr", "5%-10% decr", "0-5% decr","No Change", "0-5% incr", "5-10% incr",">10% incr")
     )
   ))
 
+# --------------- Radar Plot UI ----------------
+
 # the metrics offered as choices for the radar plot
-radarMetricOpts <- c("Short Term Trend" = "ShortTerm.Trend",  
-                     "Recent Total" = "Recent.Total", 
-                     "Lower Ratio" = "Lower.Ratio", 
-                     "Upper Ratio" = "Upper.Ratio",
-                     "Long-term Ratio"="LongTerm.Ratio")
+RadarMetricOpts <- c("ShortTerm.Trend", "Recent.Total", "Lower.Ratio", "Upper.Ratio", "LongTerm.Ratio")
 
 
-# get the label for pretty printing, given the name of a metric
-getLabel <- function(m) {
-  colLabels <- c(CUMetrics, CUAttributes, hiddenAttributes)
-  if (m %in% colLabels) {
-    names(colLabels)[which(colLabels == m)]
-  } else
-  {
-    m
-  }
-}
+# -------------------- Map UI ______________________
 
 # labels for levels of individual data columns
-levelLabels <- list(
+MapLevelLabels <- list(
   Management.Timing = list(Estu="Fraser Sockeye Early Stuart", 
                            Early_Summer="Fraser Sockeye Early Summer", 
                            Summer="Fraser Sockeye Summer", 
@@ -135,9 +196,5 @@ levelLabels <- list(
   Base.Unit.Species = list(SK = "Sockeye", CK = "Chinook")
 )
 
-# the metrics to include in the map labels
-mapLabelMetrics <-  c("Short Term Trend" = "ShortTerm.Trend",  
-                   "Recent Total" = "Recent.Total", 
-                   "Lower Ratio" = "Lower.Ratio", 
-                   "Upper Ratio" = "Upper.Ratio",
-                   "Long-term Ratio"="LongTerm.Ratio")
+# the metrics to include in the map labels (i.e., the popups shown on hover)
+MapLabelMetrics <-  c("ShortTerm.Trend", "Recent.Total", "Lower.Ratio", "Upper.Ratio", "LongTerm.Ratio")
