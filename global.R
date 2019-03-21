@@ -126,7 +126,7 @@ ButtonStyle <- "color: #fff; background-color: #337ab7; border-color: #2e6da4, h
 # ------------ Data Filtering UI --------------
 # attribute filter customization
 # the names of the attributes users may filter by, shown in this order
-FilterAttributes <- c("Base.Unit.Species", "FAZ", "BaseUnit.Watershed", "Management.Timing", "Base.Unit.CU.ShortName")
+FilterAttributes <- c("Base.Unit.Species", "FAZ", "BaseUnit.Watershed", "Management.Timing")
 # allow only a single choice for these attributes:
 FilterSingleChoiceAttributes <- c("Base.Unit.Species")
 

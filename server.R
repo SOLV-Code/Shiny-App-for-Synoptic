@@ -363,16 +363,15 @@ function(input, output, session){
       idNA <- paste(id, "includeNAs", sep='_')
       observeEvent({input[[id]]
                     input[[idNA]]}, 
-                   {setMetricSelection(id, m)}, 
+                    {setSelection()},
                    ignoreNULL = FALSE, ignoreInit = TRUE)
+      # need to set step size and make the slider & selection one step bigger than data values, 
+      # otherwise the boundary values used to define the range may end up selecting out extreme data points 
       sliderInput(inputId = id,
                   label = NULL, #GetLabel(m),
-                  min = s$min,
-                  max = s$max,
+                  min = s$min-0.001,
+                  max = s$max+0.001,
                   step=0.001,
-                  # need to set step size and make this one step bigger, 
-                  # otherwise the boundary values used to define the range
-                  # may end up outside the actual range as set by shiny
                   value=c(s.sel$min-0.001, s.sel$max+0.001))
     } else {
       NULL
@@ -405,8 +404,7 @@ function(input, output, session){
     renderUI({
       df <- data.filtered()
       df$Base.Unit.CU.ShortName <- row.names(df)
-      #sel <- data.currentSelection() # widgets adjust their initial selection based on external selection
-      sel <- row.names(df) # initial choice is to have everything 'on'
+      sel <- row.names(df) # initially, have everything 'on'. Let this be modified if/when a selection is set
       tagList(
         tags$b("Use these widgets to generate a selection of CUs 'of concern' that can be compared to the full (filtered) dataset"),
         fluidRow(
@@ -417,7 +415,7 @@ function(input, output, session){
                           fluidRow(lapply(SelectAttributes[SelectAttributes %in% names(df)], 
                                          function(m) {
                                             id <- sId("dataSelectors", m)
-                                            observeEvent(input[[id]], {setAttributeSelection(id, m)}, ignoreNULL = FALSE, ignoreInit = TRUE)
+                                            observeEvent(input[[id]], {setSelection()}, ignoreNULL = F, ignoreInit = T)
                                             pickerInput(inputId=sId("dataSelectors", m),					 
                                                         label=GetLabel(m),
                                                         choices=GetNamedChoices(m, df),
@@ -426,7 +424,6 @@ function(input, output, session){
                                                         options=PickerOptsMultiSelect)
                                         }))),
                 fluidRow(
-                 #column(width=6, actionButton("dataSelectors_setSelection",label="Apply", style=ButtonStyle)),
                   column(width=6, actionButton("dataSelectors_resetSelection",label="Reset", style=ButtonStyle)))),
           column(width=7, 
                wellPanel(style = WellPanelStyle, 
@@ -446,146 +443,52 @@ function(input, output, session){
   output$box_DataSelectors <- drawSelectorWidgets()
   
 
-  # observeEvent(data.filtered(), {
-  #   df <- data.filtered()
-  #   df$Base.Unit.CU.ShortName <- row.names(df)
-  #   sel <- data.currentSelection()
-  #   if (is.null(sel)) sel <- row.names(df)
-  #   for (a in SelectAttributes[SelectAttributes %in% names(df)]) {
-  #     choices <- GetNamedChoices(a, df)
-  #     selected <- GetNamedChoices(a, df[sel, ])
-  #     updatePickerInput(session, sId("dataSelectors", a), selected=selected, choices=choices)
-  #   }
-  #   for (m in numericMetrics(data.filtered())) {
-  #     resetSlider(m, sel, df)
-  #     if (any(is.na(df[sel, m]))) {
-  #       updateCheckboxInput(session, sId('dataSelectors_IncludeNAs', m), label="NAs", value=T)
-  #     } else {
-  #       updateCheckboxInput(session, sId('dataSelectors_IncludeNAs', m), label="NAs", value=F)
-  #     }
-  #   }
-  # })
-    
-  
-  # setSelectionForId <- function(id) {
-  #   if (!is.null(input[[id]])) {
-  #     df <- data.filtered()
-  #     if (grepl(id, "dataSelectors_IncludeNAs")) {
-  #       m <- gsub('dataSelectors_IncludeNAs', id)
-  #       if (input[[id]]) {
-  #         data.setSelection(data.currentSelection() %in% row.names(df)[is.na(df[ ,m])], "dataSelectors")
-  #       } else {
-  #         data.setSelection(data.currentSelection() %in% row.names(df)[!is.na(df[ ,m])], "dataSelectors")
-  #       }
-  #     } else {
-  #       m <- gsub('dataSelectors_', id)
-  #       if (is.numeric(df[, m])) {
-  #         data.setSelection(data.currentSelection() %in% row.names(df)[inRange(df[ ,m], input[[id]])], "dataSelectors")
-  #       } else {
-  #         data.setSelection(data.currentSelection() %in% row.names(df)[df[ ,m] %in% input[[id]]], "dataSelectors")
-  #       }
-  #     }
-  #   }
-  # }
-
-  setAttributeSelection <- function(id, m) {
-    if (id %in% names(input)) {
+  #update with current selection
+  observeEvent(data.currentSelection(), {
+    if (is.null(data.currentSelection()) || length(data.currentSelection()) == 0) {
+       output$box_DataSelectors <- drawSelectorWidgets()
+    } else {
       df <- data.filtered()
       df$Base.Unit.CU.ShortName <- row.names(df)
-      if (is.null(input[[id]])) {
-        sel <- NULL
-      } else if (is.null(data.currentSelection()) || length(data.currentSelection()) == 0) {
-        # no current selection; make this the selection
-        sel <- row.names(df)[df[ ,m] %in% input[[id]]]
-      } else {
-        # already have a selection; combine with logical AND
-        sel <- row.names(df)[df[ ,m] %in% input[[id]]]
-        sel <- data.currentSelection()[data.currentSelection() %in% sel]
+      sel <- data.currentSelection()
+      if (is.null(sel)) sel <- row.names(df)
+      for (a in SelectAttributes[SelectAttributes %in% names(df)]) {
+        choices <- GetNamedChoices(a, df)
+        selected <- GetNamedChoices(a, df[sel, ])
+        updatePickerInput(session, sId("dataSelectors", a), selected=selected, choices=choices)
       }
-      if (!setequal(sel, data.currentSelection())) {
-        # if (length(setdiff(sel, data.currentSelection())) > 0) {
-        #   cat('AttributeSelection for ', m, ": adding to selection ")
-        #   print(setdiff(sel, data.currentSelection()))
-        # }
-        # if (length(setdiff(data.currentSelection(), sel)) > 0) {
-        #   cat('AttributeSelection for ', m, ": removing from selection ")
-        #   print(setdiff(data.currentSelection(), sel))
-        # }
-        data.setSelection(sel, "dataSelectors")
+      for (m in numericMetrics(data.filtered())) {
+        resetSlider(m, sel, df)
+        updateCheckboxInput(session, sId('dataSelectors_IncludeNAs', m), label="NAs", value=T)
       }
     }
-  }
-  
-  setMetricSelection <- function(id, m) {
-    if (id %in% names(input)) {
+  })
+    
+  setSelection <- function() {
+    if (any(grepl("dataSelectors", names(input)))) {
       df <- data.filtered()
-      sel <- row.names(df)[inRange(df[ ,m], input[[id]], input[[paste(id, "includeNAs", sep='_')]])]
-      if (length(sel) == 0) {
-        sel <- NULL
-      } else if (is.null(data.currentSelection()) || length(data.currentSelection()) == 0) {
-        # no current selection; apply slider range
-      } else {
-        # already have current selection; combine with slider range using logical AND
-        sel <- data.currentSelection()[data.currentSelection() %in% sel]
+      df$Base.Unit.CU.ShortName <- row.names(df)
+      sel <- rep(T, nrow(df))
+      for (a in SelectAttributes[SelectAttributes %in% names(df)]) {
+        id <- sId("dataSelectors", a)
+        if (!is.null(input[[id]])) 
+          sel <- sel & (df[ ,a] %in% input[[id]])
       }
-      if (!setequal(sel, data.currentSelection())) {
-        # if (length(setdiff(sel, data.currentSelection())) > 0) {
-        #   cat('MetricSelection for ', m, "adding to selection ")
-        #   print(setdiff(sel, data.currentSelection()))
-        # }
-        # if (length(setdiff(data.currentSelection(), sel)) > 0) {
-        #   cat('MetricSelection for ', m, ": removing from selection ")
-        #   print(setdiff(data.currentSelection(), sel))
-        # }
-        data.setSelection(sel, "dataSelectors")
+      for (m in numericMetrics(df)) {
+        id <- sId('dataSelectors', m)
+        if (!is.null(input[[id]])) 
+          sel <- sel & (inRange(df[ ,m], input[[id]], input[[paste(id, "includeNAs", sep='_')]]))
+      }
+      # only set current selection if the user has modified something
+      if (!((length(data.currentSelection()) == 0 && all(sel)) || 
+            setequal(data.currentSelection(), row.names(df)[sel]))) {
+        data.setSelection(row.names(df)[sel], "dataSelectors")
       }
     }
   }
-    
-    
-  # setSelection <- function() {
-  #   if (any(grepl("dataSelectors", names(input)))) {
-  #     df <- data.filtered()
-  #     df$Base.Unit.CU.ShortName <- row.names(df)
-  #     if (length(data.currentSelection()) == 0) {
-  #       sel <- rep(T, nrow(df))
-  #     } else {
-  #       sel <- row.names(df) %in% data.currentSelection()
-  #     }
-  #     for (a in SelectAttributes[SelectAttributes %in% names(data.start)]) {
-  #       if (!is.null(input[[sId("dataSelectors", a)]])) {
-  #         sel <- sel & (df[ ,a] %in% input[[sId("dataSelectors", a)]])
-  #       }
-  #     }
-  #     for (m in numericMetrics(df)) {
-  #       sel <- sel & (inRange(df[ ,m], input[[sId('dataSelectors', m)]]))
-  #       if (!input[[sId('dataSelectors_IncludeNAs', m)]]) {
-  #         sel <- sel & !is.na(df[ ,m])
-  #       }
-  #     }
-  #     
-  #     # don't set current selection if user hasn't modified anything
-  #     if (!(length(data.currentSelection()) == 0) && all(sel)) { 
-  #       data.setSelection(row.names(df)[sel], "dataSelectors")
-  #       cat("setting selection to ")
-  #       print(row.names(df)[sel])
-  #     }
-  #   }
-  # }
-  # 
-  # observe({
-  #   print("observe fired!")
-  #   lapply(names(input)[grepl("dataSelectors", names(input))], function(id) {
-  #     print("observe ", id)
-  #     print(id)
-  #     dummy <- input[[id]]
-  #   })
-  #   setSelection()
-  # })
-  
+
   observeEvent(input$dataSelectors_resetSelection, {
     data.setSelection(NULL, "dataSelectors")
-    output$box_DataSelectors <- drawSelectorWidgets()
   })
   
   #------------------- Map  ------------------
