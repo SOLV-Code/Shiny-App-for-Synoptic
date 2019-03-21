@@ -62,7 +62,7 @@ GetNamedChoices  <- function(m, df) {
         choices <- levels(df[, m]) 
         choices <- choices[choices %in% df[, m]]
       } else {
-        unique(as.character(df[, m]))
+        choices <- unique(as.character(df[, m]))
       }
       names(choices) <- sapply(choices, GetLabel)
       choices
@@ -144,7 +144,7 @@ FilterMFhiddenAttributes <- c("Base.Unit.CU.ShortName", "Base.Unit.Species")
 
 # ---------------- Data Selector UI ------------------
 
-SelectAttributes <- c('BaseBase.Unit.CU.ShortName',
+SelectAttributes <- c('Base.Unit.CU.ShortName',
                    'BaseUnit.Watershed',
                    'FAZ',
                    'Management.Timing',

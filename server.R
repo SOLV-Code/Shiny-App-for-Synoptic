@@ -304,188 +304,288 @@ function(input, output, session){
   # keep track of the current selection
   data.currentSelection <- reactiveVal(NULL)
   
-  # Same as data.filtered(), but all rows removed that aren't currently selected
-  data.selected <- reactive({
-    if (is.null(data.currentSelection())) {
-      data.filtered()
-    } else {
-      data.filtered()[data.currentSelection(), , drop=F]
-    }
-  })
+  # keep track of the last widget that set the selection
+  data.selectedBy <- reactiveVal("none")
   
-  # set the data selection from outside crosstalk
-  # note: current selection is stored in crosstalk object sharedDS
-  data.setSelection <- function(CUs) {
+  # Same as data.filtered(), but all rows removed that aren't currently selected
+  data.selected <- reactive({data.filtered()[data.currentSelection(), , drop=F]})
+  
+  # set the data selection 
+  data.setSelection <- function(CUs, widget) {
     data.currentSelection(CUs)
+    data.selectedBy(widget)
   }
   
   # add CUs to the current selection
-  data.addToSelection <- function(CUs) {
-    sel <- c(data.currentSelection(), CUs)
-    data.currentSelection(unique(sel))
+  data.addToSelection <- function(CUs, widget) {
+    if (is.null(data.currentSelection()) || length(data.currentSelection()) == 0) {
+      sel <- CUs
+    } else {
+      sel <- union(data.currentSelection(), CUs)
+    } 
+    data.currentSelection(sel)
+    data.selectedBy(widget)
   }
-
+  
   # remove CUs from the current selection
-  data.removeFromSelection <- function(CUs) {
+  data.removeFromSelection <- function(CUs, widget) {
     if (any(!(data.currentSelection() %in% CUs))) {
       sel <- data.currentSelection()[!(data.currentSelection() %in% CUs)]
     } else {
       sel <- NULL 
     }
     data.currentSelection(sel)
-    
+    data.selectedBy(widget)
   }
   
-  observeEvent(input$sidebarMenu_clearSelection,{data.setSelection(NULL)})
+  observeEvent(input$sidebarMenu_clearSelection,{data.setSelection(NULL, "clearSelection_button")})
   
   #------------------- Attribute and Metric Range Selector  ------------------
   
   sliderVals <- function(vals) {
     if (any(!is.na(vals))) {
-      maxVal <- max(vals, na.rm=T)
-      minVal <- min(vals, na.rm=T) 
-      # make this slider go slightly beyond the data range, so we can set it not to select anything
-      if (maxVal > minVal) {
-        minVal <- minVal - 0.1 * (maxVal - minVal) 
-      } else {
-        minVal <- minVal - 0.1 * minVal
-      }
-      list(min=minVal, max=maxVal)
+       list(min=min(vals, na.rm=T) , max=max(vals, na.rm=T))
     } else {
       NULL
     }
   }
   
   # generate a slider widget for the given metric
-  slider  <- function(m) {
-    s <- sliderVals(data.filtered()[ ,m])
+  slider  <- function(m, sels, df) {
+    s <- sliderVals(df[ ,m])
+    if (length(sels) == 0) {
+      s.sel <- s
+    } else {
+      s.sel <- sliderVals(df[sels ,m])
+    }
     if (!is.null(s)) {
-      sliderInput(inputId = sId('dataSelectors', m),
+      id <- sId("dataSelectors", m)
+      idNA <- paste(id, "includeNAs", sep='_')
+      observeEvent({input[[id]]
+                    input[[idNA]]}, 
+                   {setMetricSelection(id, m)}, 
+                   ignoreNULL = FALSE, ignoreInit = TRUE)
+      sliderInput(inputId = id,
                   label = NULL, #GetLabel(m),
                   min = s$min,
                   max = s$max,
-                  value=c(s$min, s$min))
+                  step=0.001,
+                  # need to set step size and make this one step bigger, 
+                  # otherwise the boundary values used to define the range
+                  # may end up outside the actual range as set by shiny
+                  value=c(s.sel$min-0.001, s.sel$max+0.001))
     } else {
       NULL
     }
   }
   
-  naCheckbox <- function(m) {
-    checkboxInput(sId('dataSelectors_IncludeNAs', m), label="NAs", value=F)
-  }
-  
-  resetSlider  <- function(m) {
-    s <- sliderVals(data.filtered()[ ,m])
+  resetSlider  <- function(m, sels, df) {
+    s <- sliderVals(df[ ,m])
+    s.sel <- sliderVals(df[sels ,m])
     id <- sId('dataSelectors', m)
     if (!is.null(s) && id %in% names(input)) {
-      updateSliderInput(session, inputId = id,
-                        value=c(s$min, s$min))
+      updateSliderInput(session, inputId = id, min=s$min, max=s$max, value=c(s.sel$min-0.001, s.sel$max+0.001))
     }
   }
   
-  inRange <- function(v, range) {!is.na(v) & v >= range[1] & v <= range[2]}
+  inRange <- function(v, range, includeNAs) {
+    if (includeNAs) {
+      is.na(v) | (v >= range[1] & v <= range[2])
+    } else {
+      !is.na(v) & (v >= range[1] & v <= range[2])
+    }
+  }
   
-  output$box_DataSelectors <- renderUI({
-    tagList(
-      tags$b("Use these widgets to generate a selection of CUs 'of concern' that can be compared to the full (filtered) dataset"),
-      fluidRow(
-        column(width=5,
-               wellPanel(style = WellPanelStyle, 
-                         fluidRow(column(width=7, tags$h4("Select by Attribute")),
-                                  column(width=5, checkboxInput("dataSelectors_allAttribs", 
-                                                                label="All",
-                                                                value=F))),
-                         tags$hr(),
-                         fluidRow(lapply(SelectAttributes[SelectAttributes %in% names(data.filtered())], 
+  naCheckbox <- function(m) {
+    id <- paste(sId("dataSelectors", m), "includeNAs", sep='_')
+    checkboxInput(id, label="NAs", value=T)
+  }
+  
+  drawSelectorWidgets <- function() {
+    renderUI({
+      df <- data.filtered()
+      df$Base.Unit.CU.ShortName <- row.names(df)
+      #sel <- data.currentSelection() # widgets adjust their initial selection based on external selection
+      sel <- row.names(df) # initial choice is to have everything 'on'
+      tagList(
+        tags$b("Use these widgets to generate a selection of CUs 'of concern' that can be compared to the full (filtered) dataset"),
+        fluidRow(
+          column(width=5,
+                wellPanel(style = WellPanelStyle, 
+                          fluidRow(column(width=12, tags$h4("Select by Attribute"))),
+                          tags$hr(),
+                          fluidRow(lapply(SelectAttributes[SelectAttributes %in% names(df)], 
                                          function(m) {
+                                            id <- sId("dataSelectors", m)
+                                            observeEvent(input[[id]], {setAttributeSelection(id, m)}, ignoreNULL = FALSE, ignoreInit = TRUE)
                                             pickerInput(inputId=sId("dataSelectors", m),					 
                                                         label=GetLabel(m),
-                                                        choices=GetNamedChoices(m, data.filtered()),
-                                                        selected=NULL,
+                                                        choices=GetNamedChoices(m, df),
+                                                        selected=GetNamedChoices(m, df[sel, ]),
                                                         multiple=TRUE,
                                                         options=PickerOptsMultiSelect)
                                         }))),
-               fluidRow(
-                 column(width=12, radioGroupButtons("dataSelectors_selectionType", label = NULL,
-                                            choices = c("Combine", "Intersect"),
-                                            selected = "Combine",
-                                            status = "primary",
-                                            size = "normal", 
-                                            justified = TRUE,
-                                            individual = FALSE)),
-                 column(width=6, actionButton("dataSelectors_addToSelection",label="Add to Selection", style=ButtonStyle)),
-                 column(width=6, actionButton("dataSelectors_resetSelectors",label="Reset Selectors", style=ButtonStyle)))),
-        column(width=7, 
+                fluidRow(
+                 #column(width=6, actionButton("dataSelectors_setSelection",label="Apply", style=ButtonStyle)),
+                  column(width=6, actionButton("dataSelectors_resetSelection",label="Reset", style=ButtonStyle)))),
+          column(width=7, 
                wellPanel(style = WellPanelStyle, 
-                         fluidRow(column(width=7, tags$h4("Select by Metric Range")),
-                                  column(width=5, checkboxInput("dataSelectors_allRanges", 
-                                                                label="All",
-                                                                value=F))),
+                         fluidRow(column(width=7, tags$h4("Select by Metric Range"))),
                          tags$hr(),
-                         fluidRow(lapply(numericMetrics(data.filtered()), 
-                                         function(m) {column(width=12, 
-                                                             fluidRow(column(width=5, tags$b(GetLabel(m)), `style` = "line-height:50px;"),
-                                                                      column(width=2, naCheckbox(m)),
-                                                                      column(width=5, slider(m))))
+                         fluidRow(lapply(numericMetrics(df), 
+                                         function(m) {
+                                           column(width=12, 
+                                                  fluidRow(column(width=5, tags$b(GetLabel(m)), `style` = "line-height:50px;"),
+                                                           column(width=2, naCheckbox(m)),
+                                                           column(width=5, slider(m, sel, df))))
                                                       }))))
-      ))
-  })
+        ))
+    })
+  }
   
-  observeEvent(input$dataSelectors_addToSelection,{
-    df <- data.filtered()
-    if (input$dataSelectors_selectionType == "Combine") {
-      st <- 'or' # string selection together using logic 'or'
-    } else {
-      st <- 'and' # string selection together using logic 'and'
-    }
-      
-    combine <- function(type, sel1, sel2) {
-      if (type == "or") {
-        sel1 | sel2
+  output$box_DataSelectors <- drawSelectorWidgets()
+  
+
+  # observeEvent(data.filtered(), {
+  #   df <- data.filtered()
+  #   df$Base.Unit.CU.ShortName <- row.names(df)
+  #   sel <- data.currentSelection()
+  #   if (is.null(sel)) sel <- row.names(df)
+  #   for (a in SelectAttributes[SelectAttributes %in% names(df)]) {
+  #     choices <- GetNamedChoices(a, df)
+  #     selected <- GetNamedChoices(a, df[sel, ])
+  #     updatePickerInput(session, sId("dataSelectors", a), selected=selected, choices=choices)
+  #   }
+  #   for (m in numericMetrics(data.filtered())) {
+  #     resetSlider(m, sel, df)
+  #     if (any(is.na(df[sel, m]))) {
+  #       updateCheckboxInput(session, sId('dataSelectors_IncludeNAs', m), label="NAs", value=T)
+  #     } else {
+  #       updateCheckboxInput(session, sId('dataSelectors_IncludeNAs', m), label="NAs", value=F)
+  #     }
+  #   }
+  # })
+    
+  
+  # setSelectionForId <- function(id) {
+  #   if (!is.null(input[[id]])) {
+  #     df <- data.filtered()
+  #     if (grepl(id, "dataSelectors_IncludeNAs")) {
+  #       m <- gsub('dataSelectors_IncludeNAs', id)
+  #       if (input[[id]]) {
+  #         data.setSelection(data.currentSelection() %in% row.names(df)[is.na(df[ ,m])], "dataSelectors")
+  #       } else {
+  #         data.setSelection(data.currentSelection() %in% row.names(df)[!is.na(df[ ,m])], "dataSelectors")
+  #       }
+  #     } else {
+  #       m <- gsub('dataSelectors_', id)
+  #       if (is.numeric(df[, m])) {
+  #         data.setSelection(data.currentSelection() %in% row.names(df)[inRange(df[ ,m], input[[id]])], "dataSelectors")
+  #       } else {
+  #         data.setSelection(data.currentSelection() %in% row.names(df)[df[ ,m] %in% input[[id]]], "dataSelectors")
+  #       }
+  #     }
+  #   }
+  # }
+
+  setAttributeSelection <- function(id, m) {
+    if (id %in% names(input)) {
+      df <- data.filtered()
+      df$Base.Unit.CU.ShortName <- row.names(df)
+      if (is.null(input[[id]])) {
+        sel <- NULL
+      } else if (is.null(data.currentSelection()) || length(data.currentSelection()) == 0) {
+        # no current selection; make this the selection
+        sel <- row.names(df)[df[ ,m] %in% input[[id]]]
       } else {
-        sel1 & sel2
+        # already have a selection; combine with logical AND
+        sel <- row.names(df)[df[ ,m] %in% input[[id]]]
+        sel <- data.currentSelection()[data.currentSelection() %in% sel]
+      }
+      if (!setequal(sel, data.currentSelection())) {
+        # if (length(setdiff(sel, data.currentSelection())) > 0) {
+        #   cat('AttributeSelection for ', m, ": adding to selection ")
+        #   print(setdiff(sel, data.currentSelection()))
+        # }
+        # if (length(setdiff(data.currentSelection(), sel)) > 0) {
+        #   cat('AttributeSelection for ', m, ": removing from selection ")
+        #   print(setdiff(data.currentSelection(), sel))
+        # }
+        data.setSelection(sel, "dataSelectors")
       }
     }
-      
-    # apply selection criteria - use OR here to let users add CUs as they go through the widgets 
-    if (st == 'or') {
-        selected <- rep(F, nrow(df)) # start with empty selection, add to it
-    } else { # start with all selected, remove any that are not within the current range
-      selected <- rep(T, nrow(df))
-    }
-    if (input$dataSelectors_allAttribs) {
-      selected <- combine(st, selected, rep(T, nrow(df)))
-    } else {
-      for (a in SelectAttributes[SelectAttributes %in% names(df)]) {
-       selected <- combine(st, selected, as.character(df[,a]) %in% input[[sId("dataSelectors", a)]])
-      }
-    }
-    if (input$dataSelectors_allRanges) {
-      selected <- combine(st, selected, rep(T, nrow(df)))
-    } else {       
-      for (m in numericMetrics(df)) {
-        sels <- inRange(df[, m], input[[sId('dataSelectors', m)]])
-        if (input[[sId('dataSelectors_IncludeNAs', m)]]) { # add na values
-          sels <- sels | is.na(df[, m])
-        }
-        selected <- combine(st, selected, sels)
-      }
-    }
-    if (any(selected)) {
-      data.addToSelection(row.names(df)[selected])
-    }
-  })
+  }
   
-  observeEvent(input$dataSelectors_resetSelectors, {
-    for (a in SelectAttributes[SelectAttributes %in% names(data.filtered())]) {
-      updatePickerInput(session, sId("dataSelectors", a), selected=NULL, choices=GetNamedChoices(a, data.filtered()))
+  setMetricSelection <- function(id, m) {
+    if (id %in% names(input)) {
+      df <- data.filtered()
+      sel <- row.names(df)[inRange(df[ ,m], input[[id]], input[[paste(id, "includeNAs", sep='_')]])]
+      if (length(sel) == 0) {
+        sel <- NULL
+      } else if (is.null(data.currentSelection()) || length(data.currentSelection()) == 0) {
+        # no current selection; apply slider range
+      } else {
+        # already have current selection; combine with slider range using logical AND
+        sel <- data.currentSelection()[data.currentSelection() %in% sel]
+      }
+      if (!setequal(sel, data.currentSelection())) {
+        # if (length(setdiff(sel, data.currentSelection())) > 0) {
+        #   cat('MetricSelection for ', m, "adding to selection ")
+        #   print(setdiff(sel, data.currentSelection()))
+        # }
+        # if (length(setdiff(data.currentSelection(), sel)) > 0) {
+        #   cat('MetricSelection for ', m, ": removing from selection ")
+        #   print(setdiff(data.currentSelection(), sel))
+        # }
+        data.setSelection(sel, "dataSelectors")
+      }
     }
-    for (m in numericMetrics(data.filtered())) {
-      updateCheckboxInput(session, sId('dataSelectors_IncludeNAs', m), value=F)
-      resetSlider(m)
-    }
-    updateCheckboxInput(session, "dataSelectors_allAttribs", label="All", value=F)
-    updateCheckboxInput(session, "dataSelectors_allRanges", label="All", value=F)
+  }
+    
+    
+  # setSelection <- function() {
+  #   if (any(grepl("dataSelectors", names(input)))) {
+  #     df <- data.filtered()
+  #     df$Base.Unit.CU.ShortName <- row.names(df)
+  #     if (length(data.currentSelection()) == 0) {
+  #       sel <- rep(T, nrow(df))
+  #     } else {
+  #       sel <- row.names(df) %in% data.currentSelection()
+  #     }
+  #     for (a in SelectAttributes[SelectAttributes %in% names(data.start)]) {
+  #       if (!is.null(input[[sId("dataSelectors", a)]])) {
+  #         sel <- sel & (df[ ,a] %in% input[[sId("dataSelectors", a)]])
+  #       }
+  #     }
+  #     for (m in numericMetrics(df)) {
+  #       sel <- sel & (inRange(df[ ,m], input[[sId('dataSelectors', m)]]))
+  #       if (!input[[sId('dataSelectors_IncludeNAs', m)]]) {
+  #         sel <- sel & !is.na(df[ ,m])
+  #       }
+  #     }
+  #     
+  #     # don't set current selection if user hasn't modified anything
+  #     if (!(length(data.currentSelection()) == 0) && all(sel)) { 
+  #       data.setSelection(row.names(df)[sel], "dataSelectors")
+  #       cat("setting selection to ")
+  #       print(row.names(df)[sel])
+  #     }
+  #   }
+  # }
+  # 
+  # observe({
+  #   print("observe fired!")
+  #   lapply(names(input)[grepl("dataSelectors", names(input))], function(id) {
+  #     print("observe ", id)
+  #     print(id)
+  #     dummy <- input[[id]]
+  #   })
+  #   setSelection()
+  # })
+  
+  observeEvent(input$dataSelectors_resetSelection, {
+    data.setSelection(NULL, "dataSelectors")
+    output$box_DataSelectors <- drawSelectorWidgets()
   })
   
   #------------------- Map  ------------------
@@ -644,10 +744,10 @@ function(input, output, session){
                {
                  CU <- input$CUmap_marker_click$id
                  if (CU %in% data.currentSelection()) {
-                   data.removeFromSelection(CU)
+                   data.removeFromSelection(CU, "map")
                    icon <- fishIcons['black-fish']
                  } else {
-                   data.addToSelection(CU)
+                   data.addToSelection(CU, "map")
                    icon <- fishIcons['red-fish']
                  }
                  marker <- isolate(data.spatial()[data.spatial()$Base.Unit.CU.ShortName == CU, ])
@@ -820,21 +920,21 @@ function(input, output, session){
     } else {
       selectedCUs <- row.names(sharedDS.parcoords$origData())[sharedDS.parcoords$selection()]
     }
-    data.setSelection(selectedCUs)
-  })
+    data.setSelection(selectedCUs, "parcoords")
+  }, ignoreInit = T)
   
   observeEvent(input$parcoords_reset_brush, {
-    data.setSelection(NULL)
-  })
+    data.setSelection(NULL, "parcoords")
+    sharedDS.parcoords$selection(NULL)
+  }, ignoreInit = T)
   
   # set the crosstalk selection in response to changes in the current selection
-  observeEvent({
-    data.currentSelection()
-    input$parcoords_reset_brush
-  } , {
-    selected <- row.names(sharedDS.parcoords$origData()) %in% data.currentSelection()
-    sharedDS.parcoords$selection(selected)
-  }, ignoreNULL = F)
+  observeEvent(data.currentSelection(), {
+    if (data.selectedBy() != "parcoords" && data.selectedBy() != "none") {
+      selected <- row.names(sharedDS.parcoords$origData()) %in% data.currentSelection()
+      sharedDS.parcoords$selection(selected)
+    }
+  }, ignoreNULL = F, ignoreInit = T)
   
   output$box_Parcoords <- renderUI({ 
     tagList( tags$div('style' = "text-align:right;", 
@@ -876,14 +976,14 @@ function(input, output, session){
   # set global selection 
   observeEvent({input$selectedData_Table_rows_selected}, {
     CUs <- row.names(data.filtered())[input$selectedData_Table_rows_selected]
-    data.setSelection(CUs)
-  }, ignoreNULL = FALSE)
+    data.setSelection(CUs, "datatable")
+  }, ignoreNULL = FALSE, ignoreInit = TRUE)
   
   # Downloadable csv of selected dataset
   output$selectedData_Download <- downloadHandler(
     filename = "selection.csv", 
     content = function(file) {
-      if(is.null(data.currentSelection())) {
+      if(length(data.currentSelection() == 0L)) {
         write.csv(data.filtered(), file, row.names = TRUE)
       } else {
         write.csv(data.selected(), file, row.names = TRUE)
