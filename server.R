@@ -364,7 +364,7 @@ function(input, output, session){
       observeEvent({input[[id]]
                     input[[idNA]]}, 
                     {setSelection()},
-                   ignoreNULL = FALSE, ignoreInit = TRUE)
+                   ignoreNULL = FALSE, ignoreInit = T)
       # need to set step size and make the slider & selection one step bigger than data values, 
       # otherwise the boundary values used to define the range may end up selecting out extreme data points 
       sliderInput(inputId = id,
@@ -473,6 +473,9 @@ function(input, output, session){
         id <- sId("dataSelectors", a)
         if (!is.null(input[[id]])) 
           sel <- sel & (df[ ,a] %in% input[[id]])
+        else {
+          sel <- rep(F, nrow(df))
+        }
       }
       for (m in numericMetrics(df)) {
         id <- sId('dataSelectors', m)
