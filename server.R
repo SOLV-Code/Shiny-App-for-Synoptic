@@ -22,7 +22,7 @@ list.of.packages <- c("shiny",
                       "xfun",
                       "readxl",
                       "markdown",
-                      "parcoords",
+                      "parcoordsSoS",
                       "crosstalk",
                       "sp",
                       "leaflet",
@@ -31,7 +31,6 @@ list.of.packages <- c("shiny",
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 #if(length(new.packages)) install.packages(new.packages)
 lapply(list.of.packages, require, character.only = TRUE)
-
 
 #--------- ---------- Helper functions ------------------
 
@@ -476,30 +475,15 @@ function(input, output, session){
         else {
           sel <- rep(F, nrow(df))
         }
-        if (any(!sel)) {
-          print(a)
-          print(row.names(df)[sel])
-        }
       }
       for (m in numericMetrics(df)) {
         id <- sId('dataSelectors', m)
         if (!is.null(input[[id]])) 
           sel <- sel & (inRange(df[ ,m], input[[id]], input[[paste(id, "includeNAs", sep='_')]]))
-        if (m == "Recent.Total" && any(!sel)) {
-          print(m)
-          print(df[ ,m, drop=F])
-          cat('input: ')
-          print(input[[id]])
-          cat('nas')
-          print(input[[paste(id, "includeNAs", sep='_')]])
-          print(row.names(df)[sel])
-        }
       }
       # only set current selection if the user has modified something
       if (!((length(data.currentSelection()) == 0 && all(sel)) || 
             setequal(data.currentSelection(), row.names(df)[sel]))) {
-        print('selecting')
-        print(row.names(df)[sel])
         data.setSelection(row.names(df)[sel], "dataSelectors")
       }
     }
@@ -755,8 +739,8 @@ function(input, output, session){
   })
  
  
-  output$parcoords_Plot <- parcoords::renderParcoords({ p <- try(
-                                                parcoords::parcoords(data=sharedDS.parcoords,
+  output$parcoords_Plot <- parcoordsSoS::renderParcoords({ p <- try(
+                                                parcoordsSoS::parcoords(data=sharedDS.parcoords,
                                                   autoresize=TRUE,
                                                   color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Management.Timing"),
                                                   rownames=T,
@@ -865,10 +849,8 @@ function(input, output, session){
                       actionButton(inputId = "parcoords_scale_to_selected",
                                    label="Scale to Selected",icon("search-plus"), 
                                    style=ButtonStyle)),
-             
-    #         tags$div(`class` = 'scroll-container', `style`="width: 500px; height=600px; overflow: auto; border: 1px solid;",
-                      parcoords::parcoordsOutput("parcoords_Plot", height="600px"),           # 400px is defaultheight
-             uiOutput("parcoords_Controls"))
+                      parcoordsSoS::parcoordsOutput("parcoords_Plot", height="600px"),           # 400px is defaultheight
+                      uiOutput("parcoords_Controls"))
   })
   
   #------------------- Selected Data Box ------------------
