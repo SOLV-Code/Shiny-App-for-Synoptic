@@ -383,7 +383,7 @@ function(input, output, session){
     s.sel <- sliderVals(df[sels ,m])
     id <- sId('dataSelectors', m)
     if (!is.null(s) && id %in% names(input)) {
-      updateSliderInput(session, inputId = id, min=s$min, max=s$max, value=c(s.sel$min-0.001, s.sel$max+0.001))
+      updateSliderInput(session, inputId = id, min=s$min-0.001, max=s$max+0.001, value=c(s.sel$min-0.001, s.sel$max+0.001))
     }
   }
   
@@ -476,15 +476,30 @@ function(input, output, session){
         else {
           sel <- rep(F, nrow(df))
         }
+        if (any(!sel)) {
+          print(a)
+          print(row.names(df)[sel])
+        }
       }
       for (m in numericMetrics(df)) {
         id <- sId('dataSelectors', m)
         if (!is.null(input[[id]])) 
           sel <- sel & (inRange(df[ ,m], input[[id]], input[[paste(id, "includeNAs", sep='_')]]))
+        if (m == "Recent.Total" && any(!sel)) {
+          print(m)
+          print(df[ ,m, drop=F])
+          cat('input: ')
+          print(input[[id]])
+          cat('nas')
+          print(input[[paste(id, "includeNAs", sep='_')]])
+          print(row.names(df)[sel])
+        }
       }
       # only set current selection if the user has modified something
       if (!((length(data.currentSelection()) == 0 && all(sel)) || 
             setequal(data.currentSelection(), row.names(df)[sel]))) {
+        print('selecting')
+        print(row.names(df)[sel])
         data.setSelection(row.names(df)[sel], "dataSelectors")
       }
     }
