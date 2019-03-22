@@ -22,7 +22,7 @@ list.of.packages <- c("shiny",
                       "xfun",
                       "readxl",
                       "markdown",
-                      "parcoords",
+                      "parcoordsSoS",
                       "crosstalk",
                       "sp",
                       "leaflet",
@@ -31,7 +31,6 @@ list.of.packages <- c("shiny",
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 #if(length(new.packages)) install.packages(new.packages)
 lapply(list.of.packages, require, character.only = TRUE)
-
 
 #--------- ---------- Helper functions ------------------
 
@@ -383,7 +382,7 @@ function(input, output, session){
     s.sel <- sliderVals(df[sels ,m])
     id <- sId('dataSelectors', m)
     if (!is.null(s) && id %in% names(input)) {
-      updateSliderInput(session, inputId = id, min=s$min, max=s$max, value=c(s.sel$min-0.001, s.sel$max+0.001))
+      updateSliderInput(session, inputId = id, min=s$min-0.001, max=s$max+0.001, value=c(s.sel$min-0.001, s.sel$max+0.001))
     }
   }
   
@@ -740,8 +739,8 @@ function(input, output, session){
   })
  
  
-  output$parcoords_Plot <- parcoords::renderParcoords({ p <- try(
-                                                parcoords::parcoords(data=sharedDS.parcoords,
+  output$parcoords_Plot <- parcoordsSoS::renderParcoords({ p <- try(
+                                                parcoordsSoS::parcoords(data=sharedDS.parcoords,
                                                   autoresize=TRUE,
                                                   color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Management.Timing"),
                                                   rownames=T,
@@ -850,10 +849,8 @@ function(input, output, session){
                       actionButton(inputId = "parcoords_scale_to_selected",
                                    label="Scale to Selected",icon("search-plus"), 
                                    style=ButtonStyle)),
-             
-    #         tags$div(`class` = 'scroll-container', `style`="width: 500px; height=600px; overflow: auto; border: 1px solid;",
-                      parcoords::parcoordsOutput("parcoords_Plot", height="600px"),           # 400px is defaultheight
-             uiOutput("parcoords_Controls"))
+                      parcoordsSoS::parcoordsOutput("parcoords_Plot", height="600px"),           # 400px is defaultheight
+                      uiOutput("parcoords_Controls"))
   })
   
   #------------------- Selected Data Box ------------------

@@ -103,7 +103,7 @@ tags$head(tags$style(
           uiOutput("box_LeafletMap")),
       
       box(title = "View/select CUs by performance metric (parallel coordinates plot)", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
-          div(style = 'overflow-x: scroll', uiOutput("box_Parcoords"))),
+          uiOutput("box_Parcoords")),
 
       box(title = "View/select CUs on a data table", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
           div(style = 'overflow-x: scroll', uiOutput("box_SelectedDataTable"))),
