@@ -31,7 +31,11 @@ list.of.packages <- c("shiny",
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 #if(length(new.packages)) install.packages(new.packages)
 lapply(list.of.packages, require, character.only = TRUE)
-
+# NOTE: to make this work with shinyapps.io, you MUST install parcoordsSoS from the github repo, i.e.
+# by using install_github("brigitte-dorner/parcoordsSoS") before uploading.
+# Downloading the code and building parcoordsSoS locally will let you run the app
+# locally, but the install on shinyapps.io will fail unless all required packages
+# are installed from CRAN or github.
 #--------- ---------- Helper functions ------------------
 
 
@@ -591,15 +595,53 @@ function(input, output, session){
       }
       CUpolys$grp <- factor(CUpolys$grp, levels <- c(as.character(MapLevelLabels[['Management.Timing']]),
                                                      as.character(MapLevelLabels[['Base.Unit.Species']])))
-      # jitter the marker locations so all will be visible
-      CUpolys$latitude <- jitter(CUpolys$latitude, factor=0.050)
-      CUpolys$longitude <- jitter(CUpolys$longitude, factor=0.050)
+      # Note: jittering is not an ideal fix for showing markers for overlapping CUs, 
+      # since markers will be out of place once user zooms in. 
+      # Need to jitter dynamically as a function of current zoom level,
+      # or fix marker positions by hand so they are as far apart as possible,
+      # while still pointing to appropriate CU polygon.
+      # Fixed positions for Fraser sockeye in spatialLookup.csv, 
+      # but may need to jitter here in future to avoid overlaps?
+      #CUpolys$latitude <- jitter(CUpolys$latitude, factor=<something-dependent-on-zoom-level>)
+      #CUpolys$longitude <- jitter(CUpolys$longitude, factor=<something-dependent-on-zoom-level>)
       CUpolys
     } else {
       NULL
     }
   })
   
+  makeStreamPopup <- function(wsName, wsCode, CUs) {
+    if (wsName == "") wsName <- gsub('(-000000)*$', '', wsCode)
+    if (CUs == "") {
+      p <- tags$div(tags$b(wsName))
+    } else {
+      CUs <- strsplit(CUs, ',')[[1]]
+      p <- tags$div(tags$b(wsName), 
+                    tags$table(lapply(CUs, function(cu) {tags$tr(tags$td(cu))})))
+    }
+    p
+  }
+  
+  data.spatial.streams <- reactive({
+    streams <- data.streams
+    streams$CUsSelectable <- unlist(lapply(1:nrow(streams), function(i, CUfilter) {
+      CUs <- strsplit(streams$CUsSelectable[i], ',')[[1]]
+      if (length(CUs) > 0) {
+        paste(CUs[CUs %in% CUfilter], collapse=',')
+      } else {
+        ""
+      }
+    }, CUfilter=row.names(data.filtered())))
+    
+    streams <- streams[streams$CUsSelectable != "", ]
+    streams$popup <- unlist(lapply(1:nrow(streams), function(i) {
+      p <- makeStreamPopup(streams$WS_NAME[i],
+                      streams$FWA_WATERSHED_CODE[i],
+                      streams$CUsSelectable[i])
+      gsub("[\n]", "", as.character(p))
+    }))
+    streams
+  })
   
   output$CUmap <- renderLeaflet({
     leaflet.data <- data.spatial()
@@ -608,28 +650,52 @@ function(input, output, session){
       groups <- levels(leaflet.data$grp) 
       groups <- groups[groups %in% unique(leaflet.data$grp)]
       pal <- colorFactor("Spectral", levels=levels(leaflet.data$grp), ordered=T)
-      leafletOutput <- try({leaflet(leaflet.data) %>%
-          addMarkers(lng=~longitude, lat=~latitude, 
-                     layerId = ~Base.Unit.CU.ShortName, 
-                     icon = ~fishIcons[icon],
-                     group = ~selected,
-                     label = ~lapply(popup, HTML)) %>%
-          addPolygons(fillColor=~pal(grp), 
-                      fillOpacity = 1,
-                      stroke=T,
-                      color="black",
-                      weight=2,
-                      opacity= 0.5, 
-                      layerId = ~Base.Unit.CU.ShortName,
-                      group = ~grp,
-                      label = ~lapply(popup, HTML),
-                      highlight = highlightOptions(weight = 10, color="red", bringToFront = TRUE))  %>% 
-          addTiles(group="base")  %>%
-          addLegend(position="bottomright", pal=pal, title="",
-                    values=~grp, 
-                    opacity=1) %>%
-          addLayersControl(overlayGroups = c("selected", "not selected", groups),
-                           options = layersControlOptions(collapsed = FALSE))
+      leafletOutput <- try({
+        map <- leaflet(leaflet.data) %>%
+               addMarkers(lng=~longitude, lat=~latitude, 
+                          layerId = ~Base.Unit.CU.ShortName, 
+                          icon = ~fishIcons[icon],
+                          group = ~selected,
+                          label = ~lapply(popup, HTML)) %>%
+                addPolygons(fillColor=~pal(grp), 
+                            fillOpacity = 1,
+                            stroke=T,
+                            color="black",
+                            weight=2,
+                            opacity= 0.5, 
+                            layerId = ~Base.Unit.CU.ShortName,
+                            group = ~grp,
+                            label = ~lapply(popup, HTML),
+                            highlight = highlightOptions(weight = 10, color="red", bringToFront = TRUE))  %>% 
+                addTiles(group="base")
+
+        # Note: this may not work very well if there are more than 100 streams to display
+        # since leaflet wants to put shadows on panes with zIndex above 500
+        # May need to group streams by order at some point and have one pane per stream order,
+        # rather than using up one per stream
+        for (i in 1:nrow(data.spatial.streams())) {
+           map <- addMapPane(map, name = as.character(data.spatial.streams()$WATERSHED_KEY[i]), zIndex = 400+i)
+        }
+        for (i in 1:nrow(data.spatial.streams())) {
+          map <- addPolylines(map, color="blue",
+                              weight=1,
+                              opacity=0.7,
+                              layerId = ~WS_NAME,
+                              group = "streams",
+                              label = ~lapply(popup, HTML),
+                              highlight = highlightOptions(weight = 5, color="blue", bringToFront = TRUE),
+                              data = data.spatial.streams()[i, ],
+                              options = pathOptions(pane = as.character(data.spatial.streams()$WATERSHED_KEY[i])))
+         }
+        
+        map <- map %>% 
+               addLegend(position="bottomright", pal=pal, title="",
+                         values=~grp, 
+                         opacity=1) %>%
+               addLayersControl(overlayGroups = c("selected", "not selected", groups, "streams"),
+                                options = layersControlOptions(collapsed = FALSE))
+
+        map
       })
       if (!inherits(leafletOutput, "try-error")) {
         leafletOutput
@@ -665,6 +731,17 @@ function(input, output, session){
                }
   )
   
+  observeEvent(input$CUmap_shape_click, {
+    df <- data.spatial.streams()
+    if (input$CUmap_shape_click$id %in% df$WS_NAME) {
+      CUs <- df$CUsSelectable[df$WS_NAME == input$CUmap_shape_click$id]
+      CUs <- strsplit(CUs, ',')[[1]]
+      if (length(CUs) > 0) {
+        data.addToSelection(CUs)
+      }
+    }
+  })
+
   # we don't have a record of which markers need to change color, so redraw them all here
   observeEvent(data.currentSelection(), {
     df <- withSpatialSelection(data.spatial())
@@ -751,7 +828,8 @@ function(input, output, session){
                                                   reorderable = TRUE, 
                                                   dimensions=dims(),
                                                   #selectedRows = data.currentSelection(), #this works, but makes it impossible to brush more than one CU at a time
-                                                  nullValueSeparator="nullValue"))
+                                                  nullValueSeparator="nullValue",
+                                                  dimensionTitleRotation=ParcoordsLabelRotation))
                                               if (inherits(p, "try-error")) {
                                                 NULL
                                               } else {
