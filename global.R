@@ -92,12 +92,31 @@ names(data.by.year) <- data.years
 
 # Lookup table for joining metrics and spatial information
 data.spatialLookup <- read.csv("data/SpatialLookup.csv", stringsAsFactors = F)
+row.names(data.spatialLookup) <- data.spatialLookup$CU_INDEX
 
 # CU polygon data
 require(rgdal)
-data.CUpolygons <- readOGR(dsn="data/Lake_Type_Sockeye_Salmon_CU_Shape/Lake_Type_Sockeye_Salmon_CU_Boundary",
-                      layer="Lake_Type_Sockeye_Salmon_CU_Boundary_En", stringsAsFactors=F, verbose=F)
-data.CUpolygons <- spTransform(data.CUpolygons, CRS("+proj=longlat +datum=WGS84"))
+data.CUpolygons <- readOGR(dsn="data/CUpolygons.gpkg", layer="CUpolygons", stringsAsFactors=F, verbose=F)
+#data.CUpolygons <- spTransform(data.CUpolygons, CRS("+proj=longlat +datum=WGS84"))
+
+# stream data
+data.streams <- readOGR(dsn="data/Streams.gpkg", stringsAsFactors=F, verbose=F)
+data.getSelectableCUs <- function(CUs) {
+  CUs <- strsplit(CUs, ':')[[1]]
+  CUs <- CUs[CUs %in% row.names(data.spatialLookup)]
+  out <- data.spatialLookup[CUs, "Base.Unit.CU.ShortName"]
+  out <- out[out != ""]
+  if (length(out) > 0) {
+    paste(out, collapse=",")
+  } else {
+    ""
+  } 
+}
+
+# prune the stream network to remove any streams that don't potentially select CUs in the current CU database
+data.streams$CUsSelectable <- unlist(lapply(data.streams$CUs, data.getSelectableCUs))
+data.streams <- data.streams[data.streams$CUsSelectable != "", ]
+data.streams <- data.streams[order(data.streams$Shape_Length, decreasing=T), ]
 
 # --------------------- Helper functions for data restructuring ---------
 
@@ -156,6 +175,9 @@ ParcoordsMetricOrder <- c("Recent.Total", "Recent.ER",
                           "Lower.Ratio","Upper.Ratio","LongTerm.Ratio",
                           "ShortTerm.Trend",
                           "WSP.status", "WSP.numeric", "Management.Timing", "FAZ") 
+
+# rotation of axis labels for metric axes (in degrees from horizontal)
+ParcoordsLabelRotation <- -15 
 
 # ---------------- Historgram Summaries UI ------------------
 # histogram summaries will be generated for these metrics/attributes in the order specified
