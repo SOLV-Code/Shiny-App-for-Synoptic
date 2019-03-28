@@ -755,7 +755,7 @@ function(input, output, session){
     }
   })
   
-  output$box_LeafletMap <- renderUI({withSpinner(leafletOutput("CUmap", height = 500))})
+  output$box_LeafletMap <- renderUI({shinycssloaders::withSpinner(leafletOutput("CUmap", height = 500))})
   
   
   #------------------- Parallel Coordinate Plot ------------------
@@ -1163,7 +1163,7 @@ function(input, output, session){
                            choices = c("Area", selected),
                            selected = c("Area"),
                            multiple=FALSE))),
-      withSpinner(plotOutput("radar_Plot", height="550px", width="550px")),
+      shinycssloaders::withSpinner(plotOutput("radar_Plot", height="550px", width="550px")),
       tags$div(style = 'overflow-x: scroll', DT::dataTableOutput("radar_AreaTable", width="70%"))
     )
   })
