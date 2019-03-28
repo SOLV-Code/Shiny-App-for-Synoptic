@@ -1224,7 +1224,8 @@ function(input, output, session){
                                           tickvals = 1:length(bins), 
                                           ticktext=sapply(bins, GetLabel), 
                                           showgrid=FALSE),
-                             xaxis = list(visible = FALSE))
+                             xaxis = list(visible = FALSE)) %>% 
+              plotly::config(displayModeBar = F)
     # barplot
     p.bars <- plotly::plot_ly(dfbars, y=~y, x=~x.sel, height = 200, type="bar", orientation='h',
                               name="selected", text=~x.sel.l, hoverinfo="text", 
@@ -1237,7 +1238,8 @@ function(input, output, session){
               plotly::layout(yaxis = list(title="", zeroline = FALSE, showgrid=FALSE),
                              xaxis = list(visible = FALSE),
                              barmode = 'stack',
-                             showlegend=F)
+                             showlegend=F) %>% 
+              plotly::config(displayModeBar = F)
     list(dots=p.dots, bars=p.bars)
   }
   
