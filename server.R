@@ -1299,7 +1299,7 @@ function(input, output, session){
     plots <- lapply(summaryAttribs, function(a) {
               column(width=4, tags$div(title=MetricInfo[[a]],
                                        h4(GetLabel(a)),
-                                       plotly::plotlyOutput(sId('summary', a), height=200)))})
+                                       shinycssloaders::withSpinner(plotly::plotlyOutput(sId('summary', a), height=200))))})
   
     tagList(fluidRow(column(width=3, cntrl)),
             fluidRow(do.call(tagList, plots)))
