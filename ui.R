@@ -13,6 +13,7 @@
 # ====================== Define UI Components =========================
 
 library(shinydashboard)
+library(shinydashboardPlus)
 library(shinyWidgets)
 library(markdown)
 library(shinyBS)
@@ -93,26 +94,36 @@ tags$head(tags$style(
       
     tabItem(
       tabName = "CUSelection",
-      box(title = "Start here", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=FALSE, status=BoxHeaderStatus,
-          uiOutput("box_DataFilters")),
-      
-      box(title = "Select CUs by attributes and/or metric values", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE, status=BoxHeaderStatus,
-          uiOutput("box_DataSelectors")),
-      
-      box(title = "View/select CUs on a map", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE, status=BoxHeaderStatus,
-          uiOutput("box_LeafletMap")),
-      
-      box(title = "View/select CUs by performance metric (parallel coordinates plot)", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
-          uiOutput("box_Parcoords")),
+      accordion(
+        accordionItem(uiOutput("box_DataFilters"), id = 1, title = "Start here", collapsed=FALSE, color="Primary"),
+        accordionItem(uiOutput("box_DataSelectors"), id = 2, title = "Select CUs by attributes and/or metric values", color="Primary"),
+        accordionItem(uiOutput("box_LeafletMap"), id = 3, title = "View/select CUs on a map", color="Primary"),
+        accordionItem(uiOutput("box_Parcoords"), id = 4, title = "View/select CUs by performance metric (parallel coordinates plot)", color="Primary"),
+        accordionItem(div(style = 'overflow-x: scroll', uiOutput("box_SelectedDataTable")), id = 5, title = "View/select CUs on a data table", color="Primary"),
+        accordionItem(uiOutput("box_HistoSummary"), id = 6, title = "Summary report", color="Primary"),
+        accordionItem(uiOutput("box_RadarPlots"), id = 7, title = "Radar plots", color="Primary")
+      )
 
-      box(title = "View/select CUs on a data table", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
-          div(style = 'overflow-x: scroll', uiOutput("box_SelectedDataTable"))),
-      
-      box(title = "Summary report", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
-          uiOutput("box_HistoSummary")),
-      
-      box(title = "Radar plots", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
-          uiOutput("box_RadarPlots"))
+      # box(title = "Start here", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=FALSE, status=BoxHeaderStatus,
+      #     uiOutput("box_DataFilters")),
+      # 
+      # box(title = "Select CUs by attributes and/or metric values", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE, status=BoxHeaderStatus,
+      #     uiOutput("box_DataSelectors")),
+      # 
+      # box(title = "View/select CUs on a map", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE, status=BoxHeaderStatus,
+      #     uiOutput("box_LeafletMap")),
+      # 
+      # box(title = "View/select CUs by performance metric (parallel coordinates plot)", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
+      #     uiOutput("box_Parcoords")),
+      # 
+      # box(title = "View/select CUs on a data table", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
+      #     div(style = 'overflow-x: scroll', uiOutput("box_SelectedDataTable"))),
+      # 
+      # box(title = "Summary report", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
+      #     uiOutput("box_HistoSummary")),
+      # 
+      # box(title = "Radar plots", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
+      #     uiOutput("box_RadarPlots"))
     )
   )
 )

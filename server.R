@@ -195,7 +195,7 @@ function(input, output, session){
     tagList(
       fluidRow(
         column(width=4,
-               wellPanel(style = WellPanelStyle, tags$b("Step1:",  "Filter your data"), tags$hr(),
+               wellPanel(style = WellPanelStyle, tags$b("Step1:",  "Filter data"), tags$hr(),
                          lapply(FilterAttributes[FilterAttributes %in% names(data.start)], function(attrib) {
                                   choices <- GetNamedChoices(attrib, data.start)
                                   if (attrib %in% FilterSingleChoiceAttributes) { 
@@ -719,11 +719,11 @@ function(input, output, session){
     toBeHighlighted <- !(CUs %in% map.highlightedMarkers())
     if (any(toBeHighlighted)) {
       df <- withSpatialSelection(isolate(data.spatial()))
-      if (!is.null(df)) {
+      df <- df[df$Base.Unit.CU.ShortName %in% CUs[toBeHighlighted], , drop=F]
+      if (!is.null(df) && nrow(df) > 0) {
         for (CU in CUs[toBeHighlighted]) {
           CUmapProxy %>% removeMarker(CU)
         }
-        df <- df[df$Base.Unit.CU.ShortName %in% CUs[toBeHighlighted], ]
         CUmapProxy %>% addMarkers(data=df, lng=~longitude, lat=~latitude, 
                                   layerId = ~Base.Unit.CU.ShortName, 
                                   icon = ~fishIcons[icon],
@@ -738,11 +738,11 @@ function(input, output, session){
     toBeUnhighlighted <- CUs %in% map.highlightedMarkers()
     if (any(toBeUnhighlighted)) {
       df <- withSpatialSelection(data.spatial())
-      if (!is.null(df)) {
+      df <- df[df$Base.Unit.CU.ShortName %in% CUs[toBeUnhighlighted], , drop=F]
+      if (!is.null(df) && nrow(df) > 0) {
         for (CU in CUs[toBeUnhighlighted]) {
           CUmapProxy %>% removeMarker(CU)
         }
-        df <- df[df$Base.Unit.CU.ShortName %in% CUs[toBeUnhighlighted], ]
         CUmapProxy %>% addMarkers(data=df, lng=~longitude, lat=~latitude, 
                                   layerId = ~Base.Unit.CU.ShortName, 
                                   icon = ~fishIcons[icon],
