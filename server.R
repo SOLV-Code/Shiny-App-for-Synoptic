@@ -466,7 +466,7 @@ function(input, output, session){
         updateCheckboxInput(session, sId('dataSelectors_IncludeNAs', m), label="NAs", value=T)
       }
     }
-  })
+  }, ignoreNULL = F)
     
   setSelection <- function() {
     if (any(grepl("dataSelectors", names(input)))) {
@@ -734,26 +734,33 @@ function(input, output, session){
   
   observeEvent(input$CUmap_shape_click, {
     df <- data.spatial.streams()
-    if (input$CUmap_shape_click$id %in% df$WS_NAME) {
+    if (input$CUmap_shape_click$id %in% df$WS_NAME) { # user clicked on a stream segment
       CUs <- df$CUsSelectable[df$WS_NAME == input$CUmap_shape_click$id]
       CUs <- strsplit(CUs, ',')[[1]]
       if (length(CUs) > 0) {
-        data.addToSelection(CUs)
+        alreadySelected <- CUs[CUs %in% data.currentSelection()]
+        if (setequal(CUs, alreadySelected)) { # all CUs on this branch are already selected; toggle selection to unselect all
+          data.removeFromSelection(CUs, "map")
+        }
+        else { # at least some CUs on this branch were not already selected; select them all now
+          data.addToSelection(CUs)
+        } 
       }
     }
   })
 
-  # we don't have a record of which markers need to change color, so redraw them all here
   observeEvent(data.currentSelection(), {
     df <- withSpatialSelection(data.spatial())
     if (!is.null(df)) {
-      CUmapProxy %>% addMarkers(data=df, lng=~longitude, lat=~latitude, 
+      # we don't have a record of which markers need to change color, so redraw them all here
+      CUmapProxy %>% clearMarkers() %>% 
+                     addMarkers(data=df, lng=~longitude, lat=~latitude, 
                                 layerId = ~Base.Unit.CU.ShortName, 
                                 icon = ~fishIcons[icon],
                                 group = ~selected,
                                 label = ~lapply(popup, HTML))
     }
-  })
+  }, ignoreNULL = F)
   
   output$box_LeafletMap <- renderUI({shinycssloaders::withSpinner(leafletOutput("CUmap", height = 500))})
   
@@ -905,7 +912,7 @@ function(input, output, session){
       selectedCUs <- row.names(sharedDS.parcoords$origData())[sharedDS.parcoords$selection()]
     }
     data.setSelection(selectedCUs, "parcoords")
-  }, ignoreInit = T)
+  }, ignoreInit = T, ignoreNULL = F)
   
   observeEvent(input$parcoords_reset_brush, {
     data.setSelection(NULL, "parcoords")
@@ -1039,7 +1046,7 @@ function(input, output, session){
       selected <- currentRadarMetricOpts()[1:3]
     }
     updatePickerInput(session, "radar_select_metrics", choices=currentRadarMetricOpts(), selected=selected)
-  })
+  }, ignoreNULL = F)
   
   observeEvent(input$radar_select_metrics, {
     updatePickerInput(session, "radar_ranking", 
@@ -1284,7 +1291,7 @@ function(input, output, session){
            output[[sId('summary', lc_a)]] <- plotly::renderPlotly({summaries[[lc_a]][[input$summary_type]]}) 
         })
       }
-  })
+  }, ignoreNULL = F)
   
 
   # build the UI widgets
