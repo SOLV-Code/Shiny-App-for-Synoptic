@@ -195,7 +195,7 @@ function(input, output, session){
     tagList(
       fluidRow(
         column(width=4,
-               wellPanel(style = WellPanelStyle, tags$b("Step1:",  "Filter your data"), tags$hr(),
+               wellPanel(style = WellPanelStyle, tags$b("Step1:",  "Filter data"), tags$hr(),
                          lapply(FilterAttributes[FilterAttributes %in% names(data.start)], function(attrib) {
                                   choices <- GetNamedChoices(attrib, data.start)
                                   if (attrib %in% FilterSingleChoiceAttributes) { 
@@ -466,7 +466,7 @@ function(input, output, session){
         updateCheckboxInput(session, sId('dataSelectors_IncludeNAs', m), label="NAs", value=T)
       }
     }
-  })
+  }, ignoreNULL = F)
     
   setSelection <- function() {
     if (any(grepl("dataSelectors", names(input)))) {
@@ -708,8 +708,50 @@ function(input, output, session){
     }
   })
   
+  # Keep track of which markers are currently highlighted in the map.
+  # Need this so we don't have to redraw all markers every time the current selection changes. 
+  map.highlightedMarkers <- reactiveVal(NULL)
+  
   # use this to make changes to the leaflet map without re-rendering the whole thing
   CUmapProxy <- leafletProxy('CUmap')
+  
+  map.highlightMarkers <- function(CUs) {
+    toBeHighlighted <- !(CUs %in% map.highlightedMarkers())
+    if (any(toBeHighlighted)) {
+      df <- withSpatialSelection(isolate(data.spatial()))
+      df <- df[df$Base.Unit.CU.ShortName %in% CUs[toBeHighlighted], , drop=F]
+      if (!is.null(df) && nrow(df) > 0) {
+        for (CU in CUs[toBeHighlighted]) {
+          CUmapProxy %>% removeMarker(CU)
+        }
+        CUmapProxy %>% addMarkers(data=df, lng=~longitude, lat=~latitude, 
+                                  layerId = ~Base.Unit.CU.ShortName, 
+                                  icon = ~fishIcons[icon],
+                                  group = ~selected,
+                                  label = ~lapply(popup, HTML))
+        map.highlightedMarkers(union(map.highlightedMarkers(), CUs))
+      }
+    }
+  }
+  
+  map.unhighlightMarkers <- function(CUs) {
+    toBeUnhighlighted <- CUs %in% map.highlightedMarkers()
+    if (any(toBeUnhighlighted)) {
+      df <- withSpatialSelection(data.spatial())
+      df <- df[df$Base.Unit.CU.ShortName %in% CUs[toBeUnhighlighted], , drop=F]
+      if (!is.null(df) && nrow(df) > 0) {
+        for (CU in CUs[toBeUnhighlighted]) {
+          CUmapProxy %>% removeMarker(CU)
+        }
+        CUmapProxy %>% addMarkers(data=df, lng=~longitude, lat=~latitude, 
+                                  layerId = ~Base.Unit.CU.ShortName, 
+                                  icon = ~fishIcons[icon],
+                                  group = ~selected,
+                                  label = ~lapply(popup, HTML))
+        map.highlightedMarkers(setdiff(map.highlightedMarkers(), CUs))
+      }
+    }
+  }
   
   # toggle CU selection when corresponding marker is clicked
   observeEvent(input$CUmap_marker_click, 
@@ -717,43 +759,38 @@ function(input, output, session){
                  CU <- input$CUmap_marker_click$id
                  if (CU %in% data.currentSelection()) {
                    data.removeFromSelection(CU, "map")
-                   icon <- fishIcons['black-fish']
+                   map.unhighlightMarkers(CU)
                  } else {
                    data.addToSelection(CU, "map")
-                   icon <- fishIcons['red-fish']
+                   map.highlightMarkers(CU)
                  }
-                 marker <- isolate(data.spatial()[data.spatial()$Base.Unit.CU.ShortName == CU, ])
-                 CUmapProxy %>% removeMarker(layerId = CU) %>%
-                   addMarkers(lng=marker$longitude, lat=marker$latitude, 
-                              layerId = CU, 
-                              icon = icon,
-                              group = 'selected',
-                              label = HTML(marker$popup))
                }
   )
   
-  observeEvent(input$CUmap_shape_click, {
-    df <- data.spatial.streams()
-    if (input$CUmap_shape_click$id %in% df$WS_NAME) {
-      CUs <- df$CUsSelectable[df$WS_NAME == input$CUmap_shape_click$id]
-      CUs <- strsplit(CUs, ',')[[1]]
-      if (length(CUs) > 0) {
-        data.addToSelection(CUs)
-      }
-    }
+  # allow user to select CUs by clicking on stream segments
+  observeEvent(input$CUmap_shape_click, 
+               {
+                 df <- data.spatial.streams()
+                 if (input$CUmap_shape_click$id %in% df$WS_NAME) { # user clicked on a stream segment
+                    CUs <- df$CUsSelectable[df$WS_NAME == input$CUmap_shape_click$id]
+                    CUs <- strsplit(CUs, ',')[[1]]
+                    if (length(CUs) > 0) {
+                      alreadySelected <- CUs[CUs %in% data.currentSelection()]
+                      if (setequal(CUs, alreadySelected)) { # all CUs on this branch are already selected; toggle to unselect all
+                        data.removeFromSelection(CUs, "map")
+                        map.unhighlightMarkers(CUs)
+                      } else { # at least some CUs on this branch were not already selected; select all
+                        data.addToSelection(CUs)
+                        map.highlightMarkers(CUs)
+                      } 
+                    }
+                  }
   })
 
-  # we don't have a record of which markers need to change color, so redraw them all here
   observeEvent(data.currentSelection(), {
-    df <- withSpatialSelection(data.spatial())
-    if (!is.null(df)) {
-      CUmapProxy %>% addMarkers(data=df, lng=~longitude, lat=~latitude, 
-                                layerId = ~Base.Unit.CU.ShortName, 
-                                icon = ~fishIcons[icon],
-                                group = ~selected,
-                                label = ~lapply(popup, HTML))
-    }
-  })
+      map.unhighlightMarkers(map.highlightedMarkers()[!(map.highlightedMarkers() %in% data.currentSelection())])
+      map.highlightMarkers(data.currentSelection())
+    }, ignoreNULL = F)
   
   output$box_LeafletMap <- renderUI({shinycssloaders::withSpinner(leafletOutput("CUmap", height = 500))})
   
@@ -905,7 +942,7 @@ function(input, output, session){
       selectedCUs <- row.names(sharedDS.parcoords$origData())[sharedDS.parcoords$selection()]
     }
     data.setSelection(selectedCUs, "parcoords")
-  }, ignoreInit = T)
+  }, ignoreInit = T, ignoreNULL = F)
   
   observeEvent(input$parcoords_reset_brush, {
     data.setSelection(NULL, "parcoords")
@@ -1039,7 +1076,7 @@ function(input, output, session){
       selected <- currentRadarMetricOpts()[1:3]
     }
     updatePickerInput(session, "radar_select_metrics", choices=currentRadarMetricOpts(), selected=selected)
-  })
+  }, ignoreNULL = F)
   
   observeEvent(input$radar_select_metrics, {
     updatePickerInput(session, "radar_ranking", 
@@ -1284,7 +1321,7 @@ function(input, output, session){
            output[[sId('summary', lc_a)]] <- plotly::renderPlotly({summaries[[lc_a]][[input$summary_type]]}) 
         })
       }
-  })
+  }, ignoreNULL = F)
   
 
   # build the UI widgets
