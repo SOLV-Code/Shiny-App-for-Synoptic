@@ -47,10 +47,10 @@ body <- shinydashboard::dashboardBody(`style` = "min-height: 400px",
   shinyjs::useShinyjs(),
   tags$head(HTML("<script type='text/javascript' src='sbs/shinyBS.js'></script>")),
 
-tags$head(tags$style(
-  HTML('.skin-blue {min-height: 400px !important;}')
-)),
-tags$head(tags$style(HTML('
+  tags$head(tags$style(
+    HTML('.skin-blue {min-height: 400px !important;}')
+  )),
+  tags$head(tags$style(HTML('
         .skin-blue .main-header .logo {
                             background-color: #3c8dbc;
                             }
@@ -130,7 +130,12 @@ tags$head(tags$style(
 
 # Define UI for application 
 ui <- dashboardPage(
-  dashboardHeader(title="Working"),
+  dashboardHeader(
+# sample code for adding buttons and other elements to header bar    
+#    tags$li(class = "dropdown", actionButton("btn1", label = "Button 1", style=ButtonStyle)),
+#    tags$li(class = "dropdown", conditionalPanel("input.tabs == 'CUSelection'",
+#                                                  actionButton("btn3", label = "Clear Selection", style=ButtonStyle))),
+                  title="Working"),
   #  dashboardSidebar(disable=F),
   sidebar,
   body
