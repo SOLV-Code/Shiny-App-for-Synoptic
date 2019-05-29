@@ -6,17 +6,17 @@ MetricInfo <- list(
   Base.Unit.Species = "Species Code (Sk = Sockeye, Ck = Chinook, ...)",
   FAZ = "Freshwater Adaptive Zone",
   BaseUnit.Watershed = "Watershed",
-  Recent.Total = "Recent.Total: average effective total spawner abundance across the last generation (log space)",
-  Lower.Ratio = "Lower.Ratio: ratio of the most recent generation of effective total spawners (ETS) to the lower WSP benchmark for abundance. 
+  Recent.Total = "Recent Total: average effective total spawner abundance across the last generation (log space)",
+  Lower.Ratio = "Lower Ratio: ratio of the most recent generation of effective total spawners (ETS) to the lower WSP benchmark for abundance. 
                   Values <1 indicates that the recent abundance falls below this biological benchmark.",
-  Upper.Ratio = "Upper.Ratio: ratio of the most recent generation of effective total spawners (ETS) to the upper WSP benchmark for abundance.
+  Upper.Ratio = "Upper Ratio: ratio of the most recent generation of effective total spawners (ETS) to the upper WSP benchmark for abundance.
                   Values <1 indicates that the recent abundance falls below this biological benchmark.)",
-  LongTerm.Ratio = "LongTerm.Ratio: ratio of the most recent generation of effective female spawners to the historical average (geometric)
+  LongTerm.Ratio = "Long Term Ratio: ratio of the most recent generation of effective female spawners to the historical average (geometric)
                     Values <1 indicate that the recent abundnace is below average.",
-  ShortTerm.Trend = "ShortTerm.Trend: slope of the most recent three generations of effective female spawners (using a geometric generational running average)",
-  WSP.status = "WSP.status: the integrated Wild Salmon Policy Status derived by integrating metrics through an expert-driven workshop 
+  ShortTerm.Trend = "Short Term Trend: slope of the most recent three generations of effective female spawners (using a geometric generational running average)",
+  WSP.status = "Wild Salmon Policy status: the integrated Wild Salmon Policy Status derived by integrating metrics through an expert-driven workshop 
                   (UD = Undetermined, R = Red, RA = Red/Amber, A = Amber, AG = Amber/Green, G = Green)",
-  Recent.ER = "Recent.ER: the average exploitation rate over the most recent generation",
+  Recent.ER = "Recent Exploitation Rate: the average exploitation rate over the most recent generation",
   Management.Timing = "Management timing: return timing of the spawning migration used for fisheries management purposes")
 
 # add labels here for any names or categories that should be shown with pretty labels
@@ -24,12 +24,12 @@ Labels <- list(Base.Unit.CU.ShortName = "CU",
                Base.Unit.Species = "Species",
                Sk = "Sockeye",
                Ck = "Chinook",
-               FAZ="FAZ",
+               FAZ="Freshwater Adaptive Zone",
                BaseUnit.Watershed = "Watershed",
                Management.Timing = "Management Timing",
-               WSP.status = "WSP Status",
+               WSP.status = "Wild Salmon Policy Status",
                Recent.Total = "Recent Total", 
-               Recent.ER = "Recent ER",
+               Recent.ER = "Recent Exploitation Rate",
                Lower.Ratio = "Lower Ratio",
                Upper.Ratio = "Upper Ratio",
                LongTerm.Ratio = "Long-term Ratio",
