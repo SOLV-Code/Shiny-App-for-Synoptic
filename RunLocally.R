@@ -1,1 +1,7 @@
+#install.packages("leaflet")
+#install.packages("shiny")
+install.packages("shinydashboardPlus")
+install_github("brigitte-dorner/parcoordsSoS")
+library(shiny)
+library(leaflet)
 runApp()
