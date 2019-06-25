@@ -29,11 +29,11 @@ Labels <- list(Base.Unit.CU.ShortName = "CU",
                Management.Timing = "Management Timing",
                WSP.status = "Wild Salmon Policy Status",
                Recent.Total = "Recent Generation ETS (log)", 
-               Recent.ER = "Recent Exploitation Rate",
+               Recent.ER = "Recent Exploitation Rate (%)",
                Lower.Ratio = "Lower Abundance BM Ratio",
                Upper.Ratio = "Upper Abundance BM Ratio",
                LongTerm.Ratio = "Long-term Ratio",
-               ShortTerm.Trend = "Short-term Trend",
+               ShortTerm.Trend = "Short-term Trend (% change)",
                EStu="Early Stuart", 
                Early_Summer="Early Summer", 
                Summer="Summer", 
@@ -81,6 +81,8 @@ GetNamedChoices  <- function(m, df) {
 data.start <- read.csv("data/FR SK metrics.csv")
 data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
 data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
+data.start$ShortTerm.Trend <- data.start$ShortTerm.Trend*100
+data.start$Recent.ER <- data.start$Recent.ER*100
 
 data.years <- as.character(sort(unique(as.numeric(data.start$Year))))
 data.by.year <- lapply(data.years, function(yr) {
@@ -190,13 +192,13 @@ HistoMaxDots <- 40
 HistoCustomInfo <- list(
   Annual = list( 
     Recent.ER = list(
-      breaks = c( 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1),
+      breaks = c( 0,10,20,30,40,50,60,70,80,90,100),
       names = c("Below 10%","10-20%","20-30%","30%-40%","40-50%", "50%-60%","60-70%","70%-80%","80-90%","Above 90%")
       )
     ),
   Change = list(
     Recent.ER = list(
-      breaks = c(-1, -0.1, -0.05, -0.01,0.01, 0.05, 0.1, 1),
+      breaks = c(-100, -10, -5, -1, 1, 5, 10, 100),
       names = c(">10% decr", "5%-10% decr", "0-5% decr","No Change", "0-5% incr", "5-10% incr",">10% incr")
     )
   ))

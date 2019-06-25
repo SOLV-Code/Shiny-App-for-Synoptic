@@ -30,7 +30,6 @@ sidebar <- shinydashboard::dashboardSidebar(
     conditionalPanel("input.tabs == 'CUSelection'",
                      tags$hr(),
                      actionButton("sidebarMenu_clearSelection", label = "Clear Selection", style=ButtonStyle)),
-    
     tags$div(
       `style` = "position: absolute; bottom: 0;",
       hr(),
@@ -81,6 +80,8 @@ tags$head(tags$style(
       h2("DISCLAIMER"),
       fluidRow(
         column(width=8,
+             
+        
                includeMarkdown("Markdown/about.md")
         )
       )
@@ -137,7 +138,12 @@ ui <- dashboardPage(
 #    tags$li(class = "dropdown", actionButton("btn1", label = "Button 1", style=ButtonStyle)),
 #    tags$li(class = "dropdown", conditionalPanel("input.tabs == 'CUSelection'",
 #                                                  actionButton("btn3", label = "Clear Selection", style=ButtonStyle))),
-                  title="Working"),
+                     
+              title="SOS SSET Prototype"),
+                
+                 
+  
+
   #  dashboardSidebar(disable=F),
   sidebar,
   body
