@@ -30,7 +30,7 @@ list.of.packages <- c("shiny",
                       "shinycssloaders")
 # 
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+#if(length(new.packages)) install.packages(new.packages)
 lapply(list.of.packages, require, character.only = TRUE)
 # NOTE: to make this work with shinyapps.io, you MUST install parcoordsSoS from the github repo, i.e.
 # by using install_github("brigitte-dorner/parcoordsSoS") before uploading.

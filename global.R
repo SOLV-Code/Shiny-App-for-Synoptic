@@ -7,13 +7,13 @@ MetricInfo <- list(
   FAZ = "Freshwater Adaptive Zone",
   BaseUnit.Watershed = "Watershed",
   Recent.Total = "Recent Total: average effective total spawner abundance across the last generation (log space)",
-  Lower.Ratio = "Lower Ratio: ratio of the most recent generation of effective total spawners (ETS) to the lower WSP benchmark for abundance. 
+  Lower.Ratio = "Lower Abundance BM Ratio: ratio of the most recent generation of effective total spawners (ETS) to the lower WSP benchmark for abundance. 
                   Values <1 indicates that the recent abundance falls below this biological benchmark.",
-  Upper.Ratio = "Upper Ratio: ratio of the most recent generation of effective total spawners (ETS) to the upper WSP benchmark for abundance.
+  Upper.Ratio = "Upper Abundance BM Ratio: ratio of the most recent generation of effective total spawners (ETS) to the upper WSP benchmark for abundance.
                   Values <1 indicates that the recent abundance falls below this biological benchmark.)",
   LongTerm.Ratio = "Long Term Ratio: ratio of the most recent generation of effective female spawners to the historical average (geometric)
-                    Values <1 indicate that the recent abundnace is below average.",
-  ShortTerm.Trend = "Short Term Trend: slope of the most recent three generations of effective female spawners (using a geometric generational running average)",
+                    Values <1 indicate that the recent abundance is below average.",
+  ShortTerm.Trend = "Short Term Trend: % change over the most recent three generations of effective female spawners (using a geometric generational running average)",
   WSP.status = "Wild Salmon Policy status: the integrated Wild Salmon Policy Status derived by integrating metrics through an expert-driven workshop 
                   (UD = Undetermined, R = Red, RA = Red/Amber, A = Amber, AG = Amber/Green, G = Green)",
   Recent.ER = "Recent Exploitation Rate: the average exploitation rate over the most recent generation",
@@ -28,15 +28,15 @@ Labels <- list(Base.Unit.CU.ShortName = "CU",
                BaseUnit.Watershed = "Watershed",
                Management.Timing = "Management Timing",
                WSP.status = "Wild Salmon Policy Status",
-               Recent.Total = "Recent Total", 
+               Recent.Total = "Recent Generation ETS (log)", 
                Recent.ER = "Recent Exploitation Rate",
-               Lower.Ratio = "Lower Ratio",
-               Upper.Ratio = "Upper Ratio",
+               Lower.Ratio = "Lower Abundance BM Ratio",
+               Upper.Ratio = "Upper Abundance BM Ratio",
                LongTerm.Ratio = "Long-term Ratio",
                ShortTerm.Trend = "Short-term Trend",
-               EStu="EStu", 
-               Early_Summer="ES", 
-               Summer="S", 
+               EStu="Early Stuart", 
+               Early_Summer="Early Summer", 
+               Summer="Summer", 
                Late="Late")
   
 # get the label for pretty printing, given the name of a metric, attribute, or attribute category
