@@ -81,7 +81,6 @@ tags$head(tags$style(
       fluidRow(
         column(width=8,
              
-        
                includeMarkdown("Markdown/about.md")
         )
       )
@@ -131,6 +130,7 @@ tags$head(tags$style(
   )
 )
 
+
 # Define UI for application 
 ui <- dashboardPage(
   dashboardHeader(
@@ -138,11 +138,15 @@ ui <- dashboardPage(
 #    tags$li(class = "dropdown", actionButton("btn1", label = "Button 1", style=ButtonStyle)),
 #    tags$li(class = "dropdown", conditionalPanel("input.tabs == 'CUSelection'",
 #                                                  actionButton("btn3", label = "Clear Selection", style=ButtonStyle))),
-                     
-              title="SOS SSET Prototype"),
-                
-                 
-  
+    # tags$li(class = "dropdown",
+    #         tags$style(".main-header {max-height: 100px}"),
+    #         tags$style(".main-header .logo {height: 100px}")
+    # ),
+    # Use image in title
+    #title = tags$a(href='http://company.fr/',     # Note we can add a web link to the logo in the future using this structure if we want!
+     #              tags$img(src='logo.jpg'))
+    title = tags$img(src='Final - State of the Salmon Program - LT. Design-03.png', height="60px")
+  ),     
 
   #  dashboardSidebar(disable=F),
   sidebar,
