@@ -217,7 +217,7 @@ function(input, output, session){
                                             column(width=7, picker))
                                 }))),
         column(width=4, 
-               wellPanel(style = WellPanelStyle, tags$b("Step2:", "Select the metrics you are interested in seeing"), tags$hr(),
+               wellPanel(style = WellPanelStyle, tags$b("Step2:", "Select the metrics and additional data you are interested in seeing"), tags$hr(),
                          fluidRow(
                            # column(width=12, pickerInput(inputId="dataFilters_metrics",
                            #                              label="",
