@@ -6,37 +6,37 @@ MetricInfo <- list(
   Base.Unit.Species = "Species Code (Sk = Sockeye, Ck = Chinook, ...)",
   FAZ = "Freshwater Adaptive Zone",
   BaseUnit.Watershed = "Watershed",
-  Recent.Total = "Recent.Total: average effective total spawner abundance across the last generation (log space)",
-  Lower.Ratio = "Lower.Ratio: ratio of the most recent generation of effective total spawners (ETS) to the lower WSP benchmark for abundance. 
+  Recent.Total = "Recent Generation Total: average total spawner abundance across the last generation (log space)",
+  Lower.Ratio = "Lower Abundance BM Ratio: ratio of the most recent generation of total spawners to the lower WSP benchmark for abundance. 
                   Values <1 indicates that the recent abundance falls below this biological benchmark.",
-  Upper.Ratio = "Upper.Ratio: ratio of the most recent generation of effective total spawners (ETS) to the upper WSP benchmark for abundance.
+  Upper.Ratio = "Upper Abundance BM Ratio: ratio of the most recent generation of total spawners to the upper WSP benchmark for abundance.
                   Values <1 indicates that the recent abundance falls below this biological benchmark.)",
-  LongTerm.Ratio = "LongTerm.Ratio: ratio of the most recent generation of effective female spawners to the historical average (geometric)
-                    Values <1 indicate that the recent abundnace is below average.",
-  ShortTerm.Trend = "ShortTerm.Trend: slope of the most recent three generations of effective female spawners (using a geometric generational running average)",
-  WSP.status = "WSP.status: the integrated Wild Salmon Policy Status derived by integrating metrics through an expert-driven workshop 
+  LongTerm.Ratio = "Ratio of Historic Average: ratio of the most recent generation of spawners to the long-term average (geometric)
+                    Values <1 indicate that the recent abundance is below average.",
+  ShortTerm.Trend = "Short Term Trend: % change over the most recent three generations of spawners (using a geometric generational running average)",
+  WSP.status = "Wild Salmon Policy status: the integrated Wild Salmon Policy Status derived by integrating metrics through an expert-driven workshop 
                   (UD = Undetermined, R = Red, RA = Red/Amber, A = Amber, AG = Amber/Green, G = Green)",
-  Recent.ER = "Recent.ER: the average exploitation rate over the most recent generation",
-  Management.Timing = "Management timing: return timing of the spawning migration used for fisheries management purposes")
+  Recent.ER = "Recent Exploitation Rate: the average exploitation rate over the most recent generation",
+  Management.Timing = "Stock management unit: aggregation of CUs used for fisheries management purposes")
 
 # add labels here for any names or categories that should be shown with pretty labels
 Labels <- list(Base.Unit.CU.ShortName = "CU",
                Base.Unit.Species = "Species",
                Sk = "Sockeye",
                Ck = "Chinook",
-               FAZ="FAZ",
+               FAZ="Freshwater Adaptive Zone",
                BaseUnit.Watershed = "Watershed",
-               Management.Timing = "Management Timing",
-               WSP.status = "WSP Status",
-               Recent.Total = "Recent Total", 
-               Recent.ER = "Recent ER",
-               Lower.Ratio = "Lower Ratio",
-               Upper.Ratio = "Upper Ratio",
-               LongTerm.Ratio = "Long-term Ratio",
-               ShortTerm.Trend = "Short-term Trend",
-               EStu="EStu", 
-               Early_Summer="ES", 
-               Summer="S", 
+               Management.Timing = "Stock Management Unit",
+               WSP.status = "Wild Salmon Policy Status",
+               Recent.Total = "Recent Generation Total (log)", 
+               Recent.ER = "Recent Exploitation Rate (%)",
+               Lower.Ratio = "Lower Abundance BM Ratio",
+               Upper.Ratio = "Upper Abundance BM Ratio",
+               LongTerm.Ratio = "Ratio of Historic Average",
+               ShortTerm.Trend = "Short-term Trend (% change)",
+               Estu="Early Stuart", 
+               Early_Summer="Early Summer", 
+               Summer="Summer", 
                Late="Late")
   
 # get the label for pretty printing, given the name of a metric, attribute, or attribute category
@@ -81,6 +81,8 @@ GetNamedChoices  <- function(m, df) {
 data.start <- read.csv("data/FR SK metrics.csv")
 data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
 data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
+data.start$ShortTerm.Trend <- data.start$ShortTerm.Trend*100
+data.start$Recent.ER <- data.start$Recent.ER*100
 
 data.years <- as.character(sort(unique(as.numeric(data.start$Year))))
 data.by.year <- lapply(data.years, function(yr) {
@@ -190,13 +192,13 @@ HistoMaxDots <- 40
 HistoCustomInfo <- list(
   Annual = list( 
     Recent.ER = list(
-      breaks = c( 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1),
+      breaks = c( 0,10,20,30,40,50,60,70,80,90,100),
       names = c("Below 10%","10-20%","20-30%","30%-40%","40-50%", "50%-60%","60-70%","70%-80%","80-90%","Above 90%")
       )
     ),
   Change = list(
     Recent.ER = list(
-      breaks = c(-1, -0.1, -0.05, -0.01,0.01, 0.05, 0.1, 1),
+      breaks = c(-100, -10, -5, -1, 1, 5, 10, 100),
       names = c(">10% decr", "5%-10% decr", "0-5% decr","No Change", "0-5% incr", "5-10% incr",">10% incr")
     )
   ))

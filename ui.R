@@ -30,7 +30,6 @@ sidebar <- shinydashboard::dashboardSidebar(
     conditionalPanel("input.tabs == 'CUSelection'",
                      tags$hr(),
                      actionButton("sidebarMenu_clearSelection", label = "Clear Selection", style=ButtonStyle)),
-    
     tags$div(
       `style` = "position: absolute; bottom: 0;",
       hr(),
@@ -81,6 +80,7 @@ tags$head(tags$style(
       h2("DISCLAIMER"),
       fluidRow(
         column(width=8,
+             
                includeMarkdown("Markdown/about.md")
         )
       )
@@ -95,13 +95,15 @@ tags$head(tags$style(
     tabItem(
       tabName = "CUSelection",
       accordion(
-        accordionItem(uiOutput("box_DataFilters"), id = 1, title = "Start here", collapsed=FALSE, color="Primary"),
-        accordionItem(uiOutput("box_DataSelectors"), id = 2, title = "Select CUs by attributes and/or metric values", color="Primary"),
-        accordionItem(uiOutput("box_LeafletMap"), id = 3, title = "View/select CUs on a map", color="Primary"),
-        accordionItem(uiOutput("box_Parcoords"), id = 4, title = "View/select CUs by performance metric (parallel coordinates plot)", color="Primary"),
-        accordionItem(div(style = 'overflow-x: scroll', uiOutput("box_SelectedDataTable")), id = 5, title = "View/select CUs on a data table", color="Primary"),
-        accordionItem(uiOutput("box_HistoSummary"), id = 6, title = "Summary report", color="Primary"),
-        accordionItem(uiOutput("box_RadarPlots"), id = 7, title = "Radar plots", color="Primary")
+        accordionItem(uiOutput("box_DataFilters"), id = 1, title = "Start here: Choose the data you want to work with", collapsed=FALSE, color="Primary"),
+        #hid the data selector box
+        #accordionItem(uiOutput("box_DataSelectors"), id = 2, title = "Select CUs by attributes and/or metric values", color="Primary"),
+        accordionItem(uiOutput("box_LeafletMap"), id = 3, title = "View CUs on a map", color="Primary"),
+        accordionItem(uiOutput("box_Parcoords"), id = 4, title = "Compare CUs", color="Primary"),
+        accordionItem(div(style = 'overflow-x: scroll', uiOutput("box_SelectedDataTable")), id = 5, title = "Table view and download of selected data", color="Primary"),
+        accordionItem(uiOutput("box_HistoSummary"), id = 6, title = "Summary report", color="Primary")
+        #hid the radar plots
+        #accordionItem(uiOutput("box_RadarPlots"), id = 7, title = "Radar plots", color="Primary")
       )
 
       # box(title = "Start here", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=FALSE, status=BoxHeaderStatus,
@@ -110,13 +112,13 @@ tags$head(tags$style(
       # box(title = "Select CUs by attributes and/or metric values", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE, status=BoxHeaderStatus,
       #     uiOutput("box_DataSelectors")),
       # 
-      # box(title = "View/select CUs on a map", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE, status=BoxHeaderStatus,
+      # box(title = "View CUs on a map", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE, status=BoxHeaderStatus,
       #     uiOutput("box_LeafletMap")),
       # 
-      # box(title = "View/select CUs by performance metric (parallel coordinates plot)", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
+      # box(title = "Compare CUs", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
       #     uiOutput("box_Parcoords")),
       # 
-      # box(title = "View/select CUs on a data table", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
+      # box(title = "Table view and download of selected data", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
       #     div(style = 'overflow-x: scroll', uiOutput("box_SelectedDataTable"))),
       # 
       # box(title = "Summary report", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
@@ -128,6 +130,7 @@ tags$head(tags$style(
   )
 )
 
+
 # Define UI for application 
 ui <- dashboardPage(
   dashboardHeader(
@@ -135,7 +138,16 @@ ui <- dashboardPage(
 #    tags$li(class = "dropdown", actionButton("btn1", label = "Button 1", style=ButtonStyle)),
 #    tags$li(class = "dropdown", conditionalPanel("input.tabs == 'CUSelection'",
 #                                                  actionButton("btn3", label = "Clear Selection", style=ButtonStyle))),
-                  title="Working"),
+     # tags$li(class = "dropdown",
+     #         tags$style(".main-header {max-height: 100px}"),
+     #         tags$style(".main-header .logo {height: 100px}")
+     # ),
+    # Use image in title
+    #title = tags$a(href='http://company.fr/',     # Note we can add a web link to the logo in the future using this structure if we want!
+     #              tags$img(src='logo.jpg'))
+    title = tags$img(src='Final - State of the Salmon Program - LT. Design-03.png', height="60px")
+  ),     
+
   #  dashboardSidebar(disable=F),
   sidebar,
   body

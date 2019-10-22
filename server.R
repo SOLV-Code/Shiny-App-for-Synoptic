@@ -187,13 +187,13 @@ function(input, output, session){
     allMetricChoices <- c(metricChoices$Metrics, metricChoices$Attributes)
     metricHelp <- lapply(as.character(allMetricChoices), function(m) {
                           makeCheckboxTooltip(checkboxValue = m,
-                                 buttonLabel = "?",
+                                 buttonLabel = "ⓘ",
                                  buttonId = sId("dataFiltersMetricHelp", which(as.character(allMetricChoices) == m)),
                                  Tooltip = htmlEscape(MetricInfo[[m]], attribute=TRUE))
               })
 
     tagList(
-      fluidRow(
+      fluidRow( 
         column(width=4,
                wellPanel(style = WellPanelStyle, tags$b("Step1:",  "Filter data"), tags$hr(),
                          lapply(FilterAttributes[FilterAttributes %in% names(data.start)], function(attrib) {
@@ -217,22 +217,22 @@ function(input, output, session){
                                             column(width=7, picker))
                                 }))),
         column(width=4, 
-               wellPanel(style = WellPanelStyle, tags$b("Step2:", "Select metrics and/or attributes of interest"), tags$hr(),
+               wellPanel(style = WellPanelStyle, tags$b("Step2:", "Select the metrics and additional data you are interested in seeing"), tags$hr(),
                          fluidRow(
                            # column(width=12, pickerInput(inputId="dataFilters_metrics",
                            #                              label="",
                            #                              choices=metricChoices,
-                           #                              selected=as.character(unlist(metricChoices)),
+                           #                              selected="Recent.Total", "Recent.ER", "LongTerm.Ratio", "ShortTerm.Trend",
                            #                              multiple=TRUE,
                            #                              options=PickerOptsMultiSelect))
-                            column(width=12, 
-                                   checkboxGroupInput(inputId="dataFilters_metrics", label = "", 
-                                                      choices=allMetricChoices,
-                                                      selected=as.character(allMetricChoices)),
-                                   metricHelp)
+                           column(width=12, 
+                                  checkboxGroupInput(inputId="dataFilters_metrics", label = "", 
+                                                     choices=allMetricChoices,
+                                                     selected=as.character(allMetricChoices)),
+                                  metricHelp)
                          ))),
         column(width=4, 
-               wellPanel(style = WellPanelStyle, tags$b("Step3:", "Show analysis for a single year, or change between years?"), tags$hr(),
+               wellPanel(style = WellPanelStyle, tags$b("Step3:", "Show data for a single year, or change between years?"), tags$hr(),
                          fluidRow(
                            column(width=6, radioButtons( "dataFilters_change",
                                                          label="",
@@ -668,7 +668,8 @@ function(input, output, session){
                             group = ~grp,
                             label = ~lapply(popup, HTML),
                             highlight = highlightOptions(weight = 10, color="red", bringToFront = TRUE))  %>% 
-                addTiles(group="base")
+          #this is where you add leaflet/mapbox tiles
+          addProviderTiles(providers$CartoDB.Positron)
 
         # Note: this may not work very well if there are more than 100 streams to display
         # since leaflet wants to put shadows on panes with zIndex above 500
@@ -689,12 +690,12 @@ function(input, output, session){
                               options = pathOptions(pane = as.character(data.spatial.streams()$WATERSHED_KEY[i])))
          }
         
-        map <- map %>% 
-               addLegend(position="bottomright", pal=pal, title="",
-                         values=~grp, 
-                         opacity=1) %>%
-               addLayersControl(overlayGroups = c("selected", "not selected", groups, "streams"),
-                                options = layersControlOptions(collapsed = FALSE))
+        #map <- map %>% 
+               #addLegend(position="bottomright", pal=pal, title="",
+                         #values=~grp, 
+                         #opacity=1) %>%
+               #addLayersControl(overlayGroups = c("selected", "not selected", groups, "streams"),
+                                #options = layersControlOptions(collapsed = FALSE))
 
         map
       })
@@ -960,11 +961,16 @@ function(input, output, session){
   output$box_Parcoords <- renderUI({ 
     tagList( tags$div('style' = "text-align:right;", 
                       actionButton(inputId = "parcoords_reset_brush",
-                                   label="Reset Brushing",icon("paper-plane"), 
+                                   label="Reset Selection",icon("paper-plane"), 
                                    style=ButtonStyle),
-                      actionButton(inputId = "parcoords_scale_to_selected",
-                                   label="Scale to Selected",icon("search-plus"), 
-                                   style=ButtonStyle)),
+                      #actionButton(inputId = "parcoords_scale_to_selected",
+                      #             label="Scale to Selected",icon("search-plus"), 
+                      #             style=ButtonStyle)),
+                      #This is where the "how to" button will be created"
+                      actionButton(inputId = "how_to_video",
+                                  label="How do I use this chart?",icon("search-plus"), 
+                                  style=ButtonStyle,
+                                  onclick ="window.open('http://michaelbarrus.com/parallel-coordinates', '_blank')")),
                       parcoordsSoS::parcoordsOutput("parcoords_Plot", height="600px"),           # 400px is defaultheight
                       uiOutput("parcoords_Controls"))
   })
