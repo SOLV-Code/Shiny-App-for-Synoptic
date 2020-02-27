@@ -17,6 +17,8 @@
 # are currently hovering over.
 
 # ----- explanatory information for the different metrics ---------
+library(xfun)
+library(rgdal)
 
 MetricInfo <- list(
   CU_ID = "Conservation Unit",
@@ -250,6 +252,7 @@ PopMarkerStyle.mouseover <- list(
 
 # CU boundaries and markers will be shown overlaid in this order, i.e., the species listed first will be on bottom
 zPaneOrder <- c("Co", "Ck", "Sk")
+
 # --------------------- Helper functions for data display and restructuring ---------
 
 # get full name of a CU, given the CU's ID
@@ -342,7 +345,6 @@ data.CU.Metrics.Years <- sort(unique(data.CU.MetricsSeries$Year))
 data.CU.TimeSeries <- read.csv("data/MERGED_FLAT_FILE_BY_CU.csv", stringsAsFactors = F)
 data.Pop.TimeSeries <- read.csv("data/MERGED_FLAT_FILE_BY_POP.csv", stringsAsFactors = F)
 
-require(rgdal)
 # spatial location of populations
 data.Pop.Spatial <- read.csv("data/All_Species_Sites_with_FWA_watershed_key_Fraser.csv", stringsAsFactors = F)
 # CU boundary polygons
