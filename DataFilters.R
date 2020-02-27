@@ -14,7 +14,7 @@ for (a in FilterAttributes) {
 filter$year <- max(data.CU.Metrics$Year)
 observeEvent(input$dataFilters_year, {filter$year <- input$dataFilters_year})
 # Select metrics and attributes to show
-filter$metrics <- c(FilterMFMetrics, FilterMFAttributes) 
+filter$metrics <- c(unique(data.CU.MetricsSeries$Metric), FilterMFAttributes) 
 observeEvent(input$dataFilters_metrics, {filter$metrics <- input$dataFilters_metrics})
 # Toggle between annual snapshot (default) and change from a baseline year
 filter$change <- "Annual"

@@ -33,7 +33,7 @@ data.applyFilters <- function(df) {
     drops <- c(drops, m, paste(m, 'Status', sep='.'))
   }
   # additional columns that are no longer needed and can be dropped now 
-  drops <- c(drops, "CU_ID", "Year", FilterSingleChoiceAttributes)
+  drops <- c(drops, "CU_ID", "Year", SingleChoice)
   df[ ,drops] <- NULL
   as.data.frame(df) # make sure this remains a data frame, even if there is only one row or column left at this point
 }
