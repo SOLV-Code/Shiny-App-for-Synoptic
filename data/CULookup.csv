@@ -1,0 +1,51 @@
+MapData_CU_ID,CU_MetricsData_CU_ID,CU_TimeSeriesData_CU_ID,Pop_TimeSeriesData_CU_ID,CU_ID,CU_Name,Species_Full,Species,Lat,Lon,FAZ,MAZ,JAZ,Area,AvGen,RunTiming,LifeHistory
+CK-03,CK-03,CK-03,CK-03,CK-03,Lower Fraser River_FA_0.3,Chinook,Ck,49.218903,-121.945066,LFR,GStr,LFR+GStr,Fraser_Lower,4,Fall,Ocean
+CK-04,CK-04,CK-04,CK-04,CK-04,Lower Fraser River_SP_1.3,Chinook,Ck,49.460826,-122.4924814,LFR,GStr,LFR+GStr,Fraser_Lower,5,Spring,Stream
+CK-05,CK-05,CK-05,CK-05,CK-05,Lower Fraser River-Upper Pitt_SU_1.3,Chinook,Ck,49.566286,-122.634339,LFR,GStr,LFR+GStr,Fraser_Lower,5,Summer,Stream
+CK-06,CK-06,CK-06,CK-06,CK-06,Lower Fraser River_SU_1.3,Chinook,Ck,49.72016855,-122.157779,LFR,GStr,LFR+GStr,Fraser_Lower,5,Summer,Stream
+CK-07,CK-07,CK-07,CK-07,CK-07,Maria Slough_SU_0.3,Chinook,Ck,49.227919,-121.733305,LFR,GStr,LFR+GStr,Fraser_Lower,4,Summer,Ocean
+CK-08,CK-08,CK-08,CK-08,CK-08,Middle Fraser-Fraser Canyon_SP_1.3,Chinook,Ck,49.977915,-121.512032,FRCany,GStr,FRCany+GStr,Fraser_Upper,5,Spring,Stream
+CK-09,CK-09,CK-09,CK-09,CK-09,Middle Fraser River-Portage_FA_1.3,Chinook,Ck,50.70803,-122.270059,MFR,GStr,MFR+GStr,Fraser_Upper,5,Fall,Stream
+CK-10,CK-10,CK-10,CK-10,CK-10,Middle Fraser River_SP_1.3,Chinook,Ck,52.72549964,-122.6181922,MFR,GStr,MFR+GStr,Fraser_Upper,5,Spring,Stream
+CK-11,CK-11,CK-11,CK-11,CK-11,Middle Fraser River_SU_1.3,Chinook,Ck,52.94072095,-123.4585458,MFR,GStr,MFR+GStr,Fraser_Upper,5,Summer,Stream
+CK-12,CK-12,CK-12,CK-12,CK-12,Upper Fraser River_SP_1.3,Chinook,Ck,53.67953103,-120.9021509,UFR,GStr,UFR+GStr,Fraser_Upper,5,Spring,Stream
+CK-13,CK-13,CK-13,CK-13,CK-13,South Thompson_SU_0.3,Chinook,Ck,50.94251125,-119.4355425,STh,GStr,STh+GStr,Fraser_Thompson,4,Summer,Ocean
+CK-14,CK-14,CK-14,CK-14,CK-14,South Thompson_SU_1.3,Chinook,Ck,50.8752315,-119.251533,STh,GStr,STh+GStr,Fraser_Thompson,5,Summer,Stream
+CK-15,CK-15,CK-15,CK-15,CK-15,Shuswap River_SU_0.3,Chinook,Ck,50.576293,-118.8984295,STh,GStr,STh+GStr,Fraser_Thompson,4,Summer,Ocean
+CK-16,CK-16,CK-16,CK-16,CK-16,South Thompson-Bessette Creek_SU_1.2,Chinook,Ck,50.25159,-118.935535,STh,GStr,STh+GStr,Fraser_Thompson,4,Summer,Stream
+CK-17,CK-17,CK-17,CK-17,CK-17,Lower Thompson_SP_1.2,Chinook,Ck,50.336506,-120.9842179,LTh,GStr,LTh+GStr,Fraser_Thompson,4,Spring,Stream
+CK-18,CK-18,CK-18,CK-18,CK-18,North Thompson_SP_1.3,Chinook,Ck,51.83759443,-119.6156737,NTh,GStr,NTh+GStr,Fraser_Thompson,5,Spring,Stream
+CK-19,CK-19,CK-19,CK-19,CK-19,North Thompson_SU_1.3,Chinook,Ck,51.43836057,-120.0999803,NTh,GStr,NTh+GStr,Fraser_Thompson,5,Summer,Stream
+CK-82,CK-82,CK-82,CK-82,CK-82,Upper Adams River_SU_x.x,Chinook,Ck,51.411,-119.456,STh,GStr,STh+GStr,Fraser_Thompson,5,Summer,Ocean
+CO-04,,,,CO-04,Lillooet,Coho,Co,50.34,-123.1,LILL,GStr,LILL+GStr,Fraser_Lower,3,NA,NA
+CO-05,CO-02,CO_02,CO_02,CO-05,Fraser Canyon,Coho,Co,49.65,-121.3,FRCany,GStr,FRCany+GStr,Fraser_Canyon,3,NA,NA
+CO-07,CO-03,CO_03,CO_03,CO-07,Lower Thompson,Coho,Co,51.56,-121.1,LTh,GStr,LTh+GStr,Fraser_Thompson,3,NA,NA
+CO-08,CO-05,CO_05,CO_05,CO-08,South Thompson,Coho,Co,50.74,-118.9,STh,GStr,STh+GStr,Fraser_Thompson,3,NA,NA
+CO-09,CO-04,CO_04,CO_04,CO-09,North Thompson,Coho,Co,52.22,-120,NTh,GStr,NTh+GStr,Fraser_Thompson,4,NA,NA
+CO-47,,,,CO-47,Lower Fraser,Coho,Co,49.36,-122.15,LFR,GStr,LFR+GStr,Fraser_Lower,?,NA,NA
+CO-48,CO-01,CO_01,CO_06,CO-48,Interior Fraser,Coho,Co,53.52,-123.19,MFR,GStr,MFR+GStr,Fraser_Mid,?,NA,NA
+SEL-07-01,CU-1,CU_1,L-07-01,CU-01,Bowron_ES,Sockeye,Sk,53.145776,-121.093205,UFR,GStr,UFR+GStr,Fraser_Mid,4,Early_Summer,Lake
+SEL-06-11,CU-10,CU_10,L-06-11,CU-10,Seton_L,Sockeye,Sk,50.685389,-122.101863,NTh,GStr,NTh+GStr,Fraser_Thompson,4,Late,Lake
+SEL-03-04,CU-11,CU_11,L-03-04,CU-11,Harrison_US_L,Sockeye,Sk,49.555384,-121.862927,LFR,GStr,LFR+GStr,Fraser_Lower,4,Late,Lake
+SEL-04-01,CU-12,CU_12,L-04-01,CU-12,Lillooet_Harr_L,Sockeye,Sk,50.261719,-122.532211,LILL,GStr,LILL+GStr,Fraser_Lower,4,Late,Lake
+SEL-03-03,CU-13,CU_13,L-03-03,CU-13,Harrison_DS_L,Sockeye,Sk,49.566419,-121.869325,LFR,GStr,LFR+GStr,Fraser_Lower,4,Late,Lake
+SEL-05-02,CU-14,CU_14,L-05-02,CU-14,Nahatlatch_ES,Sockeye,Sk,49.978597,-121.775875,FRCany,GStr,FRCany+GStr,Fraser_Canyon,4,Early_Summer,Lake
+SEL-06-16,CU-15,CU_15,L-06-16,CU-15,Taseko_ES,Sockeye,Sk,51.335367,-123.615414,MFR,GStr,MFR+GStr,Fraser_Mid,4,Early_Summer,Lake
+SER-02,CU-16,CU_16,R-02,CU-16,Widgeon_RT,Sockeye,Sk,49.366612,-122.637603,LFR,GStr,LFR+GStr,Fraser_Lower,4,Late,River
+SEL-03-01,CU-17,CU_17,L-03-01,CU-17,Chilliwack_ES,Sockeye,Sk,49.079098,-121.435047,LFR,GStr,LFR+GStr,Fraser_Lower,4,Early_Summer,Lake
+SEL-06-14,CU-18,CU_18,L-06-14,CU-18,Takla_Trem_EStu,Sockeye,Sk,55.56,-126.09,MFR,GStr,MFR+GStr,Fraser_Mid,4,Estu,Lake
+SEL-06-01,CU-19,CU_19,L-06-01,CU-19,Anderson_Seton_ES,Sockeye,Sk,50.62,-122.38,MFR,GStr,MFR+GStr,Fraser_Mid,4,Early_Summer,Lake
+SEL-10-01,CU-2,CU_2,L-10-01,CU-02,Kamloops_ES,Sockeye,Sk,50.731927,-120.602129,NTh,GStr,NTh+GStr,Fraser_Thompson_Lower,4,Early_Summer,Lake
+SEL-09-02,CU-20,CU_20,L-09-02,CU-20,Shuswap_ES,Sockeye,Sk,50.93,-119,STh,GStr,STh+GStr,Fraser_Thompson,4,Early_Summer,Lake
+SEL-06-13,CU-21,CU_21,L-06-13,CU-21,Takla_Trem_S_S,Sockeye,Sk,54.58,-124.67,MFR,GStr,MFR+GStr,Fraser_Mid,4,Summer,Lake
+SEL-06-10,CU-22,CU_22,L-06-10,CU-22,Quesnel_S,Sockeye,Sk,52.53,-121,MFR,GStr,MFR+GStr,Fraser_Mid,4,Summer,Lake
+SEL-09-03,CU-23,CU_23,L-09-03,CU-23,Shuswap_L,Sockeye,Sk,50.74,-119.27,STh,GStr,STh+GStr,Fraser_Thompson,4,Late,Lake
+SEL-06-20,CU-3,CU_3,L-06-20,CU-03,Nadina_Francois_ES,Sockeye,Sk,54.025274,-125.690174,MFR,GStr,MFR+GStr,Fraser_Mid,4,Early_Summer,Lake
+SEL-10-03,CU-4,CU_4,L-10-03,CU-04,NBarriere_ES,Sockeye,Sk,51.330911,-119.853905,NTh,GStr,NTh+GStr,Fraser_Thompson,4,Early_Summer,Lake
+SEL-03-05,CU-5,CU_5,L-03-05,CU-05,Pitt_ES,Sockeye,Sk,49.428248,-122.541373,LFR,GStr,LFR+GStr,Fraser_Lower,4,Early_Summer,Lake
+SEL-06-02,,,L-06-02,CU-06,Chilko_S_ES,Sockeye,Sk,51.325983,-124.095829,MFR,GStr,MFR+GStr,Fraser_Mid,4,Summer,Lake
+SEL-06-03,CU-6,CU_6,L-06-03,CU-06,Chilko_S_ES,Sockeye,Sk,51.325983,-124.095829,MFR,GStr,MFR+GStr,Fraser_Mid,4,Summer,Lake
+SEL-06-07,CU-7,CU_7,L-06-07,CU-07,Fran_Fras_S,Sockeye,Sk,54.074324,-124.767103,MFR,GStr,MFR+GStr,Fraser_Mid,4,Summer,Lake
+SEL-03-02,CU-8,CU_8,L-03-02,CU-08,Cultus_L,Sockeye,Sk,49.061475,-121.983312,LFR,GStr,LFR+GStr,Fraser_Lower,4,Late,Lake
+SER-03,CU-9,CU_9,R-03,CU-09,Harrison_R,Sockeye,Sk,49.286905,-121.899221,LFR,GStr,LFR+GStr,Fraser_Lower,4,Summer,River
+SEL-17-10,,,,Marie,Marie,Sockeye,Sk,51.74281707,-119.1459425,STh,GStr,STh+GStr,Fraser_Thompson,3,NA,Lake
