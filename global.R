@@ -19,7 +19,8 @@
 # ----- explanatory information for the different metrics ---------
 library(xfun)
 library(rgdal)
-
+library(sp)
+library(sf)
 MetricInfo <- list(
   CU_ID = "Conservation Unit",
   Species = "Species",
@@ -167,6 +168,18 @@ ColorPalette <- list(
                     HasTimeSeriesData = c(Yes = '#222222', No = '#999999'),
                     RunTiming = c(Estu = '#fd5c71', Spring = '#cb3f51', Early_Summer = '#b01f32', Summer = '#8c0e0e', Late='#76353e', Fall='#6b464b', 'NA' = '#eae2e3'),
                     LifeHistory = c(Ocean = '#5fd2bb', Stream = '#347266', River = '#d25587', Lake = '#9b1349', 'NA' = '#eae2e3')
+)
+
+StreamStyle.normal <- list(
+  color = 'blue',
+  weight = 1,
+  opacity = 0.7
+)
+
+StreamStyle.highlighted <- list(
+  color = 'blue',
+  weight = 3,
+  opacity = 0.9
 )
 
 CUPolyStyle.normal <- list(
@@ -336,6 +349,7 @@ SubstituteValues <- function(old, new, lookup, oldVals) {
   lookup[as.character(oldVals), new]
 }
 
+convertToLeafletProjection <- function(map) {st_transform(map, CRS("+proj=longlat +datum=WGS84"))}
 
 # ------------------- put together initial data set -------------------
 
@@ -347,16 +361,16 @@ data.Pop.TimeSeries <- read.csv("data/MERGED_FLAT_FILE_BY_POP.csv", stringsAsFac
 
 # spatial location of populations
 data.Pop.Spatial <- read.csv("data/All_Species_Sites_with_FWA_watershed_key_Fraser.csv", stringsAsFactors = F)
+
 # CU boundary polygons
-# note: gpkg is the preferred format for transferring files with spatial data in and out of qGIS, since attribute names will come
-# across truncated when exported from QGIS as part of a shape file. 
-# However, the current version of R gdal doesn't seem to handle multi-part geometries for gpkg files, so import CU boundaries 
-# as an ESRI shape file here. 
-data.CU.Spatial <- readOGR(dsn="data/All_Species_CU_Boundaries_Fraser.shp", layer="All_Species_CU_Boundaries_Fraser", stringsAsStrings(), verbose=F)
+data.CU.Spatial <- convertToLeafletProjection(st_read("data/All_Species_CU_Boundaries_Fraser.gpkg", stringsAsFactors=F))
 
 # stream selector network data
 # Don't use ESRI shp for this! The lists of CUs and populations associated with the various stream segments will end up truncated.
-data.Streams <- readOGR(dsn="data/SiteSelectorNetwork_Fraser.gpkg", layer="SiteSelectorNetwork_Fraser", stringsAsFactors=F, verbose=F)
+data.Streams <- convertToLeafletProjection(st_read("data/StreamNetwork_Fraser.gpkg", stringsAsFactors=F))
+data.StreamsExtended <- convertToLeafletProjection(st_read("data/StreamNetwork_Fraser_extended.gpkg", stringsAsFactors=F))
+row.names(data.Streams) <- data.Streams$code
+row.names(data.StreamsExtended) <- data.StreamsExtended$code
 
 # Lookup table for joining metrics and spatial information for CUs
 data.CU.Lookup <- read.csv("data/CULookup.csv", stringsAsFactors = F)
@@ -466,35 +480,33 @@ data.CU.TimeSeries <- data.CU.TimeSeries[!is.na(data.CU.TimeSeries$CU_ID), ]
 data.CU.MetricsSeries <- data.CU.MetricsSeries[!is.na(data.CU.MetricsSeries$CU_ID), ]
 data.Pop.TimeSeries$Pop_Name <- data.Pop.Lookup[data.Pop.TimeSeries$Pop_UID, 'Pop_Name']
 data.CU.Spatial <- data.CU.Spatial[!is.na(data.CU.Spatial$CU_ID), ]
+
 # For the stream data: create a new field that only contains CUs in the current database
-data.Streams$CUsSelectable <- unlist(lapply(data.Streams$CUs, function(CUs) {
+data.Streams$CUsSelectable <- unlist(lapply(data.Streams$AllCUsAbove, function(CUs) {
   CUs <- strsplit(CUs, ':')[[1]]
   CUs <- CUs[CUs %in% data.CU.Lookup$CU_ID]
   if (length(CUs) > 0) paste(sort(CUs), collapse=",")
   else ""
 }))
 # ditto for populations
-data.Streams$PopsSelectable <- unlist(lapply(data.Streams$SITES, function(sites) {
+data.Streams$PopsSelectable <- unlist(lapply(data.Streams$AllSitesAbove, function(sites) {
   sites <- strsplit(sites, ':')[[1]]
   sites <- sites[sites %in% data.Pop.Lookup$Pop_UID]
   if (length(sites) > 0) paste(sort(sites), collapse=",")
   else ""
 }))
+
 # Now prune the stream network to remove any streams that don't potentially select CUs in the current CU database
 data.Streams <- data.Streams[data.Streams$CUsSelectable != "", ]
 
-# add stream order to stream network
-data.Streams$StreamOrder <- unlist(lapply(data.Streams$FWA_WATERSHED_CODE, function(code) {
-  code <- gsub('(-000000)*$', '', code) # eliminate trailing zero segments
+# add stream order to stream network - use new code analogous to FWA watershed code,
+# but composed of unique segment keys
+data.Streams$StreamOrder <- unlist(lapply(data.Streams$code, function(code) {
   length(strsplit(code, '-')[[1]])
 }))
-data.Streams <- data.Streams[order(data.Streams$StreamOrder, decreasing=T), ]
-# strip the stream code to the 'non-zero' portion of the code
-strip <- function(code) {gsub('(-000000)*$', '', code)}
-# split a stream code into individual segments
-getSegments <- function(code) {strsplit(code, '-')[[1]]}
-data.Streams$Name <- ifelse(data.Streams$WS_NAME == '', strip(data.Streams$FWA_WATERSHED_CODE), data.Streams$WS_NAME) 
 
+data.Streams <- data.Streams[order(data.Streams$StreamOrder, decreasing=F), ]
+data.StreamsExtended <- data.StreamsExtended[row.names(data.Streams), ]
 
 #** Rearrange the metrics data so all metrics are in columns and create an associated 'Status' metric for each main metric (labeled <metric>.Status)
 data.CU.MetricsSeries.MetricNames <- unique(data.CU.MetricsSeries$Metric)
@@ -514,7 +526,6 @@ rm(l, m)
 # Identify data years present in CU metrics data
 data.CU.Metrics.Years <- as.character(sort(unique(as.numeric(data.CU.Metrics$Year))))
 
-
 #** Attach attributes from CU lookup to metrics file 
 data.CU.Metrics <- merge(data.CU.Metrics, unique(data.CU.Lookup[ , c("CU_ID", "Species", "FAZ", "Area", "RunTiming", "LifeHistory", "AvGen")]), by=c("CU_ID"), all.x=T, all.y=F)
 for (attrib in names(data.CU.Metrics)) {
@@ -530,16 +541,16 @@ row.names(data.CU.Metrics) <- paste(data.CU.Metrics$CU_ID, data.CU.Metrics$DataT
 #data.CU.Spatial <- sp::merge(data.CU.Spatial, unique(data.CU.Lookup[ , c('CU_Name' , 'CU_ID', MapAttribs)]), by=c("CU_ID"), all.x=T, all.y=F)
 
 # Eliminate unnecessary columns from map data
-attribsToKeep <- c('CU_NAME', 'CU_ID')
-data.CU.Spatial@data[, names(data.CU.Spatial)[!(names(data.CU.Spatial) %in% attribsToKeep)]] <- NULL
-attribsToKeep <- c('Pop_UID', 'CU_ID', 'POP_ID', 'SITE_NAME', 'Species', 'Lat', 'Lon', 'FAZ', 'FWA_WATERSHED_KEY')
+attribsToKeep <- c('CU_NAME', 'CU_ID', 'geom')
+data.CU.Spatial[, names(data.CU.Spatial)[!(names(data.CU.Spatial) %in% attribsToKeep)]] <- NULL
+attribsToKeep <- c('Pop_UID', 'CU_ID', 'POP_ID', 'SITE_NAME', 'Species', 'Lat', 'Lon', 'FAZ', 'FWA_WATERSHED_KEY', 'geom')
 data.Pop.Spatial[ , names(data.Pop.Spatial)[!(names(data.Pop.Spatial) %in% attribsToKeep)]] <- NULL
 rm(attribsToKeep)
 
 # identify CUs and populations in dataset
 data.CUs <- unique(data.CU.Lookup$CU_ID)
 data.Pops <- unique(data.Pop.Lookup$Pop_UID)
-data.Watersheds <- unique(data.Streams$FWA_WATERSHED_CODE)
+data.Watersheds <- unique(data.Streams$code)
 
 # add information about availability of associated metrics and time-series data to lookup tables
 getMinYr <- function(df) {if (nrow(df) > 0) min(df$Year) else NA}

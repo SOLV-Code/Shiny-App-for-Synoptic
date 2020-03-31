@@ -28,8 +28,8 @@ Shiny.addCustomMessageHandler('fixDrawButtonTitles', function(x){
 
 $(document).on('shiny:value', function(event) {
   // show event
-  console.log('shiny value set:');
-  console.log(event);
+  //console.log('shiny value set:');
+  //console.log(event);
   if (event.target.id == 'CUmap') {
      Shiny.onInputChange('CUmapCreated', Math.random());
   }

@@ -16,13 +16,13 @@ mapCtrl.CUstreamHoverHighlights <- reactiveVal(value = c('Marker','Pops'), label
 
 # get the list of CUs associated with the given stream segment
 getCUsFromStreamSeg <- function(seg) {
-  CUs <- unpack(data.Streams$CUsSelectable[data.Streams$FWA_WATERSHED_CODE == seg]) 
+  CUs <- unpack(data.Streams$CUsSelectable[data.Streams$code == seg]) 
   CUs[CUs %in% data.currentCUs()]
 }
 
 # get the list of populations associated with the given stream segment
 getPopsFromStreamSeg <- function(seg) {
-  pops <- unpack(data.Streams$PopsSelectable[data.Streams$FWA_WATERSHED_CODE == seg]) 
+  pops <- unpack(data.Streams$PopsSelectable[data.Streams$code == seg]) 
   pops[pops %in% data.currentPops()]
 }
 # css snipped for showing an arrow rotated by degrees from the horizonal
@@ -221,29 +221,29 @@ map.makePopPopup <- function(pop) {
 }
 
 # put together an information pane to be shown when user moves mouse over a stream segment
-map.makeStreamPopup <- function(wsCode) {
+map.makeStreamPopup <- function(segCode) {
   if (input$dataUnit == 'CUs') {
     p <- 'no CUs on this stream segment match current filter criteria'
-    CUs <- getCUsFromStreamSeg(wsCode)
+    CUs <- getCUsFromStreamSeg(segCode)
     if (length(CUs) > 0) 
       p <- map.makeCUSparklineTable(CUs)
-      #p <- tags$div(class = 'mouseover-box-text', paste0(CUs,collapse=', ')))
+      #p <- tags$div(class = 'mouseover-box-text', paste0(CUs,collapse=', '))
   }
   else if (input$dataUnit == 'Pops') {
-    pops <- getPopsFromStreamSeg(wsCode)
+    pops <- getPopsFromStreamSeg(segCode)
     p <- 'no populations on this stream segment match current filter criteria'
-     if (length(pops) > 0) {
+    if (length(pops) > 0) {
       df <- data.Pop.Lookup[data.Pop.Lookup$Pop_UID %in% pops, c('Pop_UID', 'CU_ID')]
       dl <- split(df$Pop_UID, df$CU_ID)
       p <- lapply(names(dl), function(cu) {map.makePopSparklineTable(dl[[cu]], header=cu)})
     }
   } 
   tags$div(class = 'mouseover-box',
-           tags$div(class = 'mouseover-box-header', data.Streams@data[data.Streams$FWA_WATERSHED_CODE == wsCode, 'Name']), 
+           tags$div(class = 'mouseover-box-header', data.Streams$Name[data.Streams$code == segCode]), 
            p)
 }
 
-# -- Marker display --
+# -- Map element display --
 
 # add markers to map
 map.showMarkers <- function(map, df, pane, group, styleOpts) {
@@ -277,6 +277,17 @@ map.showPolygons <- function(map, df, pane, group, styleOpts) {
               opacity= styleOpts$opacity,
               group=group)
 } 
+
+map.showStream <- function(map, segCode, df, layer, pane, group, styleOpts) {
+  addPolylines(map=map, data=df[segCode, ],
+               label = ~Name,
+               color = styleOpts$color,
+               weight = styleOpts$weight,
+               opacity = styleOpts$opacity,
+               layerId = layer,
+               group = group,
+               options = pathOptions(pane = pane))
+}
 
 # get the color to use for the given attribute values
 map.getColor <- function(attribVals, override=NULL, scheme = mapCtrl.colorScheme()) {
@@ -351,8 +362,6 @@ map.popMarkerData <- reactive({
 # if Pops = NULL). Markers for pops currently selected appear highlighted
 map.showPopMarkers <- function(leafletMap, pops=data.currentPops(), styleOpts = PopMarkerStyle.normal, layer=NULL) {
   df <- map.popMarkerData()[map.popMarkerData()$Pop_UID %in% pops, ]
-  #cat('showing pop markers on layer ', layer,'\n')
-  #print(pops)
   if (nrow(df) > 0) {
     group <- 'PopMarkers'
     if(!is.null(layer)) {
@@ -380,8 +389,6 @@ map.CUpolyData <- reactive({
 # boundaries for CUs currently selected appear highlighted
 map.showCUPolys <- function(leafletMap, CUs=data.currentCUs(), styleOpts = CUPolyStyle.normal, layer=NULL) {
   df <- map.CUpolyData()[map.CUpolyData()$CU_ID %in% CUs, ]
-  #print('showing CU polygons')
-  #print(CUs)
   if (nrow(df) > 0) {
     group <- 'CUPolygons'
     if(!is.null(layer)) {
@@ -431,10 +438,15 @@ output$CUmap <- renderLeaflet({
     }
     
     # stream segments
-    for (i in 1:max(data.Streams$StreamOrder)) {
-      z <- z + 1
-      leafletMap <- addMapPane(leafletMap, name = paste0("Order", i, "Streams"), zIndex = z)
-    }
+    z <- z + 1
+    leafletMap <- addMapPane(leafletMap, name = "streams", zIndex = z)
+    z <- z + 1
+    leafletMap <- addMapPane(leafletMap, name = "mouseover.streams", zIndex = z)    
+      
+    # for (i in 1:max(data.Streams$StreamOrder)) {
+    #   z <- z + 1
+    #   leafletMap <- addMapPane(leafletMap, name = paste0("Order", i, "Streams"), zIndex = z)
+    # }
     
     # CU markers
     z <- z + 1
@@ -453,17 +465,28 @@ output$CUmap <- renderLeaflet({
     leafletMap <- addMapPane(leafletMap, name = "mouseover.PopMarkers", zIndex = z)
     
     # add the stream segments
-    for (i in 1:nrow(data.Streams)) {
-      leafletMap <- addPolylines(leafletMap, color="blue",
-                                 weight=1,
-                                 opacity=0.7,
-                                 layerId = ~FWA_WATERSHED_CODE,
-                                 group = "Streams",
-                                 label = ~Name,
-                                 highlightOptions = highlightOptions(weight = 5, color="blue", bringToFront = TRUE),
-                                 data = data.Streams[i, ],
-                                 options = pathOptions(pane = paste0("Order", data.Streams$StreamOrder[i], "Streams")))
-    }
+    leafletMap <- addPolylines(leafletMap, 
+                               color=StreamStyle.normal$color,
+                               weight=StreamStyle.normal$weight,
+                               opacity=StreamStyle.normal$opacity,
+                               layerId = ~code,
+                               group = "Streams",
+                               label = ~Name,
+#                                highlightOptions = highlightOptions(weight = 5, color="blue", bringToFront = TRUE),
+                               data = data.Streams,
+                               options = pathOptions(pane = 'streams'))
+
+    # for (i in 1:nrow(data.Streams)) {
+    #   leafletMap <- addPolylines(leafletMap, color="blue",
+    #                              weight=1,
+    #                              opacity=0.7,
+    #                              layerId = ~code,
+    #                              group = "Streams",
+    #                              label = ~Name,
+    #                              highlightOptions = highlightOptions(weight = 5, color="blue", bringToFront = TRUE),
+    #                              data = data.Streams[i, ],
+    #                              options = pathOptions(pane = paste0("Order", data.Streams$StreamOrder[i], "Streams")))
+    # }
     # We only want to have the basemap drawn once here, not every time the data filter changes.
     # Since the various map display functions use reactive expressions dependent on filtering, 
     # make sure all calls to these function are isolated here
@@ -692,6 +715,14 @@ observeEvent(input$map.colorScheme, mapCtrl.colorScheme(input$map.colorScheme))
 
 # -- Hihglighting of map elements --
 
+map.highlightStream <- function(segCode) {
+  map.showStream(CUmapProxy, segCode, df=data.StreamsExtended, 
+                 layer=paste0('mouseover', '.', segCode), 
+                 pane='mouseover.streams', 
+                 group='mouseover.streams', 
+                 styleOpts = StreamStyle.highlighted)
+}
+  
 # highlight markers of the given type ('CUs' or 'Pops')
 map.highlightMarkers <- function(markers, type, highlightLayer='selected') {
   if (type == 'CUs') 
@@ -735,14 +766,16 @@ map.showMouseoverHighlights <- function(CUPolys=NULL, CUMarkers=NULL, PopMarkers
 
 # clear map elements that were highlighted due to a mouseover 
 # if called w/o parameters, removes all mouseover highlights currently on map
-map.clearMouseoverHighlights <- function(CUPolys=NULL, CUMarkers=NULL, PopMarkers=NULL) {
+map.clearMouseoverHighlights <- function(CUPolys=NULL, CUMarkers=NULL, PopMarkers=NULL, Streams=NULL) {
   if (is.null(CUPolys) && is.null(CUMarkers) && is.null(PopMarkers)) { # remove all mouseover highlights
     clearGroup(CUmapProxy, 'mouseover.CUMarkers')
     clearGroup(CUmapProxy, 'mouseover.PopMarkers')
     clearGroup(CUmapProxy, 'mouseover.CUPolygons')
+    clearGroup(CUmapProxy, 'mouseover.streams')
   } else { # remove only specified mouseover highlights
     for (s in CUPolys) CUmapProxy %>% removeShape(paste0('mouseover', '.', s))
     for (m in c(CUMarkers, PopMarkers)) CUmapProxy %>% removeMarker(paste0('mouseover', '.', m))
+    for (s in Streams) CUmapProxy %>% removeShape(paste0('mouseover', '.', s))
   }
 }
 
@@ -766,11 +799,15 @@ map.showPopMouseoverHighlights <- function(sel) {
   map.showMouseoverHighlights(PopMarkers=c(sel))
 }
 
+map.showExtendedStream <- function(code) {
+  
+}
 # things that should occur when the user moves the mouse over a marker
 observeEvent(input$CUmap_marker_mouseover, 
              { # mouseover events aren't always detected, so if there are residual highlighted markers around,
                # they will be on top and therefore block access to the actual marker underneath
                # Get rid of any residual mouseover highlights here before continuing
+               # cat("Marker mouseover event observed for ", input$CUmap_marker_mouseover$id, "\n")
                map.clearMouseoverHighlights()
                sel <- map.getID(input$CUmap_marker_mouseover$id)
                InfoPane <- NULL
@@ -817,6 +854,7 @@ observeEvent(input$CUmap_shape_mouseover,
                  else if (mapCtrl.selectionMode() == 'Pops') 
                    map.showPopMouseoverHighlights(getPopsFromStreamSeg(sel))
                  InfoPane <- map.makeStreamPopup(sel)
+                 map.highlightStream(sel)
                } else {
                  InfoPane <- tags$div(style='padding: 5px;', paste0('unknown shape type: ', sel))
                }
@@ -835,7 +873,7 @@ observeEvent(input$CUmap_marker_click,
              {
                sel <- map.getID(input$CUmap_marker_click$id)
                #cat("Marker click event observed for ", sel, "\n")
-               #str(input$CUmap_marker_click)
+               str(input$CUmap_marker_click)
                if (sel %in% data.CUs)  { # user clicked on a CU marker
                  if (mapCtrl.selectionMode() == 'CUs') map.addToSelection(sel, 'CUs') 
                  else if (mapCtrl.selectionMode() == 'Pops')  map.addToSelection(getPopsForCUs(sel), 'Pops')
@@ -851,7 +889,7 @@ observeEvent(input$CUmap_shape_click,
              {
                sel <- map.getID(input$CUmap_shape_click$id)
                #cat("shape click event observed for shape ", sel, '\n')
-               #str(input$CUmap_shape_click)
+               str(input$CUmap_shape_click)
                if (sel %in% data.Watersheds) { # user clicked on a stream segment
                  if (mapCtrl.selectionMode() == 'CUs') {
                     map.addToSelection(getCUsFromStreamSeg(sel), type='CUs')
@@ -865,8 +903,6 @@ observeEvent(input$CUmap_shape_click,
 
 # update selection shown on map; type is the type of data items affected (CU or Pop)
 map.updateSelection <- function(type) {
-#  print('in map.updateSelection for ')
-#  print(type)
   map.unhighlightMarkers(markers=NULL, type)
   map.highlightMarkers(data.currentSelection[[type]], type)
   if (type == 'CUs') {
