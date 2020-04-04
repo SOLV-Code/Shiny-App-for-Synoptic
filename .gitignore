@@ -9,6 +9,6 @@
 .DS_Store
 /rsconnect
 /data/old
-
+/aux
 .Rproj.user
 Shiny-App-for-Synoptic.Rproj
