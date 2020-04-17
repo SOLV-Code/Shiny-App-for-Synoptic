@@ -2,7 +2,7 @@
 
 
 # Create data for the parallel plot (reorder columns and rows)
-data.parcoords <- reactive({
+parcoords.data <- reactive({
   df <- data.filtered()
   # sort the CUs (rows) in the data according to specified sort criteria
   for (sortKey in rev(ParcoordsCUOrder[ParcoordsCUOrder %in% names(df)])) {
@@ -19,7 +19,7 @@ data.parcoords <- reactive({
   # identify all-NA columns and columns without contrast, i.e. columns where all values are the same
   colsToDrop <- apply(df, 2, function(c) {all(is.na(c)) || all(c == c[1])}) 
   colsToDrop[is.na(colsToDrop)] <- FALSE # don't drop columns for which the function returned NA; these are columns that have a mix of NAs and data
-  df <- arrangeColumns(df, colOrder=ParcoordsMetricOrder, hide=names(df)[colsToDrop])
+  df <- arrangeColumns(df, colOrder=ParcoordsMetricOrder, hide=c(names(df)[colsToDrop], ParcoordsDrop))
   df$CU_ID <- row.names(df)
   row.names(df) <- unlist(lapply(row.names(df), getCUname))
   if (!is.data.frame(df)) {df <- NULL} 
@@ -28,20 +28,42 @@ data.parcoords <- reactive({
 
 # create a shared dataset for use with crosstalk, to get around issue with 
 # brushing when parcoords is called with a reactive pre-selection
-sharedDS.parcoords <- SharedData$new(data.parcoords, group="parcoords")
+parcoords.sharedDS <- SharedData$new(parcoords.data, group="parcoords")
+
+# keep track of axis settings
+parcoords.axisSettings <- reactiveValues()
+
+observeEvent(parcoords.data(), {
+  df <- parcoords.data()
+  metrics <- names(df)
+  hidden <- ifelse(metrics %in% ParcoordsHideOnInit, TRUE, FALSE)
+  names(hidden) <- metrics
+  lapply(metrics, function(m) {
+      parcoords.axisSettings[[sId("parcoords_visible", m)]] <- !hidden[m]
+      observeEvent(input[[sId("parcoords_visible", m)]], {
+        parcoords.axisSettings[[sId("parcoords_visible", m)]] <- input[[sId("parcoords_visible", m)]]
+      }, ignoreNULL = T, ignoreInit = T)
+  })
+  lapply(metrics[metrics %in% numericMetrics(df)], function(m) {
+      parcoords.axisSettings[[sId("parcoords_yrange", m)]] <- c(min(df[, m], na.rm = T), max(df[, m], na.rm = T))
+      observeEvent(input[[sId("parcoords_yrange", m)]], {
+        parcoords.axisSettings[[sId("parcoords_yrange", m)]] <- input[[sId("parcoords_yrange", m)]]
+      }, ignoreNULL = T, ignoreInit = T)
+    })
+})
 
 # create dimensions list with auxiliary information on numeric metrics to pass on to parcoords
 # each element in dims is a list with a set of parameters specific to dims[[metric]], where 'metric'
 # is one of the metrics included in the parcoords dataset
 dims <- reactive({
-  dataset <- data.parcoords()
+  dataset <- parcoords.data()
   metrics <- names(dataset)
   names(metrics) <- metrics
   lapply(metrics, 
          function(m) {
            d <- list() # add any information on metric m here that we want to pass on to javascript
            # if there is a checkbox for this dim; allow it to set visibility, otherwise make it always visible
-           d[['hide']] <- ifelse (any(names(input) == sId("parcoords_visible", m)), !input[[sId("parcoords_visible", m)]], FALSE) 
+           d[['hide']] <- ifelse (any(names(parcoords.axisSettings) == sId("parcoords_visible", m)), !parcoords.axisSettings[[sId("parcoords_visible", m)]], FALSE) 
            # CU_ID special: always keep hidden
            #if (m == 'CU_ID') d[['hide']] <- T
            d[['title']] <- GetLabel(m)
@@ -58,9 +80,9 @@ dims <- reactive({
                d[['nullValue']] <- d[['min']] <- d[['max']] <- 0
                d[['info']] <- 'no data values available'
              }
-             if (sId("parcoords_yrange", m) %in% names(input)) { # if there is an input widget for this dim, allow for it to set the ylims
-               d[['ymin']] <- input[[sId("parcoords_yrange", m)]][1]
-               d[['ymax']] <- input[[sId("parcoords_yrange", m)]][2]
+             if (sId("parcoords_yrange", m) %in% names(parcoords.axisSettings)) { # if there is an input widget for this dim, allow for it to set the ylims
+               d[['ymin']] <- parcoords.axisSettings[[sId("parcoords_yrange", m)]][1]
+               d[['ymax']] <- parcoords.axisSettings[[sId("parcoords_yrange", m)]][2]
              } else { # ylims not under user control
                d[['ymin']] <- d[['min']]
                d[['ymax']] <- d[['max']]
@@ -78,7 +100,7 @@ dims <- reactive({
 })
 
 output$parcoords_Plot <- parcoordsSoS::renderParcoords({ 
-  p <- try({parcoordsSoS::parcoords(data=sharedDS.parcoords,
+  p <- try({parcoordsSoS::parcoords(data=parcoords.sharedDS,
                             autoresize=TRUE,
                             color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Species"),
                             rownames=T,
@@ -101,11 +123,9 @@ output$parcoords_Plot <- parcoordsSoS::renderParcoords({
 
 # Create a block with miscellaneous controls for the parcoords plot
 output$parcoords_Controls <- renderUI({
-    df <- data.parcoords()
-    metrics <- names(data.parcoords())
+    df <- parcoords.data()
+    metrics <- names(parcoords.data())
     names(metrics) <- metrics
-    hidden <- ifelse(metrics %in% ParcoordsHideOnInit, TRUE, FALSE)
-    names(hidden) <- metrics
     # control widgets for categorical metrics
     catWidgets <- lapply(metrics[!(metrics %in% numericMetrics(df))], 
                          function(m) { 
@@ -117,7 +137,7 @@ output$parcoords_Controls <- renderUI({
                             tags$td(tags$div(style = 'width: 20px;', 
                                              checkboxInput(inputId = sId("parcoords_visible", m), 
                                                   label=NULL, #GetLabel(m),
-                                                  value=!(hidden[m])))))})
+                                                  value=parcoords.axisSettings[[sId("parcoords_visible", m)]]))))})
     # control widgets for numerical metrics
     numWidgets <- lapply(metrics[metrics %in% numericMetrics(df)], 
                          function(m) { 
@@ -132,32 +152,22 @@ output$parcoords_Controls <- renderUI({
                                                 label = NULL,
                                                 min = minVal,
                                                 max = maxVal,
-                                                value = c(minVal, maxVal)))),
+                                                value = c(parcoords.axisSettings[[sId("parcoords_yrange", m)]][1], parcoords.axisSettings[[sId("parcoords_yrange", m)]][2])))),
                           tags$td(tags$div(style = 'width: 20px;'),
                                   checkboxInput(inputId = sId("parcoords_visible", m), 
                                                            label=NULL, #GetLabel(m),
-                                                           value=!hidden[m])))})
+                                                           value=parcoords.axisSettings[[sId("parcoords_visible", m)]])))})
     tagList(tags$div(style='padding-left:5px;', tags$b("Adjust axes:")), 
             tags$div(style='line=height: 1;', 
               tags$table(do.call(tagList, c(numWidgets, catWidgets)))))
   })
 
-# reset parcoords graph, 
-# by resetting sliders and thereby triggering corresponding changes in dims()
-observeEvent({input$parcoords_reset_brush}, {
-    df <- data.parcoords()
-    for (m in names(df)) {
-      if (sId("parcoords_yrange", m) %in% names(input)) {
-        updateSliderInput(session, sId("parcoords_yrange", m), 
-                          value = c(min(df[, m], na.rm=T),max(df[, m], na.rm=T)))
-      }
-    }
-  })
 
 # scale parcoords graph axes to current selection, 
 # by setting sliders and thereby triggering corresponding changes in dims()
 observeEvent({input$parcoords_scale_to_selected}, {
-  df <- data.selected()
+  df <- parcoords.sharedDS$origData()
+  df <- df[df$CU_ID %in% parcoords.getParcoordsSelection(), ]
   if (nrow(df) > 0) {
     for (m in names(df)) {
       if (sId("parcoords_yrange", m) %in% names(input)) { # adjust the sliders so ylims correspond to range of selected data
@@ -169,60 +179,76 @@ observeEvent({input$parcoords_scale_to_selected}, {
   }
 })
 
-# set selection on brushing
-observeEvent(sharedDS.parcoords$selection(), {
-  if (is.null(sharedDS.parcoords$selection())) {
-    selectedCUs <- NULL
-  } else {
-    selectedCUs <- sharedDS.parcoords$origData()$CU_ID[sharedDS.parcoords$selection()]
+parcoords.getParcoordsSelection <- function() {
+  if (is.null(parcoords.sharedDS$selection())) 
+     NULL
+  else 
+    parcoords.sharedDS$origData()$CU_ID[parcoords.sharedDS$selection()]
+}
+
+parcoords.setParcoordsSelectionFromCurrentSelection <- function() {
+  if(!setequal(data.currentSelection[['CUs']], parcoords.getParcoordsSelection())) {
+    selected <- parcoords.sharedDS$origData()$CU_ID %in% data.currentSelection[['CUs']]
+    parcoords.sharedDS$selection(selected)
   }
-  #print('sharedDS.parcoords$selection() triggered')
-  data.setSelection(selectedCUs, type='CUs', widget="parcoords")
+}
+
+    
+# set selection on brushing
+# this will try to maintain the current shared data selection if
+# data.currentSelection is changed somewhere else. Don't let it unless
+# parcoords panel is currently the open one.
+observeEvent(parcoords.sharedDS$selection(), {
+  if (!is.null(input$UIPanels) && input$UIPanels == 'Parcoords') {
+    selectedCUs <- parcoords.getParcoordsSelection()
+    #print('parcoords.sharedDS$selection() triggered')
+    if (!setequal(selectedCUs, data.currentSelection[['CUs']])) 
+      data.setSelectionByCU(selectedCUs, widget="parcoords")
+  }
 }, ignoreInit = T, ignoreNULL = F)
 
-observeEvent(input$parcoords_reset_brush, {
-  #print('input$parcoords_reset_brush triggered')
-  data.setSelection(NULL, type='CUs', widget="parcoords")
-  sharedDS.parcoords$selection(NULL)
-}, ignoreInit = T)
+#observeEvent(input$parcoords_reset_brush, {
+#  #print('input$parcoords_reset_brush triggered')
+#  parcoords.sharedDS$selection(NULL)
+#  df <- parcoords.data()
+#  for (m in names(df)) {
+#    if (sId("parcoords_yrange", m) %in% names(input)) {
+#      updateSliderInput(session, sId("parcoords_yrange", m), 
+#                        value = c(min(df[, m], na.rm=T),max(df[, m], na.rm=T)))
+#   }
+# }
+#}, ignoreInit = T)
 
-# set the crosstalk selection in response to changes in the current selection
+# set the crosstalk selection in response to changes in the current selection 
+# (e.g., in response to user clicking clear highlighting button)
+# only do this if parcoords widget is currently the one in focus
 observeEvent(data.currentSelection[['CUs']], {
-  if (data.selectedBy[['CUs']] != "parcoords" && data.selectedBy[['CUs']] != "none") {
-    #print('in observeEvent(data.currentSelection[[CUs]] for crosstalk: current selection is ')
-    #print(data.currentSelection[['CUs']])
-    selected <- sharedDS.parcoords$origData()$CU_ID %in% data.currentSelection[['CUs']]
-    #print(selected)
-    sharedDS.parcoords$selection(selected)
-  }
+  if (!is.null(input$UIPanels) && input$UIPanels == 'Parcoords') 
+    parcoords.setParcoordsSelectionFromCurrentSelection()
 }, ignoreNULL = F, ignoreInit = T)
 
 # things to do when Parcoords panel is opened
-observeEvent({input$UIPanels
-             input$dataUnit}, {
-  if (!is.null(input$UIPanels) && input$UIPanels == 'Parcoords' && input$dataUnit == 'CUs') {
+observeEvent(input$UIPanels, {
+  if (!is.null(input$UIPanels) && input$UIPanels == 'Parcoords') {
     showInfoPane(uiOutput("parcoords_Controls"))
+    parcoords.setParcoordsSelectionFromCurrentSelection()
   }
 }, ignoreInit = T)
 
 
 output$box_Parcoords <- renderUI({ 
-  if (input$dataUnit == 'CUs') {
-    tagList( tags$div('style' = "text-align:right;", 
-                      actionButton(inputId = "parcoords_reset_brush",
-                                   label="Reset Highlighting",icon("paper-plane"), 
-                                   style=ButtonStyle),
-                      #actionButton(inputId = "parcoords_scale_to_selected",
-                      #             label="Scale to Selected",icon("search-plus"), 
-                      #             style=ButtonStyle)),
-                      #This is where the "how to" button will be created"
-                      actionButton(inputId = "how_to_video",
-                                   label="How do I use this chart?",icon("question"), 
-                                   style=ButtonStyle,
-                                   onclick ="window.open('http://michaelbarrus.com/parallel-coordinates', '_blank')")),
-             parcoordsSoS::parcoordsOutput("parcoords_Plot", height="600px"))           # 400px is defaultheight
-             #uiOutput("parcoords_Controls"))
-  } else {
-    tags$div('no metrics available')
-  }
+  tagList( tags$div('style' = "text-align:right;", 
+                    #actionButton(inputId = "parcoords_reset_brush",
+                    #             label="Reset Highlighting",icon("paper-plane"), 
+                    #             style=ButtonStyle),
+                    #actionButton(inputId = "parcoords_scale_to_selected",
+                    #             label="Scale to Selected",icon("search-plus"), 
+                    #             style=ButtonStyle)),
+                    #This is where the "how to" button will be created"
+                    actionButton(inputId = "how_to_video",
+                                 label="How do I use this chart?",icon("question"), 
+                                 style=ButtonStyle,
+                                 onclick ="window.open('http://michaelbarrus.com/parallel-coordinates', '_blank')")),
+           parcoordsSoS::parcoordsOutput("parcoords_Plot", height="600px"))           # 400px is defaultheight
+           #uiOutput("parcoords_Controls"))
 })

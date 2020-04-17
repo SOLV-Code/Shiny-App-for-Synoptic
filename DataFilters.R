@@ -2,28 +2,41 @@
 
 # -- list of reactiveValues for storing the filters in
 filter <- reactiveValues()
-for (a in FilterAttributes) {
+filterChanged <- reactiveVal()
+
+setFilter <- function(field, val) {
+  filter[[field]] <- val
+  filterChanged(runif(1))
+#  print('filter now')
+#  lapply(names(filter), function(a) {cat(a, " = ", filter[[a]], '\n')})
+}
+
+for (a in FilterAttributes[FilterAttributes %in% names(data.CU.Metrics)]) {
   local({
     lc_a <- a
-    filter[[lc_a]] <- unique(as.character(data.CU.Metrics[, lc_a]))
-    observeEvent(input[[sId("dataFilters", lc_a)]], {filter[[lc_a]] <- input[[sId("dataFilters", lc_a)]]}, ignoreNULL = F, ignoreInit = F)
+    if (lc_a %in% SingleChoice) 
+      filter[[lc_a]] <- unique(as.character(data.CU.Metrics[, lc_a]))[1]
+    else
+      filter[[lc_a]] <- unique(as.character(data.CU.Metrics[, lc_a]))
+    observeEvent(input[[sId("dataFilters", lc_a)]], 
+                 setFilter(lc_a, input[[sId("dataFilters", lc_a)]]), ignoreNULL = F, ignoreInit = T)
   })
 }
 
 # -- Year selection: set to most recent year as default
 filter$year <- max(data.CU.Metrics$Year)
-observeEvent(input$dataFilters_year, {filter$year <- input$dataFilters_year})
+observeEvent(input$dataFilters_year, setFilter('year', input$dataFilters_year))
 # Select metrics and attributes to show
 filter$metrics <- c(unique(data.CU.MetricsSeries$Metric), FilterMFAttributes) 
-observeEvent(input$dataFilters_metrics, {filter$metrics <- input$dataFilters_metrics})
+observeEvent(input$dataFilters_metrics, setFilter('metrics', input$dataFilters_metrics))
 # Toggle between annual snapshot (default) and change from a baseline year
 filter$change <- "Annual"
-observeEvent(input$dataFilters_change, {filter$change <- input$dataFilters_change})
+observeEvent(input$dataFilters_change, setFilter('change', input$dataFilters_change))
 # If showing change from baseline year, select the two years to use (baseline and year to calculate change from baseline)
 filter$changeyear_1 <- data.CU.Metrics.Years[length(data.CU.Metrics.Years) - 1]
-observeEvent(input$dataFilters_changeyear_1, {filter$changeyear_1 <- input$dataFilters_changeyear_1})
+observeEvent(input$dataFilters_changeyear_1, setFilter('changeyear_1', input$dataFilters_changeyear_1))
 filter$changeyear_2 <- data.CU.Metrics.Years[length(data.CU.Metrics.Years)]
-observeEvent(input$dataFilters_changeyear_2, {filter$changeyear_2 <- input$dataFilters_changeyear_2})
+observeEvent(input$dataFilters_changeyear_2, setFilter('changeyear_2', input$dataFilters_changeyear_2))
 
 # -- some helper functions and structures for nested filtering 
 
@@ -84,7 +97,7 @@ observeEvent(
     choices <- data.CU.Metrics.Years[as.numeric(data.CU.Metrics.Years) > as.numeric(input$dataFilters_changeyear_1)]
     updatePickerInput(session, "dataFilters_changeyear_2", 
                       choices=choices, 
-                      selected=choices[1])  
+                      selected=choices[length(choices)])  
   })    
 
 observeEvent(                            
@@ -92,7 +105,7 @@ observeEvent(
     choices <- data.CU.Metrics.Years[as.numeric(data.CU.Metrics.Years) < as.numeric(input$dataFilters_changeyear_2)]
     updatePickerInput(session, "dataFilters_changeyear_1", 
                       choices=choices, 
-                      selected=choices[1] )  
+                      selected=choices[length(choices)] )  
   }) 
 
 # Add tooltip to checkbox input. Borrowed from
@@ -177,17 +190,17 @@ output$box_DataFilters <- renderUI({
                          column(width=6, conditionalPanel("input.dataFilters_change == 'Annual'",
                                                           pickerInput( inputId="dataFilters_year",					 
                                                                        label="",
-                                                                       choices = data.CU.Metrics.Years,
-                                                                       selected = data.CU.Metrics.Years[length(data.CU.Metrics.Years)])),
+                                                                       choices = as.character(data.CU.Metrics.Years),
+                                                                       selected = as.character(data.CU.Metrics.Years[length(data.CU.Metrics.Years)]))),
                                 conditionalPanel("input.dataFilters_change == 'Change'",
                                                  pickerInput( inputId="dataFilters_changeyear_1",					 
                                                               label="Initial Year:",
-                                                              choices = data.CU.Metrics.Years[1:(length(data.CU.Metrics.Years)-1)],  # choices do not include the last year
-                                                              selected= data.CU.Metrics.Years[length(data.CU.Metrics.Years)-1]),
+                                                              choices = as.character(data.CU.Metrics.Years[1:(length(data.CU.Metrics.Years)-1)]),  # choices do not include the last year
+                                                              selected= as.character(data.CU.Metrics.Years[length(data.CU.Metrics.Years)-1])),
                                                  pickerInput( inputId="dataFilters_changeyear_2",					 
                                                               label="Last Year:",
-                                                              choices = data.CU.Metrics.Years[2:length(data.CU.Metrics.Years)],      # choices do not include the first year
-                                                              selected = data.CU.Metrics.Years[length(data.CU.Metrics.Years)])) )
+                                                              choices = as.character(data.CU.Metrics.Years[2:length(data.CU.Metrics.Years)]),      # choices do not include the first year
+                                                              selected = as.character(data.CU.Metrics.Years[length(data.CU.Metrics.Years)]))) )
                        )))
       
     ))

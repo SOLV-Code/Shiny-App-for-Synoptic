@@ -3,14 +3,52 @@
 # state information for controls; can't use shiny inputs directly for these, 
 # because the inputs don't exist until modal menus are opened
 mapCtrl.isVisible <- reactiveValues(CUMarkers = TRUE, CUPolygons=FALSE, PopMarkers=TRUE, Streams=TRUE)
-mapCtrl.selectionMode <- reactiveVal(value = 'CUs', label = 'selectionMode')
 mapCtrl.colorScheme <- reactiveVal(value = 'Species', label = 'colorScheme')
 mapCtrl.colorOpts <- reactiveVal(value = c('Species', paste0(MapLabelMetrics, '.Status')), label = 'colorOpts')
 mapCtrl.CUmarkerHoverHighlights <- reactiveVal(value = c('Polygon', 'Pops'), label = 'CUmarkerHoverHighlights')
 mapCtrl.CUpolyHoverHighlights <- reactiveVal(value = c('Polygon', 'Pops'), label = 'CUpolyHoverHighlights')
 mapCtrl.CUstreamHoverHighlights <- reactiveVal(value = c('Marker','Pops'), label = 'CUstreamHoverHighlights')
 
-# -- Functions to do with creating 'popup' information panes to be shown on mouseover
+# ---------- Spider fly (functions for pulling overlapping markers apart ) ---------------
+getOverlapping <- function(id, type) {
+  if (type == 'CUs') {
+    df <- map.CUMarkerData()
+    df[df$Lat == df[df$CU_ID == id, 'Lat'] & df$Lon == df[df$CU_ID == id, 'Lon'], 'CU_ID']
+  }
+  else if (type == 'Pops') {
+    df <- map.popMarkerData()
+    df[df$Lat == df[df$Pop_UID == id, 'Lat'] & df$Lon == df[df$Pop_UID == id, 'Lon'], 'Pop_UID']
+  }
+}
+
+TwoPi <- 2* pi
+#startAngle <- TwoPi / 12
+
+# spread overlapping points out on a circle around the common center
+# to do this 'properly' would require transforming lat-long coordinates to planar (screen) coordinates 
+# and then back-transforming the locations to lat-long after arranging points on the circle
+# instead, use a quick and dirty correction factor to put lat and long coordinates
+# on approximately the same scale
+spreadOnCircle <- function(df) {
+  cLat <- mean(df$Lat)
+  cLon <- mean(df$Lon) 
+  markerSep <- abs(input$CUmap_bounds$north - input$CUmap_bounds$south) / 40
+  radius <- markerSep * (2 + nrow(df)) / TwoPi
+  angleStep <- TwoPi / nrow(df)
+  for (i in 1:nrow(df)) {
+    angle <- i * angleStep # + startAngle
+    df[i, 'Lat'] <- cLat + radius * cos(angle)
+    df[i, 'Lon'] <- cLon + 1.5 * radius * sin(angle) #0.8914291 
+  }
+  st_geometry(df) <- st_sfc(lapply(1:nrow(df), function(r) {
+    st_linestring(matrix(c(cLon, df[r, 'Lon'], cLat, df[r, 'Lat']), nrow=2), dim='XY')
+  }))
+  df
+}
+
+spiderFlyMarkers <- reactiveVal()
+
+# ------ Functions to do with creating 'popup' information panes to be shown on mouseover ------
 
 # some helper functions for putting together information to be shown in the popover panes
 
@@ -25,28 +63,9 @@ getPopsFromStreamSeg <- function(seg) {
   pops <- unpack(data.Streams$PopsSelectable[data.Streams$code == seg]) 
   pops[pops %in% data.currentPops()]
 }
-# css snipped for showing an arrow rotated by degrees from the horizonal
-makeArrow <- function(degrees) {
-  cssStyle <- "-ms-transform:rotate(xxdeg); -webkit-transform:rotate(xxdeg); -moz-transform:rotate(xxdeg); -o-transform:rotate(xxdeg);"
-  cssStyle <- gsub('xx', as.character(degrees), cssStyle)
-  paste("<div style='", cssStyle, "'>&rarr;</div>", sep="")
-}
-
-# get the polar angle for representing the given change in y over an x distance of 1
-polarAngle <- function(dy) {atan2(dy, 1) * 180 / pi}
-
-# set style for text and background conditional on status
-getMetricTextStyle <- function(status) {
-  switch(status,
-         Red = 'background-color: #ff0000; color: #000000;',
-         Amber = 'background-color: #ff9900; color: #000000;',
-         Green = 'background-color: #00dd00; color: #000000;',
-         'NA' = ''
-  )
-}
 
 # create one row with information on the given metric
-map.makeCUPopupTableRow <- function(metric, end, start) {
+map.makeCUInfoTableRow <- function(metric, end, start) {
   style <- getMetricTextStyle(end['Status'])
   label <- GetLabel(metric)
   if (is.na(end['Value'])) value <- 'NA'
@@ -62,7 +81,7 @@ map.makeCUPopupTableRow <- function(metric, end, start) {
 # the pane shows arrows indicating the direction and magnitude of change, either 
 # over the period from change year 1 to change year 2, or over the period leading
 # up to the selected year.
-map.makeCUPopupMetricRow <- function(m, CU) {
+map.makeCUInfoMetricRow <- function(m, CU) {
   if (filter$change == "Change") {
     endYear <- filter$changeyear_2
     startYear <- filter$changeyear_1
@@ -82,171 +101,74 @@ map.makeCUPopupMetricRow <- function(m, CU) {
   if (is.null(startYear)) start <- NULL
   else start <- c( Value = data.CU.Metrics[paste(CU, filter$DataType, startYear, sep="."), m],
                    Status = as.character(data.CU.Metrics[paste(CU, filter$DataType, startYear, sep="."), paste0(m, '.Status')]))
-  map.makeCUPopupTableRow(m, start = start, end = end)
+  map.makeCUInfoTableRow(m, start = start, end = end)
 }
 
-# create a vector of values to use for creating a sparkline, padding with NAs if needed to fill the range of years
-map.makeSparklineData <- function(df, attrib, minYr=NULL, maxYr=NULL) {
-  df <- df[, c('Year', attrib)]
-  row.names(df) <- as.character(df$Year)
-  if (is.null(df) || nrow(df) == 0) return(NULL)
-  if (is.null(minYr)) minYr <- min(df$Year, na.rm=T)
-  if (is.null(maxYr)) maxYr <- max(df$Year, na.rm=T)
-  yrs <- c(minYr:maxYr)
-  out <- rep(NA, length(yrs))
-  names(out) <- as.character(yrs)
-  out[row.names(df)] <- df[ ,attrib]
-  out
-}
 
-# create a sparkline, given a data frame with a year column and a time series column specified in the 'DataType' filter attribute 
-# and an id to be used as the shiny output id
-map.makeSparkline <- function(df, id, minYr=NULL, maxYr=NULL) {
-  default <- tags$div(style=('background-color: black; color: #b0b0b0'), '<no time series data>')
-  if ((nrow(df) > 0) && (filter$DataType %in% names(df))) {
-    ts <- filter$DataType
-    df <- as.numeric(map.makeSparklineData(df, ts, minYr, maxYr))
-    if (all(is.na(df))) default
-    else {
-      #ID <- sId(paste0('sparkline', ts), id)
-      ID <- as.character(runif(1))
-      output[[ID]] <- renderSparkline({sparkline(df)})
-      tags$div(class='sparkline-canvas', 
-               tags$style(HTML('canvas {width: 95% !important; height: auto !important; display: grid !important}')),
-               sparklineOutput(ID))
-    }
-  } else default
-}
-
-# table row for a table with sparklines 
-map.makeSparklineTableRow <- function(df, id, label, minYr, maxYr) {
-  tags$tr(tags$td(label, style='width: 60px'), 
-          tags$td(map.makeSparkline(df, id, minYr=minYr, maxYr=maxYr)))
-}
-
-# table row for a table with sparklines from population data
-map.makePopSparklineTableRow <- function(p) {
-  df <- data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID == p['Pop_UID'], ]
-  if (!is.na(p['tsName'])) {
-    label <- p['tsName']
-    df <- df[df$TS_Name == p['tsName'], ]
-  } else {
-    label <- p['pName']
-  }
-  # workaround for messy data with multiple time series
-  if (any(duplicated(df$Year))) {
-    duplYrs <- df$Year[duplicated(df$Year)]
-    sampleRows <- df[df$Year %in% duplYrs, ]
-    sampleRows <- sampleRows[order(sampleRows$Year), ]
-    cat('Found multiple time series for ', p, '!\n')
-    print(sampleRows)
-    # find the attributes by which the series differ
-    attrs <- unlist(lapply(names(sampleRows), function(a) {if (length(unique(sampleRows[, a])) < length((sampleRows[, a]))) a else NA}))
-    attrs <- attrs[!is.na(attrs)]
-    tags$tr(tags$td(label, style='width: 40px'), 
-            tags$td(paste0('multiple time series found!')))
-  }
-  else 
-    map.makeSparklineTableRow(df, id=paste(c(p['Pop_UID'], label), sep=':'), label=label, 
-                              minYr=min(data.Pop.Lookup$DataStartYear, na.rm=T), 
-                              maxYr=max(data.Pop.Lookup$DataEndYear, na.rm=T))
-}
-
-# table row for a table with sparklines from CU data
-map.makeCUSparklineTableRow <- function(CU) {
+# put together an information pane for one CU
+map.makeCUInfoPane <- function(CU) {
   df <- data.CU.TimeSeries[data.CU.TimeSeries$CU_ID == CU, ]
-  map.makeSparklineTableRow(df, id=CU, label=CU, 
-                            minYr=min(data.CU.Lookup$DataStartYear, na.rm=T), 
-                            maxYr=max(data.CU.Lookup$DataEndYear, na.rm=T))
-}
-
-# given a list of pop UIDs, put together a list of pairs of the form (Pop_UID, Pop_Name) for input to makePopSparklineTableRow
-# this is needed since there are sometimes multiple time series for the same Pop_UID (all of which are concatenated in
-# the 'tsNames' field in data.Pop.Lookup)
-map.getPopsWithTSNames <- function(pops) {
-  p.name <- unlist(lapply(pops, function(p) {
-    tsNames <- strsplit(data.Pop.Lookup[data.Pop.Lookup$Pop_UID == p, 'tsNames'], ':')[[1]]
-    paste(p, tsNames, sep=':')
-  }))
-  out <- lapply(p.name, function(p) {
-    pp <- strsplit(p, ':')[[1]]
-    c('Pop_UID' = pp[1], 'tsName' = pp[2], 'pName' = data.Pop.Lookup[pp[1], 'Pop_Name'])
-  })
-  names(out) <- pops
-  out
-}
-
-# make a sparkline table, given a list of Pop_UIDs
-map.makePopSparklineTable <- function(pops, header=NULL) {
-  # a lot of populations don't have time series data; put the ones that do first here
-  pops <- pops[order(data.Pop.Lookup[pops, 'HasTimeSeriesData'], decreasing = T)]
-  tags$div(class = 'mouseover-box',
-           if (!is.null(header)) tags$div(class = 'mouseover-box-header', header),
-           tags$table(lapply(map.getPopsWithTSNames(pops), map.makePopSparklineTableRow)))
-}
-
-# make a sparkline table, given a list of CU_IDs
-map.makeCUSparklineTable <- function(CUs, header=NULL) {
-  tags$div(class = 'mouseover-box',
-           if (!is.null(header)) tags$div(class = 'mouseover-box-header', header),
-           tags$table(lapply(CUs, map.makeCUSparklineTableRow)))
-}
-
-# put together an information pane for each CU, to be shown on mouse-over on the map
-map.makeCUPopup <- function(CU) {
-  if (input$dataUnit == 'CUs') {
-    df <- data.CU.TimeSeries[data.CU.TimeSeries$CU_ID == CU, ]
-    tags$div(class = 'mouseover-box',
-             tags$div(class = 'mouseover-box-header', getCUname(CU)),
-             map.makeSparkline(df, CU),
-             tags$table(lapply(MapLabelMetrics[MapLabelMetrics %in% filter$metrics], map.makeCUPopupMetricRow, CU)))
-  } else {
-    map.makePopSparklineTable(getPopsForCU(CU), header=getCUname(CU))
+  p <- tags$div(class = 'sidebar-sparkline-box',
+                tags$div(class = 'sidebar-sparkline-box-header', getCUname(CU)),
+                spark.makeSparkline(df, attribs=CUTableAttribs[['sidebar']]),
+                tags$table(lapply(MapLabelMetrics[MapLabelMetrics %in% filter$metrics], map.makeCUInfoMetricRow , CU)))
+  if (data.showPops()) {
+    p <- tagList(p, spark.makePopSparklineTable(getPopsForCUs(CU), mode='sidebar', CUheader='none'))
   }
+  p
 }
 
 # put together an information pane for each population, to be shown on mouse-over on the map
-map.makePopPopup <- function(pop) {
+map.makePopInfoPane <- function(pop) {
   if (data.Pop.Lookup[pop, 'HasTimeSeriesData'] == 'Yes') {
-    tsSparkline <- map.makePopSparklineTable(c(pop))
+    tsSparkline <- tags$div(spark.makePopSparklineTable(pop, mode='sidebar', CUheader = 'none'))
   } else {
     tsSparkline <- tags$div(style=('background-color: black; color: #b0b0b0'), '<no time series data>')
   }
-  tags$div(class = 'mouseover-box',
-           tags$div(class = 'mouseover-box-header', data.Pop.Lookup[pop, "Pop_Name"]),
+  tags$div(class = 'sidebar-sparkline-box',
+           tags$div(class = 'sidebar-sparkline-box-header', data.Pop.Lookup[pop, "Pop_Name"]),
            tsSparkline,
            tags$table(tags$tr(tags$td('ID: '), tags$td(data.Pop.Lookup[pop, "Pop_ID"])),
                       tags$tr(tags$td("CU:"), 
                               tags$td(data.CU.Lookup[data.CU.Lookup$CU_ID == data.Pop.Lookup[pop, "CU_ID"], 'CU_Name'][1]))))
 }
 
-# put together an information pane to be shown when user moves mouse over a stream segment
-map.makeStreamPopup <- function(segCode) {
-  if (input$dataUnit == 'CUs') {
-    p <- 'no CUs on this stream segment match current filter criteria'
-    CUs <- getCUsFromStreamSeg(segCode)
-    if (length(CUs) > 0) 
-      p <- map.makeCUSparklineTable(CUs)
-      #p <- tags$div(class = 'mouseover-box-text', paste0(CUs,collapse=', '))
+map.makeMarkerInfoPane <- function(items, type) {
+  if(length(items) > 1) {
+    if (type == 'CUs') spark.makeCUSparklineTable(items, mode='sidebar')
+    else if (type == 'Pops') spark.makePopSparklineTable(items, mode='sidebar', CUheader='labelOnly')
+  } else if (length(items) == 1) {
+    if (type == 'CUs') map.makeCUInfoPane(items)
+    else if (type == 'Pops') map.makePopInfoPane(items)
   }
-  else if (input$dataUnit == 'Pops') {
+}
+  
+# put together an information pane to be shown when user moves mouse over a stream segment
+map.makeStreamInfoPane <- function(segCode) {
+  p <- tags$div('no CUs on this stream segment match current filter criteria')
+  CUs <- getCUsFromStreamSeg(segCode)
+  if (length(CUs) > 0) 
+    p <- spark.makeCUSparklineTable(CUs)
+  if(data.showPops()) {
     pops <- getPopsFromStreamSeg(segCode)
-    p <- 'no populations on this stream segment match current filter criteria'
     if (length(pops) > 0) {
-      df <- data.Pop.Lookup[data.Pop.Lookup$Pop_UID %in% pops, c('Pop_UID', 'CU_ID')]
-      dl <- split(df$Pop_UID, df$CU_ID)
-      p <- lapply(names(dl), function(cu) {map.makePopSparklineTable(dl[[cu]], header=cu)})
+      p <- tagList(p, spark.makePopSparklineTable(pops, mode='sidebar', CUheader = 'labelOnly'))
+    } else {
+      p <- tagList(p, tags$div('no CUs on this stream segment match current filter criteria'))
     }
   } 
-  tags$div(class = 'mouseover-box',
-           tags$div(class = 'mouseover-box-header', data.Streams$Name[data.Streams$code == segCode]), 
-           p)
+  tags$div(class = 'sidebar-sparkline-box', p)
 }
 
-# -- Map element display --
+# ------ Map element display --------
 
 # add markers to map
-map.showMarkers <- function(map, df, pane, group, styleOpts) {
+map.renderMarkers <- function(map, df, pane, group, styleOpts, spiderFly=FALSE) {
+  if (spiderFly) {
+    df <- spreadOnCircle(df)
+    spiderFlyMarkers(df)
+    map.showSpiderLegs(map, df, pane=pane, group=group)
+  }
   addCircleMarkers(map, data=df, lng=~Lon, lat=~Lat, 
                    layerId = ~layer,
                    label = ~lapply(label, HTML),
@@ -289,6 +211,15 @@ map.showStream <- function(map, segCode, df, layer, pane, group, styleOpts) {
                options = pathOptions(pane = pane))
 }
 
+map.showSpiderLegs <- function(map, df, pane, group, styleOpts=SpiderLegs) {
+   addPolylines(map=map, data=df,
+               color = styleOpts$color,
+               weight = styleOpts$weight,
+               opacity = styleOpts$opacity,
+               group = group,
+               options = pathOptions(pane = pane))
+}
+
 # get the color to use for the given attribute values
 map.getColor <- function(attribVals, override=NULL, scheme = mapCtrl.colorScheme()) {
   if (!is.null(override)) return(rep(override, length(attribVals)))
@@ -301,9 +232,17 @@ map.getColor <- function(attribVals, override=NULL, scheme = mapCtrl.colorScheme
   }
 }
 
+# translate from specific scheme to generic scheme 
+map.getColors <- function(scheme) {
+  if (scheme %in% paste0(MapLabelMetrics, '.Status')) 
+    ColorPalette[['Status']]
+  else
+    ColorPalette[[scheme]]
+}
+
 map.CUMarkerData <- reactive({
   df <- unique.data.frame(data.CU.Lookup.filtered()[, c('CU_ID', MapAttribs)])
-    if (nrow(df) > 0) {
+  if (nrow(df) > 0) {
       df$layer <- df$CU_ID
       df$label <- unlist(lapply(df$CU_ID, getCUname))
       df.m <- data.filtered()
@@ -318,13 +257,14 @@ map.CUMarkerData <- reactive({
         df$color <- rep('black', nrow(df))
         df$fillColor <- rep('#eeeeee', nrow(df))
       }
-    }
+  }
   df
 })
 
 # Add markers to map that represent the CUs listed (or all CUs currently in the filter set if CUs = NULL)
-map.showCUMarkers <- function(leafletMap, CUs=data.currentCUs(), styleOpts = CUMarkerStyle.normal, layer=NULL) {
-  df <- map.CUMarkerData()[map.CUMarkerData()$CU_ID %in% CUs, ]
+map.showCUMarkers <- function(leafletMap, CUs=data.currentCUs(), styleOpts = CUMarkerStyle.normal, layer=NULL, spiderFly=FALSE, df=NULL) {
+  if (is.null(df)) df <- map.CUMarkerData()
+  df <- df[df$CU_ID %in% CUs, ]
   if (nrow(df) > 0) {
     group <- 'CUMarkers'
     if(!is.null(layer)) {
@@ -333,7 +273,7 @@ map.showCUMarkers <- function(leafletMap, CUs=data.currentCUs(), styleOpts = CUM
     }
     if (!is.null(styleOpts$color))  df$color <- rep(styleOpts$color, nrow(df))
     if (!is.null(styleOpts$fillColor))  df$fillColor <- rep(styleOpts$fillColor, nrow(df))
-    leafletMap <- map.showMarkers(leafletMap, df, pane=group, group=group, styleOpts=styleOpts)
+    leafletMap <- map.renderMarkers(leafletMap, df, pane=group, group=group, styleOpts=styleOpts, spiderFly)
   }
   leafletMap
 }
@@ -360,8 +300,9 @@ map.popMarkerData <- reactive({
 
 # add markers to map that represent the populations listed (or all populations currently in the filter set
 # if Pops = NULL). Markers for pops currently selected appear highlighted
-map.showPopMarkers <- function(leafletMap, pops=data.currentPops(), styleOpts = PopMarkerStyle.normal, layer=NULL) {
-  df <- map.popMarkerData()[map.popMarkerData()$Pop_UID %in% pops, ]
+map.showPopMarkers <- function(leafletMap, pops=data.currentPops(), styleOpts = PopMarkerStyle.normal, layer=NULL, spiderFly=FALSE, df=NULL) {
+  if (is.null(df)) df <- map.popMarkerData()
+  df <- df[df$Pop_UID %in% pops, ]
   if (nrow(df) > 0) {
     group <- 'PopMarkers'
     if(!is.null(layer)) {
@@ -370,9 +311,26 @@ map.showPopMarkers <- function(leafletMap, pops=data.currentPops(), styleOpts = 
     }
     if (!is.null(styleOpts$color))  df$color <- rep(styleOpts$color, nrow(df))
     if (!is.null(styleOpts$fillColor))  df$fillColor <- rep(styleOpts$fillColor, nrow(df))
-    leafletMap <- map.showMarkers(leafletMap, df, pane=group, group = group, styleOpts = styleOpts)
-  }
+    if (is.null(layer) || layer != 'mouseover') {
+    }
+    leafletMap <- map.renderMarkers(leafletMap, df, pane=group, group=group, styleOpts=styleOpts, spiderFly)
+    }
   leafletMap
+}
+
+map.showMarkers <- function(leafletMap, items, type='CUs', style='normal', layer=NULL, spiderFly=FALSE, df=NULL) {
+  if (type == 'CUs') {
+    if (style == 'normal') 
+      map.showCUMarkers(leafletMap, CUs=items, styleOpts = CUMarkerStyle.normal, layer=layer, spiderFly=spiderFly, df=df)
+    else if (style == 'highlighted') 
+      map.showCUMarkers(leafletMap, CUs=items, styleOpts = CUMarkerStyle.highlighted, layer=layer, spiderFly=spiderFly, df=df)
+  }
+  else if (type == 'Pops') {
+    if (style == 'normal') 
+      map.showPopMarkers(leafletMap, pops=items, styleOpts = PopMarkerStyle.normal, layer=layer, spiderFly=spiderFly, df=df)
+    else if (style == 'highlighted') 
+      map.showPopMarkers(leafletMap, pops=items, styleOpts = PopMarkerStyle.highlighted, layer=layer, spiderFly=spiderFly, df=df)
+  }
 }
 
 map.CUpolyData <- reactive({
@@ -384,6 +342,8 @@ map.CUpolyData <- reactive({
   }
   df.poly
 })
+
+
 
 # Add CU boundaries for the CUs listed (or for all CUs currently in the filter if CUs = NULL) 
 # boundaries for CUs currently selected appear highlighted
@@ -410,7 +370,29 @@ hide <- function(map, group) {
   map %>% hideGroup(map, group) %>% hideGroup(map, paste0('selected.', group))
 }
 
-# -- Leaflet map rendering 
+# hide all markers
+map.hideMarkers <- function() {
+  hideGroup(CUmapProxy, 'CUMarkers')
+  hideGroup(CUmapProxy, 'PopMarkers')
+  hideGroup(CUmapProxy, 'selected.CUMarkers')
+  hideGroup(CUmapProxy, 'selected.PopMarkers')
+  
+}
+
+# unhide markers if they are supposed to be visible
+map.unhideMarkers <- function() {
+  setVisibility('CUMarkers')
+  setVisibility('PopMarkers')
+}
+
+# clear spiderFly
+map.clearSpiderFly <- function() {
+  clearGroup(CUmapProxy, 'spider.CUMarkers')
+  clearGroup(CUmapProxy, 'spider.PopMarkers')
+  map.unhideMarkers()
+}
+
+# ------ Leaflet map rendering ------
 
 output$CUmap <- renderLeaflet({
   leafletOutput <- try({
@@ -441,6 +423,8 @@ output$CUmap <- renderLeaflet({
     z <- z + 1
     leafletMap <- addMapPane(leafletMap, name = "streams", zIndex = z)
     z <- z + 1
+    leafletMap <- addMapPane(leafletMap, name = "selected.streams", zIndex = z)    
+    z <- z + 1
     leafletMap <- addMapPane(leafletMap, name = "mouseover.streams", zIndex = z)    
       
     # for (i in 1:max(data.Streams$StreamOrder)) {
@@ -455,7 +439,7 @@ output$CUmap <- renderLeaflet({
     leafletMap <- addMapPane(leafletMap, name = "selected.CUMarkers", zIndex = z)
     z <- z + 1
     leafletMap <- addMapPane(leafletMap, name = "mouseover.CUMarkers", zIndex = z)
-    
+
     # Pop markers
     z <- z + 1
     leafletMap <- addMapPane(leafletMap, name = "PopMarkers", zIndex = z)
@@ -463,6 +447,12 @@ output$CUmap <- renderLeaflet({
     leafletMap <- addMapPane(leafletMap, name = "selected.PopMarkers", zIndex = z)
     z <- z + 1
     leafletMap <- addMapPane(leafletMap, name = "mouseover.PopMarkers", zIndex = z)
+ 
+    z <- z + 1
+    leafletMap <- addMapPane(leafletMap, name = "spider.CUMarkers", zIndex = z)
+    
+    z <- z + 1
+    leafletMap <- addMapPane(leafletMap, name = "spider.PopMarkers", zIndex = z)
     
     # add the stream segments
     leafletMap <- addPolylines(leafletMap, 
@@ -542,7 +532,12 @@ output$CUmap <- renderLeaflet({
                                                 // Don't care about the value here. It just needs to change every time the button is clicked.
                                                 Shiny.onInputChange('leaflet_button_settings', Math.random());
                                              }")))
-    
+    isolate(colorScheme <- map.getColors(mapCtrl.colorScheme()))
+    leafletMap <- addLegend(leafletMap, 
+                            position='bottomleft', 
+                            layerId = 'legend',
+                            colors=as.character(colorScheme),
+                            labels=names(colorScheme))
     # hide any groups that aren't supposed to be visible 
     # need to isolate these to avoid re-rendering of entire map when mapCtrl.isVisible changes
     for (group in c('CUMarkers', 'PopMarkers', 'CUPolygons')) {
@@ -571,6 +566,7 @@ CUmapProxy <- leafletProxy('CUmap')
 map.initCenter <- reactiveVal()
 map.initZoom <- reactiveVal()
 
+
 # input$CUmapCreated gets set by a custom event defined in customJSCode.js
 # See the comment in customJSCode.js for how to get access to a widget just after
 # it has been rendered into the dom, e.g., to modify/add style elements
@@ -587,7 +583,7 @@ observeEvent(input$UIPanels, {
   if (input$UIPanels == 'Map') clearInfoPane()
 })
 
-# -- Event handlers for EasyButtons -- 
+# ------ Event handlers for EasyButtons ------ 
 
 observeEvent(input$leaflet_button_zoom_out, {
   CUmapProxy %>% setView(lng=map.initCenter()$lng, lat=map.initCenter()$lat, zoom=map.initZoom())
@@ -607,7 +603,7 @@ observeEvent(input$leaflet_button_layer_visibility, {
                  status_on = "info", status_off = "info",
                  outline = TRUE, plain = TRUE),
     prettyToggle(inputId= 'map.PopMarkers.visible', value = mapCtrl.isVisible[['PopMarkers']],
-                 label_on= 'Populations', label_off = 'Populations',
+                 label_on= 'Sites', label_off = 'Sites',
                  icon_on = icon("eye"), icon_off = icon("eye-slash"),
                  status_on = "info", status_off = "info",
                  outline = TRUE, plain = TRUE),
@@ -639,15 +635,18 @@ observeEvent(mapCtrl.isVisible[['PopMarkers']], setVisibility('PopMarkers'))
 observeEvent(input$map.Streams.visible, mapCtrl.isVisible[['Streams']] <- input$map.Streams.visible)
 observeEvent(mapCtrl.isVisible[['Streams']], setVisibility('Streams'))
 
+observeEvent(mapCtrl.isVisible[['PopMarkers']], {
+  updateCheckboxInput(session, 'sidebarMenu_showPops', 
+                      label = 'Show Sites', 
+                      value = mapCtrl.isVisible[['PopMarkers']])
+})
+
 observeEvent(input$leaflet_button_settings, {
   showModal(modalDialog(
-    radioButtons(inputId = 'map.SelectBy', label = 'Clicking on stream selects: ', 
-                 selected = mapCtrl.selectionMode(), inline = TRUE,
-                 choiceNames = c('CUs', 'Populations'), choiceValues = c('CUs', 'Pops')),
     checkboxGroupInput(inputId= 'map.showOnCUmarkerHover', label = "On hover over CU marker: ", 
                        choiceNames = c('Highlight CU marker',
                                        'Highlight CU boundaries',
-                                       'Highlight populations associated with CU',
+                                       'Highlight sites associated with CU',
                                        'Hide other map elements'),
                        choiceValues = c('Marker', 'Polygon', 'Pops', 'hideOthers'),
                        selected = mapCtrl.CUmarkerHoverHighlights(),
@@ -655,7 +654,7 @@ observeEvent(input$leaflet_button_settings, {
     checkboxGroupInput(inputId= 'map.showOnCUpolyHover', label = "On hover over CU polygons: ", 
                        choiceNames = c('Highlight CU marker',
                                        'Highlight CU boundaries',
-                                       'Highlight populations associated with CU',
+                                       'Highlight sites associated with CU',
                                        'Hide other map elements'),
                        choiceValues = c('Marker', 'Polygon', 'Pops', 'hideOthers'),
                        selected = mapCtrl.CUpolyHoverHighlights(),
@@ -663,7 +662,7 @@ observeEvent(input$leaflet_button_settings, {
     checkboxGroupInput(inputId= 'map.showOnStreamHover', label = "On hover over stream segments: ", 
                        choiceNames = c('Highlight CU markers of CUs on stream',
                                        'Highlight CU boundaries of CUs on stream',
-                                       'Highlight populations on stream',
+                                       'Highlight sites on stream',
                                        'Hide other map elements'),
                        choiceValues = c('Marker', 'Polygon', 'Pops', 'hideOthers'),
                        selected = mapCtrl.CUstreamHoverHighlights(),
@@ -674,14 +673,12 @@ observeEvent(input$leaflet_button_settings, {
   ))
 })
 
-observeEvent(input$map.SelectBy, mapCtrl.selectionMode(input$map.SelectBy))
 observeEvent(input$map.showOnCUmarkerHover, mapCtrl.CUmarkerHoverHighlights(input$map.showOnCUmarkerHover))
 observeEvent(input$map.showOnCUpolyHover, mapCtrl.CUpolyHoverHighlights(input$map.showOnCUpolyHover))
 observeEvent(input$map.showOnStreamHover, mapCtrl.CUstreamHoverHighlights(input$map.showOnStreamHover))
 
-observeEvent(input$dataUnit, {
-  mapCtrl.selectionMode(input$dataUnit)
-  if (input$dataUnit == 'CUs') { # if dataUnit just got toggled to CUs, hide pop markers
+observeEvent(data.showPops(), {
+  if (!data.showPops()) { #  hide pop markers
     mapCtrl.isVisible[['PopMarkers']] <- FALSE
     opts <- mapCtrl.CUpolyHoverHighlights()
     mapCtrl.CUpolyHoverHighlights(opts[opts != 'Pops'])
@@ -690,7 +687,7 @@ observeEvent(input$dataUnit, {
     opts <- mapCtrl.CUstreamHoverHighlights()
     mapCtrl.CUstreamHoverHighlights(opts[opts != 'Pops'])
   }
-  else { # dataUnit just got toggled to Populations; make populations visible on map
+  else { # make populations visible on map
     mapCtrl.isVisible[['PopMarkers']] <- TRUE
     opts <- mapCtrl.CUpolyHoverHighlights()
     mapCtrl.CUpolyHoverHighlights(unique(c(opts, 'Pops')))
@@ -711,32 +708,31 @@ observeEvent(input$leaflet_button_color_scheme, {
   ))
 }) 
 
-observeEvent(input$map.colorScheme, mapCtrl.colorScheme(input$map.colorScheme))
+observeEvent(input$map.colorScheme , {mapCtrl.colorScheme(input$map.colorScheme)})
 
-# -- Hihglighting of map elements --
+# -------- Highlighting of map elements ------
 
-map.highlightStream <- function(segCode) {
+map.highlightStream <- function(segCode, type) {
   map.showStream(CUmapProxy, segCode, df=data.StreamsExtended, 
-                 layer=paste0('mouseover', '.', segCode), 
-                 pane='mouseover.streams', 
-                 group='mouseover.streams', 
+                 layer=paste0(type, '.', segCode), 
+                 pane=paste0(type, '.streams'), 
+                 group=paste0(type, '.Streams'), 
                  styleOpts = StreamStyle.highlighted)
 }
   
 # highlight markers of the given type ('CUs' or 'Pops')
-map.highlightMarkers <- function(markers, type, highlightLayer='selected') {
+map.highlightMarkers <- function(markers, type, highlightLayer='selected', df=NULL) {
   if (type == 'CUs') 
-    map.showCUMarkers(CUmapProxy, markers, styleOpts = CUMarkerStyle.highlighted, layer=highlightLayer)
+    map.showCUMarkers(CUmapProxy, markers, styleOpts = CUMarkerStyle.highlighted, layer=highlightLayer, df=df)
   else if (type == 'Pops') 
-    map.showPopMarkers(CUmapProxy, markers, styleOpts = PopMarkerStyle.highlighted, layer=highlightLayer)
+    map.showPopMarkers(CUmapProxy, markers, styleOpts = PopMarkerStyle.highlighted, layer=highlightLayer, df=df)
 }
 
 # un-highlight markers of the given type ('CUs' or 'Pops')
 map.unhighlightMarkers <- function(markers=NULL, type, highlightLayer='selected') {
-    if (type == 'CUs') group <- 'CUMarkers' else group <- 'PopMakers'
-    if (is.null(markers)) {
+    if (type == 'CUs') group <- 'CUMarkers' else group <- 'PopMarkers'
+    if (is.null(markers)) 
       clearGroup(CUmapProxy, paste0(highlightLayer, '.', group))
-    }
     else 
       lapply(markers, function(m) {
         removeMarker(CUmapProxy, paste0(highlightLayer, '.', m))})
@@ -766,28 +762,32 @@ map.showMouseoverHighlights <- function(CUPolys=NULL, CUMarkers=NULL, PopMarkers
 
 # clear map elements that were highlighted due to a mouseover 
 # if called w/o parameters, removes all mouseover highlights currently on map
-map.clearMouseoverHighlights <- function(CUPolys=NULL, CUMarkers=NULL, PopMarkers=NULL, Streams=NULL) {
-  if (is.null(CUPolys) && is.null(CUMarkers) && is.null(PopMarkers)) { # remove all mouseover highlights
-    clearGroup(CUmapProxy, 'mouseover.CUMarkers')
-    clearGroup(CUmapProxy, 'mouseover.PopMarkers')
-    clearGroup(CUmapProxy, 'mouseover.CUPolygons')
-    clearGroup(CUmapProxy, 'mouseover.streams')
+map.clearHighlights <- function(CUPolys=NULL, CUMarkers=NULL, PopMarkers=NULL, Streams=NULL, type='mouseover') {
+  if (is.null(CUPolys) && is.null(CUMarkers) && is.null(PopMarkers) && is.null(Streams)) { # remove all mouseover highlights
+    clearGroup(CUmapProxy, paste0(type, '.CUMarkers'))
+    clearGroup(CUmapProxy, paste0(type, '.PopMarkers'))
+    clearGroup(CUmapProxy, paste0(type, '.CUPolygons'))
+    clearGroup(CUmapProxy, paste0(type, '.streams'))
   } else { # remove only specified mouseover highlights
-    for (s in CUPolys) CUmapProxy %>% removeShape(paste0('mouseover', '.', s))
-    for (m in c(CUMarkers, PopMarkers)) CUmapProxy %>% removeMarker(paste0('mouseover', '.', m))
-    for (s in Streams) CUmapProxy %>% removeShape(paste0('mouseover', '.', s))
+    for (s in CUPolys) CUmapProxy %>% removeShape(paste0(type, '.', s))
+    for (m in c(CUMarkers, PopMarkers)) CUmapProxy %>% removeMarker(paste0(type, '.', m))
+    for (s in Streams) CUmapProxy %>% removeShape(paste0(type, '.', s))
+  
   }
 }
 
-# -- Event handlers for Marker events -- 
+# ------ Event handlers for Marker events ------
+
 # strip layer information and extract the actual ID of a marker or shape
-map.getID <- function(el) {gsub('selected.', '', gsub('mouseover.', '', el))}
+map.getID <- function(el) {
+  if (is.null(el)) sel <- ''
+  else gsub('spider.', '', gsub('selected.', '', gsub('mouseover.', '', el)))}
 
 # show mouseover highlights associated with the selected CUs contained in sel on map
 # elementsToHighlight is a list analogous to mapCtrl.CUmarkerHoverHighlights 
 # that controls what should be highlighted ('Marker', 'Pops', 'Polygon')
 map.showCUMouseoverHighlights <- function(sel, elementsToHighlight = mapCtrl.CUmarkerHoverHighlights()) {
-  if ('Marker' %in% elementsToHighlight) # highlight the marker associated with this CU 
+  if ('Marker' %in% elementsToHighlight) # highlight the marker associated with this CU
     map.showMouseoverHighlights(CUMarkers = c(sel))
   if ('Pops' %in% elementsToHighlight) # show populations associated with this CU in addition to CU marker
     map.showMouseoverHighlights(PopMarkers = getPopsForCUs(sel))
@@ -799,26 +799,25 @@ map.showPopMouseoverHighlights <- function(sel) {
   map.showMouseoverHighlights(PopMarkers=c(sel))
 }
 
-map.showExtendedStream <- function(code) {
-  
-}
+# ------------- mouseover events -----------------
+
 # things that should occur when the user moves the mouse over a marker
 observeEvent(input$CUmap_marker_mouseover, 
              { # mouseover events aren't always detected, so if there are residual highlighted markers around,
                # they will be on top and therefore block access to the actual marker underneath
                # Get rid of any residual mouseover highlights here before continuing
                # cat("Marker mouseover event observed for ", input$CUmap_marker_mouseover$id, "\n")
-               map.clearMouseoverHighlights()
+               map.clearHighlights(type='mouseover')
                sel <- map.getID(input$CUmap_marker_mouseover$id)
                InfoPane <- NULL
                if (sel %in% data.CUs) { # mouse is over a CU marker
                  map.showCUMouseoverHighlights(sel, mapCtrl.CUmarkerHoverHighlights())
-                 InfoPane <- map.makeCUPopup(sel)
+                 #InfoPane <- map.makeCUPopup(sel)
                } else if (sel %in% data.Pops) { # mouse is over a Pop marker
                  map.showPopMouseoverHighlights(sel)
-                 InfoPane <- map.makePopPopup(sel)
+                 #InfoPane <- map.makePopInfoPane(sel)
                } else {
-                 InfoPane <- tags$div(style='padding: 5px;', paste0('unknown marker type: ', sel))
+                 #InfoPane <- tags$div(style='padding: 5px;', paste0('unknown marker type: ', sel))
                }
                if (!is.null(InfoPane)) showInfoPane(InfoPane)
              })
@@ -827,7 +826,7 @@ observeEvent(input$CUmap_marker_mouseover,
 observeEvent(input$CUmap_marker_mouseout, 
              {
                #cat("Marker mouseout event observed for ", input$CUmap_marker_mouseover$id, "\n")
-               map.clearMouseoverHighlights()
+               map.clearHighlights(type='mouseover')
              })
 
 # things that should occur when the user moves the mouse over a shape (i.e., a CU polygon or a stream segment)
@@ -836,27 +835,23 @@ observeEvent(input$CUmap_shape_mouseover,
                # they will be on top and therefore block access to the shape underneath
                # get rid of any residual mouseover highlights before proceeding
                #cat("Shape mouseover event observed for ", input$CUmap_shape_mouseover$id, "\n")
-               map.clearMouseoverHighlights()
+               map.clearHighlights(type='mouseover')
                sel <- map.getID(input$CUmap_shape_mouseover$id) 
                InfoPane <- NULL
                if (sel %in% data.CUs) { # user hovering over a CU polygon
                  map.showCUMouseoverHighlights(sel, mapCtrl.CUpolyHoverHighlights())
-                 InfoPane <- map.makeCUPopup(sel)
+                 # InfoPane <- map.makeCUPopup(sel)
                } else if (sel %in% data.Watersheds) { # user hovering over a stream segment
-                 if (mapCtrl.selectionMode() == 'CUs') {
-                   # special treatment of Pops here: if user wants to see populations, they should only be the ones associated with
-                   # the stream segment, not all the ones associated with the CUs that are associated with the stream segment
-                   elementsToHighlight <- mapCtrl.CUstreamHoverHighlights()
-                   map.showCUMouseoverHighlights(getCUsFromStreamSeg(sel), elementsToHighlight[elementsToHighlight != 'Pops'])
-                   if ('Pops' %in% elementsToHighlight)
-                     map.showPopMouseoverHighlights(getPopsFromStreamSeg(sel))
-                 }
-                 else if (mapCtrl.selectionMode() == 'Pops') 
+                 # special treatment of Pops here: if user wants to see populations, they should only be the ones associated with
+                 # the stream segment, not all the ones associated with the CUs that are associated with the stream segment
+                 elementsToHighlight <- mapCtrl.CUstreamHoverHighlights()
+                 map.showCUMouseoverHighlights(getCUsFromStreamSeg(sel), elementsToHighlight[elementsToHighlight != 'Pops'])
+                 if ('Pops' %in% elementsToHighlight)
                    map.showPopMouseoverHighlights(getPopsFromStreamSeg(sel))
-                 InfoPane <- map.makeStreamPopup(sel)
-                 map.highlightStream(sel)
+               #  InfoPane <- map.makeStreamInfoPane(sel)
+               #  map.highlightStream(sel, 'mouseover')
                } else {
-                 InfoPane <- tags$div(style='padding: 5px;', paste0('unknown shape type: ', sel))
+                 # InfoPane <- tags$div(style='padding: 5px;', paste0('unknown shape type: ', sel))
                }
                if (!is.null(InfoPane)) showInfoPane(InfoPane)
              })
@@ -865,49 +860,139 @@ observeEvent(input$CUmap_shape_mouseover,
 observeEvent(input$CUmap_shape_mouseout, 
              {
                #cat("Shape mouseout event observed for " , input$CUmap_shape_mouseout$id, '\n') 
-               map.clearMouseoverHighlights()
+               map.clearHighlights(type='mouseover')
              })
+
+# ------------- click events -----------------
+
+# keep track of last click location. Need to do this since shiny fires a map click event not just for background clicks,
+# but also for shape and marker clicks
+lastMarkerClick <- reactiveValues(lat = 0, lng = 0)
 
 # things that should occur when a marker is clicked on
 observeEvent(input$CUmap_marker_click, 
              {
                sel <- map.getID(input$CUmap_marker_click$id)
                #cat("Marker click event observed for ", sel, "\n")
-               str(input$CUmap_marker_click)
-               if (sel %in% data.CUs)  { # user clicked on a CU marker
-                 if (mapCtrl.selectionMode() == 'CUs') map.addToSelection(sel, 'CUs') 
-                 else if (mapCtrl.selectionMode() == 'Pops')  map.addToSelection(getPopsForCUs(sel), 'Pops')
-               }
-               else if (sel %in% data.Pops)  { # user clicked on a Population marker
-                 if (mapCtrl.selectionMode() == 'Pops') map.addToSelection(sel, 'Pops') 
-               }
+               #print('event info')
+               #str(input$CUmap_marker_click)
+               if (sel %in% data.CUs) markerType <- 'CUs' else markerType <- 'Pops' 
+               spiderMode <- startsWith(input$CUmap_marker_click$id, 'spider') 
+               if (spiderMode) 
+                 markersAtClickLocation <- c(sel)
+               else 
+                 markersAtClickLocation <- getOverlapping(sel, markerType)
+               InfoPane <- map.makeMarkerInfoPane(markersAtClickLocation, markerType)
+               if(length(markersAtClickLocation) == 1) { # select/unselect marker
+                 if (markerType == 'CUs')  { # select both CU and associated populations
+                   map.addToSelection(sel, 'CUs') 
+                   # don't toggle pops here; selection of pops follows selection of CU, i.e., all on if CU is on, all off if CU is off
+                   if (sel %in% data.currentSelection[['CUs']])
+                     data.addToSelection(getPopsForCUs(sel), 'Pops', 'map')
+                   else
+                     data.removeFromSelection(getPopsForCUs(sel), 'Pops', 'map')
+                 } else if (markerType == 'Pops') {
+                   map.addToSelection(sel, 'Pops')
+                 }
+                 if (spiderMode) { # highlight/unhighlight spiderfied marker to reflect selection
+                    if (data.isSelected(sel, markerType)) {
+                      map.showMarkers(CUmapProxy, items=sel, type=markerType, layer='spider', style='highlighted', df=spiderFlyMarkers())
+                    }
+                    else{
+                      map.showMarkers(CUmapProxy, items=sel, type=markerType, layer='spider', style='normal', df=spiderFlyMarkers()) 
+                    }
+                 }
+                } else { # spiderfy overlapping markers, hide others 
+                  map.hideMarkers()
+                  # show spiderFly
+                  map.showMarkers(CUmapProxy, items=markersAtClickLocation, type=markerType, layer='spider', spiderFly=TRUE)
+                  # if any of the markers within the spider are selected, highlight them now
+                  highlighted <- markersAtClickLocation %in% data.currentSelection[[markerType]]
+                  if (any(highlighted)) {
+                    map.showMarkers(CUmapProxy, items=markersAtClickLocation[highlighted], type=markerType, layer='spider', style='highlighted', df=spiderFlyMarkers())
+                  }
+                }
+              if (!is.null(InfoPane)) showInfoPane(InfoPane)
+              lastMarkerClick$lat <- input$CUmap_marker_click$lat
+              lastMarkerClick$lng <- input$CUmap_marker_click$lng
              })
 
+highlightedStreams <- reactiveVal(c())
 
 # things that should occur when a shape (line or polygon) is clicked
 observeEvent(input$CUmap_shape_click, 
              {
+               map.clearSpiderFly()
                sel <- map.getID(input$CUmap_shape_click$id)
                #cat("shape click event observed for shape ", sel, '\n')
-               str(input$CUmap_shape_click)
+               #print('event info')
+               #str(input$CUmap_shape_click)
+               InfoPane <- NULL
                if (sel %in% data.Watersheds) { # user clicked on a stream segment
-                 if (mapCtrl.selectionMode() == 'CUs') {
-                    map.addToSelection(getCUsFromStreamSeg(sel), type='CUs')
-                 } else if (mapCtrl.selectionMode() == 'Pops') {
-                    map.addToSelection(getPopsFromStreamSeg(sel), type='Pops')
+                 #InfoPane <- map.makeStreamInfoPane(sel)
+                 CUs <- getCUsFromStreamSeg(sel)
+                 pops <- getPopsFromStreamSeg(sel)
+                 if (all(CUs %in% data.currentSelection[['CUs']]) && all(pops %in% data.currentSelection[['Pops']])) {
+                   data.removeFromSelection(CUs, 'CUs', 'map')
+                   data.removeFromSelection(pops, 'Pops', 'map')
+                 } else {
+                   data.addToSelection(CUs, 'CUs', 'map')
+                   data.addToSelection(pops, 'Pops', 'map')
                  }
+                if (any(CUs %in% data.currentSelection[['CUs']]) || any(pops %in% data.currentSelection[['Pops']])) {
+                  if (!(sel %in% highlightedStreams()))
+                    highlightedStreams(c(highlightedStreams(), sel))
+                  map.highlightStream(sel, 'selected')
+                }
+               }
+               if (!is.null(InfoPane)) showInfoPane(InfoPane)
+               lastMarkerClick$lat <- input$CUmap_shape_click$lat
+               lastMarkerClick$lng <- input$CUmap_shape_click$lng
+             })
+
+# things that should occur when the map background is clicked
+observeEvent(input$CUmap_click, 
+             {
+               #print('map click event observed')
+               #print('event info')
+               #str(input$CUmap_click)
+               if (!(lastMarkerClick$lat == input$CUmap_click$lat && lastMarkerClick$lng == input$CUmap_click$lng )) {
+                 map.clearSpiderFly()
+                 lastMarkerClick$lat <- input$CUmap_click$lat
+                 lastMarkerClick$lng <- input$CUmap_click$lng
                }
              })
 
-# -- Selection of CUs and populations  --
+observeEvent({data.currentSelection[['CUs']]
+             data.currentSelection[['Pops']]}, {
+  stillHighlighted <- unlist(lapply(highlightedStreams(), function(s) {
+    CUs <- getCUsFromStreamSeg(s)
+    pops <- getPopsFromStreamSeg(s)
+    if (any(CUs %in% data.currentSelection[['CUs']]) || 
+        (data.showPops() && any(pops %in% data.currentSelection[['Pops']]))) {
+       s 
+    }
+    else {
+      map.clearHighlights(Streams=c(s), type='selected')
+      NULL
+    }
+  }))
+  highlightedStreams(stillHighlighted)
+}, ignoreNULL = FALSE)
+
+# -------- Selection of CUs and populations  ----------
 
 # update selection shown on map; type is the type of data items affected (CU or Pop)
 map.updateSelection <- function(type) {
-  map.unhighlightMarkers(markers=NULL, type)
-  map.highlightMarkers(data.currentSelection[[type]], type)
+  #print(data.currentSelection[[type]])
+  map.unhighlightMarkers(type=type)
+  if (!is.null(data.currentSelection[[type]])) {
+    map.highlightMarkers(data.currentSelection[[type]], type)
+  }
   if (type == 'CUs') {
-    map.unhighlightPolygons(polys=NULL)
-    map.highlightPolygons(data.currentSelection[[type]])
+    map.unhighlightPolygons()
+    if (!is.null(data.currentSelection[[type]]))
+      map.highlightPolygons(data.currentSelection[[type]])
   }
 }
 
@@ -920,14 +1005,14 @@ map.addToSelection <- function(sel, type) {
     alreadySelected <- sel[sel %in% data.currentSelection[[type]]]
     if (setequal(sel, alreadySelected)) { # all markers in this list are already selected; toggle to unselect all
       data.removeFromSelection(sel, type=type, widget="map")
-      map.unhighlightMarkers(sel, type)
-      if (type == 'CUs') 
-        map.unhighlightPolygons(sel)
+#      map.unhighlightMarkers(sel, type)
+#      if (type == 'CUs') 
+#        map.unhighlightPolygons(sel)
     } else { # at least some markers in this list were not already selected; select all
       data.addToSelection(sel, type=type, widget="map")
-      map.highlightMarkers(sel, type)
-      if (type == 'CUs') 
-        map.highlightPolygons(sel)
+#      map.highlightMarkers(sel, type)
+#      if (type == 'CUs') 
+#        map.highlightPolygons(sel)
     } 
   }
 }
@@ -955,12 +1040,11 @@ observeEvent(input$CUmap_draw_new_feature, {
   id <- input$CUmap_draw_new_feature$properties$`_leaflet_id`
   geomList <- input$CUmap_draw_new_feature$geometry$coordinates[[1]]
   selPoly <- makeSPpoly(geomList, id)
-  if(mapCtrl.selectionMode() == 'CUs') {
-    df <- unique(data.CU.Lookup.filtered()[ , c("CU_ID", "Lat", "Lon")])
-    pts <- SpatialPoints(data.frame(lng=df$Lon, lat=df$Lat), proj4string = proj)
-    CUs <- df$CU_ID[ptsInsidePoly(pts, selPoly)] 
-    map.addToSelection(CUs, 'CUs')
-  } else if(mapCtrl.selectionMode() == 'Pops') {
+  df <- unique(data.CU.Lookup.filtered()[ , c("CU_ID", "Lat", "Lon")])
+  pts <- SpatialPoints(data.frame(lng=df$Lon, lat=df$Lat), proj4string = proj)
+  CUs <- df$CU_ID[ptsInsidePoly(pts, selPoly)] 
+  map.addToSelection(CUs, 'CUs')
+  if (data.showPops()) {
     df <- data.Pop.Lookup.filtered()[ , c("Pop_UID", "Lat", "Lon")]
     pts <- SpatialPoints(data.frame(lng=df$Lon, lat=df$Lat), proj4string = proj)
     pops <- df$Pop_UID[ptsInsidePoly(pts, selPoly)] 
@@ -972,13 +1056,13 @@ observeEvent(input$CUmap_draw_new_feature, {
   session$sendCustomMessage("removeSelectionPolygon", list(elid="CUmap", layerid=id))
 })
 
-# -- map updating on changes to filter or other changes to global settings --
+# ------ map updating on changes to filter or other changes to global settings -------
 
 # add dynamic map elements when filter changes; 
 # don't render entire map again, since rendering of stream network takes a while
 observeEvent({data.CU.Lookup.filtered()
   mapCtrl.colorScheme()
-  input$dataUnit}, {
+  data.showPops()}, {
     CUmapProxy %>% clearGroup('CUMarkers') %>% clearGroup('CUPolygons') %>% clearGroup('PopMarkers')
     CUmapProxy %>% clearGroup('selected.CUMarkers') %>% clearGroup('selected.CUPolygons') %>% clearGroup('selected.PopMarkers')
     map.showCUMarkers(CUmapProxy)
@@ -991,4 +1075,10 @@ observeEvent({data.CU.Lookup.filtered()
     if (!data.currentSelectionEmpty('Pops')) {
       map.highlightMarkers(data.currentSelection[['Pops']], 'Pops')
     }
+    colorScheme <- map.getColors(mapCtrl.colorScheme())
+    addLegend(CUmapProxy, 
+              position='bottomleft',
+              layerId = 'legend',
+              colors=as.character(colorScheme),
+              labels=names(colorScheme))
   }, ignoreInit=T)

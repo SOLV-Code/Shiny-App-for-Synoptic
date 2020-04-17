@@ -152,44 +152,39 @@ observeEvent({
 
 # UI for radar plots box
 output$box_RadarPlots <- renderUI({
-  if (input$dataUnit == 'CUs') {
-    if (is.null(currentRadarMetricOpts())) {
-      selected <- NULL
-    } else if (length(currentRadarMetricOpts()) <3 ) {
-      selected <- currentRadarMetricOpts()[1:length(currentRadarMetricOpts())]
-    } else {
-      selected <- currentRadarMetricOpts()[1:3] 
-    }
-    tagList(
-      h2("Radar plots of selected data"),
-      h5("CU metrics are plotted in proportion to each other. Metric scores have been inverted so that larger triangles depict lower scores. Only CUs with all 3 metrics are shown."),
-      br(),
-      h4("Select metrics for radar plots:"),
-      fluidRow(
-        column(width=4,
-               pickerInput(inputId = "radar_select_metrics",
-                           label = "Select at least 3 of:",
-                           choices = currentRadarMetricOpts(),
-                           selected = selected,
-                           multiple=TRUE,
-                           options= list(`show-tick`=TRUE, `actions-box`=TRUE, `selected-text-format`='count', `max-options`='3'))),
-        column(width=3, 
-               checkboxInput(inputId = "radar_faceted",
-                             label = "One plot per CU:",
-                             value = TRUE)),
-        column(width=4,
-               pickerInput(inputId = "radar_ranking",
-                           label = "Order by",
-                           choices = c("Area", selected),
-                           selected = c("Area"),
-                           multiple=FALSE))),
-      shinycssloaders::withSpinner(plotOutput("radar_Plot", height="550px", width="550px")),
-      tags$div(style = 'overflow-x: scroll', DT::dataTableOutput("radar_AreaTable", width="70%"))
-    )
-  } else { # intput$dataUnit == 'Populations'
-    # nothing to show for populations 
-    tags$div('no metrics available')
+  if (is.null(currentRadarMetricOpts())) {
+    selected <- NULL
+  } else if (length(currentRadarMetricOpts()) <3 ) {
+    selected <- currentRadarMetricOpts()[1:length(currentRadarMetricOpts())]
+  } else {
+    selected <- currentRadarMetricOpts()[1:3] 
   }
+  tagList(
+    h2("Radar plots of selected data"),
+    h5("CU metrics are plotted in proportion to each other. Metric scores have been inverted so that larger triangles depict lower scores. Only CUs with all 3 metrics are shown."),
+    br(),
+    h4("Select metrics for radar plots:"),
+    fluidRow(
+      column(width=4,
+             pickerInput(inputId = "radar_select_metrics",
+                         label = "Select at least 3 of:",
+                         choices = currentRadarMetricOpts(),
+                         selected = selected,
+                         multiple=TRUE,
+                         options= list(`show-tick`=TRUE, `actions-box`=TRUE, `selected-text-format`='count', `max-options`='3'))),
+      column(width=3, 
+             checkboxInput(inputId = "radar_faceted",
+                           label = "One plot per CU:",
+                           value = TRUE)),
+      column(width=4,
+             pickerInput(inputId = "radar_ranking",
+                         label = "Order by",
+                         choices = c("Area", selected),
+                         selected = c("Area"),
+                         multiple=FALSE))),
+    shinycssloaders::withSpinner(plotOutput("radar_Plot", height="550px", width="550px")),
+    tags$div(style = 'overflow-x: scroll', DT::dataTableOutput("radar_AreaTable", width="70%"))
+  )
 })
 
 # things to do when the Radar panel is opened

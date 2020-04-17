@@ -118,7 +118,6 @@ observeEvent({
 
 # build the UI widgets
 output$box_HistoSummary <- renderUI({
-  if (input$dataUnit == 'CUs') {
     if (nrow(data.filtered()) < HistoMaxDots) type <- "dots" else type <- "bars"
     cntrl <- radioGroupButtons("summary_type", label = NULL,
                                choices = c("dots", "bars"),
@@ -134,10 +133,6 @@ output$box_HistoSummary <- renderUI({
                                shinycssloaders::withSpinner(plotly::plotlyOutput(sId('summary', a), height=200))))})
     tagList(fluidRow(column(width=3, cntrl)),
             fluidRow(do.call(tagList, plots)))
-  } else { # intput$dataUnit == 'Populations'
-    # nothing to show for populations 
-    tags$div('no metrics available')
-  }
 })
 
 # things to do when the Histogram panel is opened

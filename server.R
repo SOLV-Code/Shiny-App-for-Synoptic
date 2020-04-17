@@ -52,6 +52,7 @@ function(input, output, session){
   source('SharedComponents.R', local=TRUE)
   source('Map.R', local=TRUE)
   source('ParCoords.R', local=TRUE)
+  source('TSPlots.R', local=TRUE)
   source('DataTable.R', local=TRUE)
   source('HistogramSummary.R', local=TRUE)
 } # end server function

@@ -15,12 +15,22 @@
 # multiple styles, and also serves purposes other than communicating the contents of the
 # data.currentSelection() to the user, such as showing the user which UI element they 
 # are currently hovering over.
+# Note on managing selection/highlighting:
+# The set of currently selected CUs and populations is managed through a set of shiny reactive
+# variables. However, DT:dataTables have their own mechanism of keeping track of highlighted rows,
+# and to make brushing in parcoords work properly, it needs to keep track of its brushing
+# and communicate through a SharedData object. Having these three mechanisms going at the same
+# time can lead to situations where the mechanisms 'fight' to set/reset the selection to their
+# stored version. Because of this, the event handlers that manage the update process need
+# to be managed so updates to and from data table selection and parcoords selection are 
+# only propagated when the respective widgets are in focus. 
 
 # ----- explanatory information for the different metrics ---------
 library(xfun)
 library(rgdal)
 library(sp)
 library(sf)
+
 MetricInfo <- list(
   CU_ID = "Conservation Unit",
   Species = "Species",
@@ -115,6 +125,10 @@ ParcoordsMetricOrder <- c("FAZ",
                           "LifeHistory",
                           "CU_ID")
 
+# don't ever display these columns
+ParcoordsDrop <-c("ProbDeclBelowLBM", "ProbDeclBelowLBM.Status")
+
+# hide these columns initially (i.e., make them appear as unchecked by default)
 ParcoordsHideOnInit <- c('CU_ID')
 
 # sort CUs on y-axis by these attributes
@@ -157,17 +171,17 @@ MapAttribs <- c('Lat', 'Lon', 'Species', 'HasMetricsData', 'HasTimeSeriesData', 
                 "LifeHistory")
 
 
-# the metrics to include in the map labels (i.e., the popups shown on hover)
-MapLabelMetrics <-  c("RelAbd", "LongTrend", "PercChange", "ProbDeclBelowLBM")
+# the metrics to include in the map labels (i.e., the metric information shown on clicking on a CU in the map)
+MapLabelMetrics <-  c("RelAbd", "LongTrend", "PercChange")
 
 # palettes to use for the different color theme options
 ColorPalette <- list(
                     Species = c(Sk = '#8c1aff', Co = '#ff9900', Ck = '#009999'),
-                    Status = c(Red = '#ff0000', Amber = '#ffa500', Green = '#00ff00', 'NA' = '#eae2e3'),
+                    Status = c(Red = '#ff0000', Amber = '#ffa500', Green = '#00ff00', 'NA' = '#bebebe'),
                     HasMetricsData = c(Yes = '#222222', No = '#999999'),
                     HasTimeSeriesData = c(Yes = '#222222', No = '#999999'),
-                    RunTiming = c(Estu = '#fd5c71', Spring = '#cb3f51', Early_Summer = '#b01f32', Summer = '#8c0e0e', Late='#76353e', Fall='#6b464b', 'NA' = '#eae2e3'),
-                    LifeHistory = c(Ocean = '#5fd2bb', Stream = '#347266', River = '#d25587', Lake = '#9b1349', 'NA' = '#eae2e3')
+                    RunTiming = c(Estu = '#fd5c71', Spring = '#cb3f51', Early_Summer = '#b01f32', Summer = '#8c0e0e', Late='#76353e', Fall='#6b464b', 'NA' = '#bebebe'),
+                    LifeHistory = c(Ocean = '#5fd2bb', Stream = '#347266', River = '#d25587', Lake = '#9b1349', 'NA' = '#bebebe')
 )
 
 StreamStyle.normal <- list(
@@ -263,9 +277,146 @@ PopMarkerStyle.mouseover <- list(
   color = 'red'
 )
 
+SpiderLegs <- list(
+  color = 'black',
+  weight = 1,
+  opacity = 0.7
+)
+
 # CU boundaries and markers will be shown overlaid in this order, i.e., the species listed first will be on bottom
 zPaneOrder <- c("Co", "Ck", "Sk")
 
+# sparkline styling
+popTableAttribs <- list()         # styling for table rows showing information for individual selected populations
+popTableAttribsCUHeader <- list() # styling for the table row showing information for the CU containing the selected populations
+CUTableAttribs <- list()          # styling for the table rows in a table that only summarizes CU information
+
+# 'full' attributes are for display of the tabale in a collapsible panel
+
+popTableAttribs[['full']] <- list(
+  labelAttribs = c('Pop_ID', 'TS_Name'),
+  missingTSText = 'no time series data',
+  styles =list(Pop_ID = '',
+               TS_Name = '',
+               missingTS = ''),
+  sparkCanvas = 'full-canvas',
+  lineColor = '#3333ff',
+  fillColor = '#33ccff',
+  lineWidth = '3px',
+  chartWidth = '200px',
+  chartHeight = '50px'
+)
+
+# styling for the CU entry that serves as a 'header' for the selected populations shown in the table
+# use 'complete' styling when all populations within the CU are selected
+# 'partial' styling when only some populations are selected
+popTableAttribsCUHeader[['full']] <- list(
+  complete = list(labelAttribs = c('CU_ID', 'CU_Name'),
+                  missingTSText = 'no time series data',
+                  styles =list(CU_ID = 'font-weight: bold;',
+                               CU_Name = 'font-weight: bold;',
+                               missingTS = ''),
+                  sparkCanvas = 'full-canvas',
+                  metricCell = 'full-metric',
+                  lineColor = '#000000',          
+                  fillColor = '#a9a9a9',  
+                  lineWidth = '3px',
+                  chartWidth = '200px',
+                  chartHeight = '50px',
+                  metricCellValue = 'padding-left: 10px;',
+                  metricCellArrow = 'padding-right: 10px;'),
+  partial = list(labelAttribs = c('CU_ID', 'CU_Name'),
+                  missingTSText = 'no time series data',
+                  styles =list(CU_ID = 'font-weight: bold;',
+                               CU_Name = 'font-weight: bold;',
+                               missingTS = ''),
+                  sparkCanvas = 'full-canvas',
+                  metricCell = 'full-metric',
+                  lineColor = '#707070',          
+                  fillColor = '#d0d0d0',
+                  lineWidth = '3px',
+                  chartWidth = '200px',
+                  chartHeight = '50px',
+                  metricCellValue = 'padding-left: 10px;',
+                  metricCellArrow = 'padding-right: 10px;')
+)
+
+
+CUTableAttribs[['full']] <- list(
+  labelAttribs = c('CU_ID', 'CU_Name'),
+  missingTSText = 'no time series data',
+  styles = list(CU_ID = 'padding: 2px;', 
+                CU_Name = 'padding: 2px;',
+                missingTS = ''),
+  sparkCanvas = 'full-canvas',
+  lineColor = '#000000',
+  fillColor = '#a9a9a9',
+  lineWidth = '3px',
+  chartWidth = '200px',
+  chartHeight = '50px',
+  metricCellValue = 'padding-left: 10px;',
+  metricCellArrow = 'padding-right: 10px;'
+)
+
+# 'sidebar' attributes are for display of the table in the side panel of the app
+
+popTableAttribs[['sidebar']] <- list(
+  labelAttribs = c('TS_Name'),
+  missingTSText = 'no time series data',
+  styles = list(TS_Name = 'width: 40px;',
+                missingTS = 'background-color: black; color: #b0b0b0;'),
+  sparkCanvas = 'sidebar-canvas',
+  lineColor = '#1aa3ff',
+  fillColor = '#99d6ff',
+  lineWidth = '2px',
+  chartWidth = '60px',
+  chartHeight = '20px'
+)
+
+# styling for the CU entry that serves as a 'header' for the selected populations shown in the table
+# use 'complete' styling when all populations within the CU are selected
+# 'partial' styling when only some populations are selected
+popTableAttribsCUHeader[['sidebar']] <- list(
+  complete = list(labelAttribs = c('CU_ID'),
+                  missingTSText = 'no time series data',
+                  styles = list(CU_ID = 'width: 40px; font-weight: bold;',
+                                missingTS = 'background-color: black; color: #b0b0b0;'),
+                  sparkCanvas = 'sidebar-canvas',
+                  lineColor = '#e0e0e0',
+                  fillColor = '#f0f0f0',
+                  lineWidth = '2px',
+                  chartWidth = '60px',
+                  chartHeight = '20px',
+                  metricCellValue = 'padding-left: 1px;',
+                  metricCellArrow = 'padding-right: 1px;'),
+  partial = list(labelAttribs = c('CU_ID'),
+                 missingTSText = 'no time series data',
+                 styles = list(CU_ID = 'width: 40px; font-weight: bold;',
+                               missingTS = 'background-color: black; color: #b0b0b0;'),
+                 sparkCanvas = 'sidebar-canvas',
+                 lineColor = '#d0d0d0',
+                 fillColor = '#e0e0e0',  
+                 lineWidth = '2px',
+                 chartWidth = '60px',
+                 chartHeight = '20px',
+                 metricCellValue = 'padding-left: 1px;',
+                 metricCellArrow = 'padding-right: 1px;')
+)
+
+CUTableAttribs[['sidebar']] <- list(
+  labelAttribs = c('CU_ID'),
+  missingTSText = 'no time series data',
+  styles = list(CU_ID = 'width: 20px;',
+                missingTS = 'background-color: black; color: #b0b0b0;'),
+  sparkCanvas = 'sidebar-canvas',
+  lineColor = '#f5f5f5',
+  fillColor = '#f0f0f0',
+  lineWidth = '2px',
+  chartWidth = '60px',
+  chartHeight = '20px',
+  metricCellValue = 'padding-left: 1px;',
+  metricCellArrow = 'padding-right: 1px;'
+)
 # --------------------- Helper functions for data display and restructuring ---------
 
 # get full name of a CU, given the CU's ID
@@ -351,6 +502,9 @@ SubstituteValues <- function(old, new, lookup, oldVals) {
 
 convertToLeafletProjection <- function(map) {st_transform(map, CRS("+proj=longlat +datum=WGS84"))}
 
+get_Pop_ID_From_Pop_UID <- function(UID) {strsplit(UID, '[.]')[[1]][2]}
+get_CU_ID_From_Pop_UID <- function(UID) {strsplit(UID, '[.]')[[1]][1]}
+
 # ------------------- put together initial data set -------------------
 
 # Get the metrics and time series data for CUs and populations
@@ -363,12 +517,12 @@ data.Pop.TimeSeries <- read.csv("data/MERGED_FLAT_FILE_BY_POP.csv", stringsAsFac
 data.Pop.Spatial <- read.csv("data/All_Species_Sites_with_FWA_watershed_key_Fraser.csv", stringsAsFactors = F)
 
 # CU boundary polygons
-data.CU.Spatial <- convertToLeafletProjection(st_read("data/All_Species_CU_Boundaries_Fraser.gpkg", stringsAsFactors=F))
+data.CU.Spatial <- convertToLeafletProjection(st_read("data/All_Species_CU_Boundaries_Fraser.gpkg", stringsAsFactors=F, quiet=TRUE))
 
 # stream selector network data
 # Don't use ESRI shp for this! The lists of CUs and populations associated with the various stream segments will end up truncated.
-data.Streams <- convertToLeafletProjection(st_read("data/StreamNetwork_Fraser.gpkg", stringsAsFactors=F))
-data.StreamsExtended <- convertToLeafletProjection(st_read("data/StreamNetwork_Fraser_extended.gpkg", stringsAsFactors=F))
+data.Streams <- convertToLeafletProjection(st_read("data/StreamNetwork_Fraser.gpkg", stringsAsFactors=F, quiet=TRUE))
+data.StreamsExtended <- convertToLeafletProjection(st_read("data/StreamNetwork_Fraser_extended.gpkg", stringsAsFactors=F, quiet=TRUE))
 row.names(data.Streams) <- data.Streams$code
 row.names(data.StreamsExtended) <- data.StreamsExtended$code
 
@@ -441,7 +595,7 @@ data.Pop.TimeSeries$Pop_UID <- apply(data.Pop.TimeSeries, 1, function(data.row) 
     # check for potential name mismatch
     # if (data.row[["FirstYear"]]) {
     #   if(any(matches) && data.Pop.Lookup[matches, 'TimeSeriesData_Pop_Name'][1] != data.row[['Pop_Name']]) 
-    #     cat("Warning: name mismatch for population ", data.row[["DataSet"]], ' - ', data.row[["Pop_Name"]], ' ( Pop ID: ', popID,
+    #     cat("Warning: name mismatch for site ", data.row[["DataSet"]], ' - ', data.row[["Pop_Name"]], ' ( Pop ID: ', popID,
     #       '). Expected ', data.Pop.Lookup[matches, 'TimeSeriesData_Pop_Name'][1], '!\n')
     # }
   }
@@ -451,8 +605,8 @@ data.Pop.TimeSeries$Pop_UID <- apply(data.Pop.TimeSeries, 1, function(data.row) 
   if (any(matches)) return(data.Pop.Lookup[matches, 'Pop_UID'][1])
   else {
     # if(data.row[["FirstYear"]])  # show warning only for first occurence
-    #   cat("Warning: no match found in lookup file for population ",
-    #       data.row[["DataSet"]], ' - ', data.row[["Pop_Name"]], ' ( Pop ID: ', popID, '). This population will not be selectable.\n')
+    #   cat("Warning: no match found in lookup file for site ",
+    #       data.row[["DataSet"]], ' - ', data.row[["Pop_Name"]], ' ( Pop ID: ', popID, '). This site will not be selectable.\n')
     return("")
   }
 })
@@ -467,7 +621,7 @@ for (p in unique(data.Pop.TimeSeries$Pop_UID)) {
   for (name in strsplit(data.Pop.Lookup[p, 'tsNames'], ':')[[1]]) {
     ds <- data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID == p & data.Pop.TimeSeries$TS_Name == name, ]
     if(any(duplicated(ds[, 'Year'])))  {
-        cat("Warning: population ", p, ' (', name, ' ) has duplicate enries in time series data\n')
+        cat("Warning: site ", p, ' (', name, ' ) has duplicate enries in time series data\n')
         yr <- ds$Year[duplicated(ds$Year)][1]
         print(ds[ds$Year == yr, ])
     }

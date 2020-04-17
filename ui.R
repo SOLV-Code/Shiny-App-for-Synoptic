@@ -29,9 +29,22 @@ sidebar <- shinydashboard::dashboardSidebar(
     
     conditionalPanel("input.tabs == 'CUSelection'",
                      tags$hr(),
-                     radioButtons(inputId= 'dataUnit', label= 'Work with: ', selected = 'CUs', inline = TRUE,
-                                  choiceNames = c('CUs only', 'Populations'), choiceValues = c('CUs', 'Pops')),
-                     actionButton("sidebarMenu_clearHighlighting", label = "Clear Highlighting", style=ButtonStyle),
+                     bsButton(inputId = "sidebarMenu_clearHighlighting", 
+                              label = "Clear highlighting", 
+                              style='primary', 
+                              type='action'),
+                     bsButton(inputId = "sidebarMenu_freezeDataToHighlighted", 
+                              label = "Work with highlighted CUs only", 
+                              style='primary', 
+                              type='action', 
+                              disabled=TRUE),
+                     bsButton(inputId = "sidebarMenu_resetDataToFilter", 
+                              label = "Revert to full dataset", 
+                              style='primary', 
+                              type='action', 
+                              disabled=TRUE),
+                     conditionalPanel("input.UIPanels == 'Map' || input.UIPanels == 'TSPlots' || input.UIPanels == 'Table'", 
+                                      checkboxInput(inputId = 'sidebarMenu_showPops', label = 'Show sites', value = FALSE)),
                      tags$hr(),
                      tags$div(id = 'insertMarkInfoPane')
                     ),
@@ -54,6 +67,11 @@ body <- shinydashboard::dashboardBody(`style` = "min-height: 400px",
   tags$head(tags$style(
     HTML('.skin-blue {min-height: 400px !important;}')
   )),
+  
+  # styling for default button look
+#  tags$head(tags$style(
+#    HTML('.primary {color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; font-size: 100%}'))),
+
   tags$head(tags$style(HTML('
         .skin-blue .main-header .logo {
                             background-color: #3c8dbc;
@@ -62,36 +80,78 @@ body <- shinydashboard::dashboardBody(`style` = "min-height: 400px",
                             background-color: #3c8dbc;
                             }
                             '))),
+  
   tags$head(tags$style(
     HTML('.content-wrapper {height: auto !important; position:relative; overflow-x:hidden; overflow-y:hidden; line-hight: 1}')
   )),
+  
   tags$head(tags$style(
     HTML('.content-wrapper {color: #000000 !important;}')
   )),
+  
   tags$head(tags$style(
     HTML('.tooltip-inner {width: 400px !important;}')
   )),
+  
   tags$head(tags$style(
-    HTML('.mouseover-box { border: none; 
+    HTML('.sidebar-sparkline-box { border: none; 
                            margin: 10px; 
                            white-space: normal; 
                            display: grid; 
                            font-weight: normal; 
                            font-size: 12px; }')
   )),
+  
   tags$head(tags$style(
-    HTML('.mouseover-box-header {padding-left: 10px; padding: 2px; font-weight: bold; font-size: 14px}')
-  )),
-  tags$head(tags$style(
-    HTML('.mouseover-box-subheader {padding: 2px; font-weight: bold; font-size: 12px}')
-  )),
-  tags$head(tags$style(
-    HTML('.mouseover-box-text {padding: 2px; font-weight: normal; font-size: 12px}')
-  )),
-  tags$head(tags$style(
-    HTML('.sparkline-canvas {padding: 2px; width: 95% !important; height: auto !important; display: grid !important}')
+    HTML('.sidebar-sparkline-box-header {padding-left: 10px; padding: 2px; font-weight: bold; font-size: 14px}')
   )),
   
+  tags$head(tags$style(
+    HTML('.sidebar-sparkline-box-subheader {padding: 2px; font-weight: bold; font-size: 12px}')
+  )),
+  
+  tags$head(tags$style(
+    HTML('.sidebar-sparkline-box-text {padding: 2px; font-weight: normal; font-size: 12px}')
+  )),
+  
+  tags$head(tags$style(
+#    HTML('.sidebar-sparkline-canvas {padding: 2px; width: 95% !important; height: auto !important; display: grid !important}')
+    HTML('.sidebar-sparkline-canvas {padding: 2px; width: 95% !important; height: auto !important; display: grid !important}')
+  )),
+  
+  tags$head(tags$style(
+    HTML('.full-sparkline-box { border: none; 
+                             margin: 10px; 
+                             white-space: normal; 
+                             display: grid; 
+                             font-weight: normal; 
+                             font-size: 14px; }')
+  )),
+
+  tags$head(tags$style(
+    HTML('.full-sparkline-box-header {padding-left: 10px; padding: 2px; font-weight: bold; font-size: 16px}')
+  )),
+
+  tags$head(tags$style(
+    HTML('.full-sparkline-box-subheader {padding: 2px; font-weight: bold; font-size: 14px}')
+  )),
+
+  tags$head(tags$style(
+    HTML('.full-sparkline-box-text {padding: 2px; font-weight: normal; font-size: 14px}')
+  )),
+
+  tags$head(tags$style(
+    HTML('.full-canvas .sparkline canvas {padding: 5px; width: 200px !important; height: 50px !important}')
+  )),
+
+  tags$head(tags$style(
+    HTML('.sidebar-canvas .sparkline canvas {padding: 2px; width: 95% !important; height: auto !important; display: grid !important}')
+  )),
+
+  tags$head(tags$style(
+    HTML('.dataTableHead {padding: 5px;}')
+  )),
+
   tags$head(tags$style(
     HTML('.scroll-container {
             width: 1200px;   
@@ -124,7 +184,8 @@ body <- shinydashboard::dashboardBody(`style` = "min-height: 400px",
           #bsCollapsePanel(title = "Select by attributes and/or metric values", uiOutput("box_DataSelectors"), value='Select', style='primary'),
           bsCollapsePanel(title = "View and highlight on map", uiOutput("box_LeafletMap"), value='Map', style='primary'),
           bsCollapsePanel(title = "Compare CUs", uiOutput("box_Parcoords"), value='Parcoords', style='primary'),
-          bsCollapsePanel(title = "Table view and download", div(style = 'overflow-x: scroll', uiOutput("box_SelectedDataTable")), value='Table', style='primary'),
+          bsCollapsePanel(title = "Time series and status overview", shinycssloaders::withSpinner(uiOutput("box_TSPlots")), value='TSPlots', style='primary'),
+          bsCollapsePanel(title = "Table view and download", div(style = 'overflow-x: scroll', uiOutput("box_Table")), value='Table', style='primary'),
           bsCollapsePanel(title = "Summary report", uiOutput("box_HistoSummary"), value='Histogram', style='primary')
           #hid the radar plots
           #bsCollapsePanel(title = "Radar plots", uiOutput("box_RadarPlots"), value='Radar', style='primary')

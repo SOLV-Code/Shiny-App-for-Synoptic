@@ -1,10 +1,17 @@
 #------------------- Table and Download Box ------------------
 
-tableData <- reactive({
-  if (input$dataUnit == 'CUs') {
+table.dataType <- reactiveVal('CUs')
+observeEvent(input$table_DataType, {table.dataType(input$table_DataType)})
+table.downloadType <- reactiveVal('Table')
+observeEvent(input$table_DownloadType, {table.downloadType(input$table_DownloadType)})
+table.selectionOnly <- reactiveVal(FALSE)
+observeEvent(input$table_SelectionOnly, {table.selectionOnly(input$table_SelectionOnly)})
+
+table.tableData <- reactive({
+  if (table.dataType() == 'CUs') {
     df <- data.filtered()
-  } else if (input$dataUnit == "Pops") {
-    df <- data.Pop.Lookup[data.Pop.Lookup$CU_ID %in% row.names(data.filtered()), ]
+  } else if (table.dataType() == "Sites") {
+    df <- data.Pop.Lookup.filtered()
   }
   # get rid of trailing zero segments for display
   if ('FWA_WATERSHED_CODE' %in% names(df))
@@ -16,9 +23,9 @@ tableData <- reactive({
 # Note that using crosstalk here doesn't produce the desired result, since 
 # DT shows only selected values (interprets selection as filter?), instead of 
 # showing full dataset with selected values highlighted. 
-output$selectedData_Table <- DT::renderDataTable({
-  df <- tableData()
-  selected <- isolate(data.currentSelection[[input$dataUnit]]) # don't want to re-render this if selection changes; selection handled by using proxy
+output$table_Table <- DT::renderDataTable({
+  df <- table.tableData()
+  selected <- isolate(data.currentSelection[[table.dataType()]]) # don't want to re-render this if selection changes; selection handled by using proxy
   sel <- which(row.names(df) %in% selected)
   colnames <- as.character(sapply(names(df), GetLabel))
   if (!is.null(sel)) {
@@ -28,40 +35,57 @@ output$selectedData_Table <- DT::renderDataTable({
   }
 }, server=FALSE)
 
-observeEvent(data.currentSelection[['CUs']], {
-  sel <- which(row.names(tableData()) %in% data.currentSelection[['CUs']])
-  dataTableProxy('selectedData_Table') %>% selectRows(sel)
-}, ignoreNULL = FALSE) # make sure this handler fires when selection is reset to NULL
+table.getCurrentTableSelection <- function() {
+    row.names(table.tableData())[input$table_Table_rows_selected]
+}
 
-observeEvent(data.currentSelection[['Pops']], {
-  sel <- which(row.names(tableData()) %in% data.currentSelection[['Pops']])
-  dataTableProxy('selectedData_Table') %>% selectRows(sel)
-}, ignoreNULL = FALSE) # make sure this handler fires when selection is reset to NULL
+table.setTableSelectionFromCurrentSelection <- function() {
+  sel <- table.getCurrentTableSelection()
+  if (table.dataType() == 'CUs' && !setequal(sel, data.currentSelection[['CUs']])) {
+    dataTableProxy('table_Table') %>% selectRows(which(row.names(table.tableData()) %in% data.currentSelection[['CUs']]))
+  }
+  else if (table.dataType() == 'Sites' && !setequal(sel, data.currentSelection[['Pops']]))
+    dataTableProxy('table_Table') %>% selectRows(which(row.names(table.tableData()) %in% data.currentSelection[['Pops']]))
+}
+
+# set selection in table in response to change in global selection (e.g., because user clicked 'clear highlighting' button)
+# only do this if the table is currently open 
+observeEvent({data.currentSelection[['CUs']]
+             data.currentSelection[['Pops']]}, {
+  if (!is.null(input$UIPanels) && input$UIPanels == 'Table') table.setTableSelectionFromCurrentSelection()
+  }, ignoreNULL = FALSE) # make sure this handler fires when selection is reset to NULL
 
 # set global selection 
-observeEvent({input$selectedData_Table_rows_selected}, {
-  sel <- row.names(tableData())[input$selectedData_Table_rows_selected]
-  if (input$dataUnit == 'CUs')
-    data.setSelection(sel, type='CUs', widget="datatable")
-  else if (input$dataUnit == 'Pops')
-    data.setSelection(sel, type='Pops', widget="datatable")
+# don't let table change global selection unless table is currently being worked on
+observeEvent({input$table_Table_rows_selected}, {
+  if (!is.null(input$UIPanels) && input$UIPanels == 'Table') {
+    sel <- row.names(table.tableData())[input$table_Table_rows_selected]
+    if (table.dataType() == 'CUs') {
+      if (!setequal(sel, data.currentSelection[['CUs']]))
+        data.setSelection(sel, type='CUs', widget="datatable")
+    }
+    else if (table.dataType() == 'Sites') {
+      if (!setequal(sel, data.currentSelection[['Pops']]))
+      data.setSelection(sel, type='Pops', widget="datatable")
+    }
+  }
 }, ignoreNULL = FALSE, ignoreInit = TRUE)
 
 
-observeEvent(input$selectedData_DownloadMenu, {
-  if (input$dataUnit == 'CUs') units <- 'CUs'
-  else units <- 'populations' 
+observeEvent(input$table_DownloadMenu, {
+  if (table.dataType() == 'CUs') units <- 'CUs'
+  else units <- 'sites' 
   showModal(modalDialog(
-    radioButtons(inputId= 'selectedData_DownloadType', label= "Dataset to download", 
+    radioButtons(inputId= 'table_DownloadType', label= "Dataset to download", 
                  selected = 'Table', inline = TRUE,
                  choiceNames = c('Table as shown', 'Time series data'), choiceValues = c('Table', 'TS')),
-    radioButtons(inputId= 'selectedData_SelectionOnly', label = paste0(units, ' to include'), 
+    radioButtons(inputId= 'table_SelectionOnly', label = paste0(units, ' to include'), 
                  selected = 'all', inline = TRUE,
                  choiceNames = c(paste0('all ', units, ' in table'),
                                  paste0('highlighted ', units, ' only')),
                  choiceValues = c('all', 'selectedOnly')),
     tags$div(id='insertMarkForAdditionalContent'),
-    downloadButton("selectedData_Download", "Download", inline=TRUE),
+    downloadButton("table_Download", "Download", inline=TRUE),
     easyClose = TRUE,
     footer = NULL,
     size = 's'
@@ -69,24 +93,24 @@ observeEvent(input$selectedData_DownloadMenu, {
 })
 
 getDownloadFilename <- function() {
-  if (input$dataUnit == 'CUs') 
+  if (table.dataType() == 'CUs') 
     units <- 'CUs'
   else 
-    units <- 'populations' 
-  if (input$selectedData_SelectionOnly == 'selectedOnly')
-    f <- paste0("highlighted_", units, '_', input$selectedData_DownloadType, ".csv")
+    units <- 'sites' 
+  if (table.selectionOnly() == 'selectedOnly')
+    f <- paste0("highlighted_", units, '_', table.downloadType(), ".csv")
   else
-    f <- paste0(units, '_', input$selectedData_DownloadType, ".csv")
+    f <- paste0(units, '_', table.downloadType(), ".csv")
   f
 }
 
 # Downloadable csv of selected dataset
-output$selectedData_Download <- downloadHandler(filename = getDownloadFilename, 
+output$table_Download <- downloadHandler(filename = getDownloadFilename, 
                                                 content = function(file) {
-                                                  if (input$selectedData_DownloadType == 'Table') 
-                                                    df <- tableData()
-                                                  else if (input$selectedData_DownloadType == 'TS') {
-                                                    if (input$dataUnit == 'CUs') {
+                                                  if (table.downloadType() == 'Table') 
+                                                    df <- table.tableData()
+                                                  else if (table.downloadType() == 'TS') {
+                                                    if (table.dataType() == 'CUs') {
                                                       CUs <- row.names(data.filtered())
                                                       df <- data.CU.TimeSeries[data.CU.TimeSeries$CU_ID %in% CUs, c('CU_ID', 'CU_Name', 'Species', 'Year', filter[['DataType']])]
                                                     }
@@ -95,11 +119,11 @@ output$selectedData_Download <- downloadHandler(filename = getDownloadFilename,
                                                       df <- data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID %in% pops, c('DataSet', 'Year', 'Pop_ID', 'Pop_Name', 'CU_ID', 'CU_Name', filter[['DataType']])]
                                                     }
                                                   }
-                                                  if (input$selectedData_SelectionOnly == 'selectedOnly') { # download only selection
-                                                    if (input$selectedData_DownloadType == 'Table') 
-                                                      df <- df[row.names(df) %in% data.currentSelection[[input$dataUnit]], ]
-                                                    else if (input$selectedData_DownloadType == 'TS') {
-                                                      if (input$dataUnit == 'CUs') 
+                                                  if (table.selectionOnly() == 'selectedOnly') { # download only selection
+                                                    if (table.downloadType() == 'Table') 
+                                                      df <- df[row.names(df) %in% data.currentSelection[[table.dataType()]], ]
+                                                    else if (table.downloadType() == 'TS') {
+                                                      if (table.dataType() == 'CUs') 
                                                         df <- df[df$CU_ID %in% data.currentSelection[['CUs']], ]
                                                       else 
                                                         df <- df[df$Pop_UID %in% data.currentSelection[['Pops']], ]
@@ -110,14 +134,14 @@ output$selectedData_Download <- downloadHandler(filename = getDownloadFilename,
                                                 })
 
 # warn about missing data before downloading
-observeEvent({input$selectedData_DownloadType
-  input$selectedData_SelectionOnly}, {
+observeEvent({table.downloadType()
+  table.selectionOnly()}, {
     removeUI(selector='#Alert')
     alert <- NULL
-    if (input$selectedData_DownloadType == 'TS') {
-      if (input$dataUnit == 'CUs') {
+    if (table.downloadType() == 'TS') {
+      if (table.dataType() == 'CUs') {
         CUs <- row.names(data.filtered())
-        if (input$selectedData_SelectionOnly == 'selectedOnly') 
+        if (table.selectionOnly() == 'selectedOnly') 
           CUs <- CUs[CUs %in% data.currentSelection[['CUs']]]
         CUsWithoutTS <- unlist(lapply(CUs, function(cu) {
           !(cu %in% data.CU.TimeSeries$CU_ID) || all(is.na(data.CU.TimeSeries[data.CU.TimeSeries$CU_ID == cu, filter[['DataType']]]))
@@ -127,7 +151,7 @@ observeEvent({input$selectedData_DownloadType
       }
       else {
         pops <- data.Pop.Lookup[data.Pop.Lookup$CU_ID %in% row.names(data.filtered()), 'Pop_UID']
-        if (input$selectedData_SelectionOnly == 'selectedOnly') 
+        if (table.selectionOnly() == 'selectedOnly') 
           pops <- pops[pops %in% data.currentSelection[['Pops']]]
         popsWithoutTS <- unlist(lapply(pops, function(p) {
           !(p %in% data.Pop.TimeSeries$Pop_UID) || all(is.na(data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID == p, filter[['DataType']]]))
@@ -144,13 +168,26 @@ observeEvent({input$selectedData_DownloadType
     }
   })
 
-output$box_SelectedDataTable <- renderUI({ 
-  tagList(tags$div('style' = "text-align:right;", 
-                   actionButton("selectedData_DownloadMenu",  label="Download", icon=icon('download'))),
-          DT::dataTableOutput("selectedData_Table", width="50%"))
+output$box_Table <- renderUI({ 
+  dataTypeToggle <- radioButtons(inputId = 'table_DataType',
+                                 choices = c('CUs', 'Sites'),
+                                 selected = 'CUs',
+                                 label = NULL, 
+                                 inline = TRUE,
+                                 width = NULL)
+  downloadButton <- actionButton("table_DownloadMenu",  label="Download", icon=icon('download'))
+  if (data.showPops()) 
+    header <- div(class='dataTableHead', fluidRow(column(3, dataTypeToggle), column(3, downloadButton, offset=6)))
+  else
+    header <- div(class='dataTableHead', fluidRow(column(3, downloadButton, offset=9)))
+  tagList(header, DT::dataTableOutput("table_Table", width="50%"))
 })
+
 
 # things to do when the Table panel is opened
 observeEvent(input$UIPanels, {
-  if (input$UIPanels == 'Table') clearInfoPane()
+  if (!is.null(input$UIPanels) && input$UIPanels == 'Table') {
+    clearInfoPane()
+    table.setTableSelectionFromCurrentSelection()
+  }
 })
