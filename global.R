@@ -500,9 +500,16 @@ SubstituteValues <- function(old, new, lookup, oldVals) {
   lookup[as.character(oldVals), new]
 }
 
+# convert GIS data to geographic
 convertToLeafletProjection <- function(map) {st_transform(map, CRS("+proj=longlat +datum=WGS84"))}
 
+# stip trailing zeros from BC watershed code
+strip <- function(code) {gsub('(-000000)*$', '', code)}
+
+# strip CU information from Pop UID, leaving the Pop ID
 get_Pop_ID_From_Pop_UID <- function(UID) {strsplit(UID, '[.]')[[1]][2]}
+
+# strip Pip ID from Pop UID, leaving the CU ID
 get_CU_ID_From_Pop_UID <- function(UID) {strsplit(UID, '[.]')[[1]][1]}
 
 # ------------------- put together initial data set -------------------

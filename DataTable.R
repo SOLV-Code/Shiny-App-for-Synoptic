@@ -6,6 +6,14 @@ table.downloadType <- reactiveVal('Table')
 observeEvent(input$table_DownloadType, {table.downloadType(input$table_DownloadType)})
 table.selectionOnly <- reactiveVal(FALSE)
 observeEvent(input$table_SelectionOnly, {table.selectionOnly(input$table_SelectionOnly)})
+observeEvent(data.showPops(), {
+  if (data.showPops()) {
+    if (table.dataType() =='CUs') table.dataType('Sites')
+  }
+  else {
+    if (table.dataType() =='Sites') table.dataType('CUs') 
+  } 
+})
 
 table.tableData <- reactive({
   if (table.dataType() == 'CUs') {
@@ -171,7 +179,7 @@ observeEvent({table.downloadType()
 output$box_Table <- renderUI({ 
   dataTypeToggle <- radioButtons(inputId = 'table_DataType',
                                  choices = c('CUs', 'Sites'),
-                                 selected = 'CUs',
+                                 selected = table.dataType(),
                                  label = NULL, 
                                  inline = TRUE,
                                  width = NULL)
