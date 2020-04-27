@@ -1,24 +1,24 @@
 #------------------- Table and Download Box ------------------
 
 table.dataType <- reactiveVal('CUs')
-observeEvent(input$table_DataType, {table.dataType(input$table_DataType)})
+observeEvent(input$table_DataType, {if (input$table_DataType == 'CUs') table.dataType('CUs') else table.dataType('Pops')})
 table.downloadType <- reactiveVal('Table')
 observeEvent(input$table_DownloadType, {table.downloadType(input$table_DownloadType)})
 table.selectionOnly <- reactiveVal(FALSE)
 observeEvent(input$table_SelectionOnly, {table.selectionOnly(input$table_SelectionOnly)})
 observeEvent(data.showPops(), {
   if (data.showPops()) {
-    if (table.dataType() =='CUs') table.dataType('Sites')
+    if (table.dataType() =='CUs') table.dataType('Pops')
   }
   else {
-    if (table.dataType() =='Sites') table.dataType('CUs') 
+    if (table.dataType() =='Pops') table.dataType('CUs') 
   } 
 })
 
 table.tableData <- reactive({
   if (table.dataType() == 'CUs') {
     df <- data.filtered()
-  } else if (table.dataType() == "Sites") {
+  } else if (table.dataType() == 'Pops') {
     df <- data.Pop.Lookup.filtered()
   }
   # get rid of trailing zero segments for display
@@ -52,7 +52,7 @@ table.setTableSelectionFromCurrentSelection <- function() {
   if (table.dataType() == 'CUs' && !setequal(sel, data.currentSelection[['CUs']])) {
     dataTableProxy('table_Table') %>% selectRows(which(row.names(table.tableData()) %in% data.currentSelection[['CUs']]))
   }
-  else if (table.dataType() == 'Sites' && !setequal(sel, data.currentSelection[['Pops']]))
+  else if (table.dataType() == 'Pops' && !setequal(sel, data.currentSelection[['Pops']]))
     dataTableProxy('table_Table') %>% selectRows(which(row.names(table.tableData()) %in% data.currentSelection[['Pops']]))
 }
 
@@ -72,9 +72,9 @@ observeEvent({input$table_Table_rows_selected}, {
       if (!setequal(sel, data.currentSelection[['CUs']]))
         data.setSelection(sel, type='CUs', widget="datatable")
     }
-    else if (table.dataType() == 'Sites') {
+    else if (table.dataType() == 'Pops') {
       if (!setequal(sel, data.currentSelection[['Pops']]))
-      data.setSelection(sel, type='Pops', widget="datatable")
+        data.setSelection(sel, type='Pops', widget="datatable")
     }
   }
 }, ignoreNULL = FALSE, ignoreInit = TRUE)
@@ -123,8 +123,8 @@ output$table_Download <- downloadHandler(filename = getDownloadFilename,
                                                       df <- data.CU.TimeSeries[data.CU.TimeSeries$CU_ID %in% CUs, c('CU_ID', 'CU_Name', 'Species', 'Year', filter[['DataType']])]
                                                     }
                                                     else {
-                                                      pops <- data.Pop.Lookup[data.Pop.Lookup$CU_ID %in% row.names(data.filtered()), 'Pop_UID']
-                                                      df <- data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID %in% pops, c('DataSet', 'Year', 'Pop_ID', 'Pop_Name', 'CU_ID', 'CU_Name', filter[['DataType']])]
+                                                      pops <- data.Pop.Lookup.filtered()$Pop_UID
+                                                      df <- data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID %in% pops, c('Pop_UID', 'DataSet', 'Year', 'Pop_ID', 'Pop_Name', 'CU_ID', 'CU_Name', filter[['DataType']])]
                                                     }
                                                   }
                                                   if (table.selectionOnly() == 'selectedOnly') { # download only selection
@@ -137,6 +137,8 @@ output$table_Download <- downloadHandler(filename = getDownloadFilename,
                                                         df <- df[df$Pop_UID %in% data.currentSelection[['Pops']], ]
                                                     }
                                                   }
+                                                  # had to keep Pop_UID column to filter by - if still present, drop it now ...
+                                                  if ('Pop_UID' %in% names(df)) df$Pop_UID <- NULL
                                                   write.csv(df, file, row.names = TRUE)
                                                   removeModal()
                                                 })
@@ -157,8 +159,8 @@ observeEvent({table.downloadType()
         if (any(CUsWithoutTS)) 
           alert <- paste0("No time series data available for ", paste(CUs[CUsWithoutTS], collapse = ', '))
       }
-      else {
-        pops <- data.Pop.Lookup[data.Pop.Lookup$CU_ID %in% row.names(data.filtered()), 'Pop_UID']
+      else { # table.dataType() == "Pops"
+        pops <- data.Pop.Lookup.filtered()$Pop_UID  
         if (table.selectionOnly() == 'selectedOnly') 
           pops <- pops[pops %in% data.currentSelection[['Pops']]]
         popsWithoutTS <- unlist(lapply(pops, function(p) {
@@ -179,7 +181,7 @@ observeEvent({table.downloadType()
 output$box_Table <- renderUI({ 
   dataTypeToggle <- radioButtons(inputId = 'table_DataType',
                                  choices = c('CUs', 'Sites'),
-                                 selected = table.dataType(),
+                                 selected = if (table.dataType() == 'CUs') 'CUs' else 'Sites',
                                  label = NULL, 
                                  inline = TRUE,
                                  width = NULL)
