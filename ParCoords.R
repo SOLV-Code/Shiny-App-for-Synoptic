@@ -100,13 +100,18 @@ dims <- reactive({
 })
 
 # assemble a javascript function that returns appropriate color values as specified in
-# ColorPalette
+# ColorPalette:
+# function(x) {
+#   var colPal = { category1: '#xxxxxx', category2: '#yyyyyy', category3: '#zzzzzz'}
+#   return(colPal[x])
+#}
 parcoords.makeColorFunc <- function(colPal) {
-  paste0("function(x) {switch(x) {", 
+  paste0("function(x) {var colPal = {", 
          paste0(unlist(lapply(names(colPal), function(n) {
-           paste0("case '", n , "': return('", colPal[[n]], "'); ")})), collapse=''),
-         "}}")
+           paste0(n , ": '", colPal[[n]], "'")})), collapse=', '),
+         "}; return(colPal[x]);}")
 }
+
 output$parcoords_Plot <- parcoordsSoS::renderParcoords({ 
   p <- try({scheme <- mapCtrl.colorScheme()  # dependency on control in map widget here - may want to move this to side-bar at some point ...
             parcoordsSoS::parcoords(data=parcoords.sharedDS,

@@ -399,7 +399,9 @@ map.clearSpiderFly <- function() {
 output$CUmap <- renderLeaflet({
   leafletOutput <- try({
     leafletMap <- leaflet(options = leafletOptions(zoomSnap = 0.1, zoomDelta = 0.1)) %>% 
-      addProviderTiles(providers$CartoDB.Positron) 
+      addProviderTiles('CartoDB.Positron', layerId='map', group='map')  %>% 
+      addProviderTiles('Esri.WorldImagery', layerId='satellite', group='satellite')
+
     leafletMap <- addMiniMap(leafletMap,
                              tiles = providers$CartoDB.Positron,
                              zoomLevelOffset = -4,
@@ -523,7 +525,10 @@ output$CUmap <- renderLeaflet({
                             position='bottomleft', 
                             layerId = 'legend',
                             colors=as.character(colorScheme),
-                            labels=names(colorScheme))
+                            labels=names(colorScheme)) 
+    leafletMap <- addLayersControl(leafletMap,
+                                   position='bottomleft',
+                                   baseGroups=c('map', 'satellite'))
     # hide any groups that aren't supposed to be visible 
     # need to isolate these to avoid re-rendering of entire map when mapCtrl.isVisible changes
     for (group in c('CUMarkers', 'PopMarkers', 'CUPolygons')) {
