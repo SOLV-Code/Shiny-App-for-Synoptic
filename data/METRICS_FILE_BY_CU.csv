@@ -1,4 +1,4 @@
-"CU_ID","Species","Stock","DataType","Year","Metric","Value","LBM","UBM","Status"
+"CU_ID","Species","Stock","Label","Year","Metric","Value","LBM","UBM","Status"
 "CU-1","Sockeye","Bowron_ES","SpnForAbd_Total",2015,"RelAbd",1572.6436,5100,19000,"Red"
 "CU-1","Sockeye","Bowron_ES","SpnForAbd_Total",2016,"RelAbd",1750.377,5100,19000,"Red"
 "CU-1","Sockeye","Bowron_ES","SpnForAbd_Total",2017,"RelAbd",1128.7504,5100,19000,"Red"

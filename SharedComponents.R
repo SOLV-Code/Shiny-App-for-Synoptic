@@ -59,42 +59,23 @@ data.getFilteredCULookupTable <- function() {
   df[selection, , drop=F]
 }
 
-# # This dataset has all filters applied.
-# # One row per CU, either original metric values or change in metric values (if change selected)
-# # row.names set to CU ID
-# data.CU.filtered <- reactive({
-#   # calculate change in metric values if "change" selected
-#   if(filter$change == "Change" ){   
-#     data.applyFilters(data.getChangeMetricsData())
-#   } else { # use annual values
-#     data.applyFilters(data.CU.Metrics[data.CU.Metrics$Year == filter$year, ])
-#   }
-# })
-
 # This dataset has all filters applied.
 # One row per CU, either original metric values or change in metric values (if change selected)
 # row.names set to CU ID
 data.filtered <- reactiveVal(data.CU.Metrics[data.CU.Metrics$Year == max(data.CU.Metrics$Year), ])
 # equivalent to data.CU.lookup, but with filters applied
 data.CU.Lookup.filtered <- reactiveVal(data.CU.Lookup)
-# equivalent to data.pop.Lookup, but with filters applies
-data.Pop.Lookup.filtered <- reactive({
-  df <- data.Pop.Lookup
-  df <- df[df$CU_ID %in% data.CU.Lookup.filtered()[, 'CU_ID'], ]
-})
-observeEvent({filterChanged()
-  data.isFrozen()}, {
-    if (!data.isFrozen())  {
-      data.filtered(data.getFilteredData())
-      data.CU.Lookup.filtered(data.getFilteredCULookupTable())
-    }
-  }, ignoreInit = FALSE)
-
 # keep track of current CUs within filter
 data.currentCUs <- reactive({
   if (!is.null(data.CU.Lookup.filtered()) && nrow(data.CU.Lookup.filtered()) > 0)
     unique(data.CU.Lookup.filtered()$CU_ID)
   else NULL
+})
+
+# equivalent to data.pop.Lookup, but with filters applies
+data.Pop.Lookup.filtered <- reactive({
+  df <- data.Pop.Lookup
+  df <- df[df$CU_ID %in% data.currentCUs(), ]
 })
 
 # keep track of current populations within filtered data
@@ -104,6 +85,15 @@ data.currentPops <- reactive({
   else
     NULL
 })
+
+observeEvent({filterChanged()
+  data.isFrozen()}, {
+    if (!data.isFrozen())  {
+      data.filtered(data.getFilteredData())
+      data.CU.Lookup.filtered(data.getFilteredCULookupTable())
+    }
+  }, ignoreInit = FALSE)
+
 
 # ------------------ Selection (highlighting) ---------------------
 

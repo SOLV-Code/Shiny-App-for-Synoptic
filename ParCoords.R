@@ -99,10 +99,21 @@ dims <- reactive({
          })
 })
 
+# assemble a javascript function that returns appropriate color values as specified in
+# ColorPalette
+parcoords.makeColorFunc <- function(colPal) {
+  paste0("function(x) {switch(x) {", 
+         paste0(unlist(lapply(names(colPal), function(n) {
+           paste0("case '", n , "': return('", colPal[[n]], "'); ")})), collapse=''),
+         "}}")
+}
 output$parcoords_Plot <- parcoordsSoS::renderParcoords({ 
-  p <- try({parcoordsSoS::parcoords(data=parcoords.sharedDS,
+  p <- try({scheme <- mapCtrl.colorScheme()  # dependency on control in map widget here - may want to move this to side-bar at some point ...
+            parcoordsSoS::parcoords(data=parcoords.sharedDS,
                             autoresize=TRUE,
-                            color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Species"),
+#                            color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Species"),
+                            color= list(colorScale=htmlwidgets::JS(parcoords.makeColorFunc(map.getColors(scheme))), 
+                                        colorBy=scheme),
                             rownames=T,
                             alpha=0.6, 
                             alphaOnBrushed = 0,

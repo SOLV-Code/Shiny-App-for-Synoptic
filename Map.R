@@ -4,7 +4,7 @@
 # because the inputs don't exist until modal menus are opened
 mapCtrl.isVisible <- reactiveValues(CUMarkers = TRUE, CUPolygons=FALSE, PopMarkers=TRUE, Streams=TRUE)
 mapCtrl.colorScheme <- reactiveVal(value = 'Species', label = 'colorScheme')
-mapCtrl.colorOpts <- reactiveVal(value = c('Species', paste0(MapLabelMetrics, '.Status')), label = 'colorOpts')
+mapCtrl.colorOpts <- reactiveVal(value = c('Species', paste0(MapLabelMetrics, '.Status'), AdditionalColorThemes), label = 'colorOpts')
 mapCtrl.CUmarkerHoverHighlights <- reactiveVal(value = c('Polygon', 'Pops'), label = 'CUmarkerHoverHighlights')
 mapCtrl.CUpolyHoverHighlights <- reactiveVal(value = c('Polygon', 'Pops'), label = 'CUpolyHoverHighlights')
 mapCtrl.CUstreamHoverHighlights <- reactiveVal(value = c('Marker','Pops'), label = 'CUstreamHoverHighlights')
@@ -220,25 +220,27 @@ map.showSpiderLegs <- function(map, df, pane, group, styleOpts=SpiderLegs) {
                options = pathOptions(pane = pane))
 }
 
+# translate from specific scheme to generic scheme 
+map.getColors <- function(scheme) {
+  if (scheme %in% paste0(MapLabelMetrics, '.Status')) {
+    if (filter$change == "Annual" )
+      ColorPalette[['Status']]
+    else
+      ColorPalette[['StatusChange']]
+  }
+  else
+    ColorPalette[[scheme]]
+}
+
 # get the color to use for the given attribute values
 map.getColor <- function(attribVals, override=NULL, scheme = mapCtrl.colorScheme()) {
   if (!is.null(override)) return(rep(override, length(attribVals)))
   attribVals <- as.character(attribVals)
   attribVals[is.na(attribVals)] <- 'NA'
-  if (scheme %in% paste0(MapLabelMetrics, '.Status')) {
-    unlist(lapply(attribVals, function(a) {as.character(ColorPalette[['Status']][a])}))
-  } else {
-    unlist(lapply(attribVals, function(a) {as.character(ColorPalette[[scheme]][a])}))
-  }
+  colPal <- map.getColors(scheme)
+  unlist(lapply(attribVals, function(a) {as.character(colPal[a])}))
 }
 
-# translate from specific scheme to generic scheme 
-map.getColors <- function(scheme) {
-  if (scheme %in% paste0(MapLabelMetrics, '.Status')) 
-    ColorPalette[['Status']]
-  else
-    ColorPalette[[scheme]]
-}
 
 map.CUMarkerData <- reactive({
   df <- unique.data.frame(data.CU.Lookup.filtered()[, c('CU_ID', MapAttribs)])
@@ -279,9 +281,11 @@ map.showCUMarkers <- function(leafletMap, CUs=data.currentCUs(), styleOpts = CUM
 }
 
 map.popMarkerData <- reactive({
-  df <- data.Pop.Lookup.filtered()
-  if (nrow(df) > 0) {
-    df.sp <- data.Pop.Spatial[data.Pop.Spatial$Pop_UID %in% df$Pop_UID, ]
+  df.sp <- data.Pop.Lookup.filtered()
+  if (nrow(df.sp) > 0) {
+    #df.sp <- data.Pop.Spatial[data.Pop.Spatial$Pop_UID %in% df$Pop_UID, ]
+    #attribsToKeep <- c('Pop_UID', 'CU_ID', 'Pop_ID', 'Pop_Name', 'Species', 'Lat', 'Lon', 'FAZ', 'FWA_WATERSHED_CODE', )
+    #df.sp <- df.sp[, attribsToKeep]
     df.sp$label <- unlist(lapply(df.sp$Pop_UID, getPopName))
     df.sp$layer <- df.sp$Pop_UID
     if (mapCtrl.colorScheme() %in% names(df.sp)) {
@@ -292,10 +296,8 @@ map.popMarkerData <- reactive({
       df.sp$color <- rep('black', nrow(df.sp))
       df.sp$fillColor <- rep('white', nrow(df.sp))
     }
-    df.sp
-  } else {
-    df 
   }
+  df.sp
 })
 
 # add markers to map that represent the populations listed (or all populations currently in the filter set
@@ -427,11 +429,6 @@ output$CUmap <- renderLeaflet({
     z <- z + 1
     leafletMap <- addMapPane(leafletMap, name = "mouseover.streams", zIndex = z)    
       
-    # for (i in 1:max(data.Streams$StreamOrder)) {
-    #   z <- z + 1
-    #   leafletMap <- addMapPane(leafletMap, name = paste0("Order", i, "Streams"), zIndex = z)
-    # }
-    
     # CU markers
     z <- z + 1
     leafletMap <- addMapPane(leafletMap, name = "CUMarkers", zIndex = z)
@@ -466,17 +463,6 @@ output$CUmap <- renderLeaflet({
                                data = data.Streams,
                                options = pathOptions(pane = 'streams'))
 
-    # for (i in 1:nrow(data.Streams)) {
-    #   leafletMap <- addPolylines(leafletMap, color="blue",
-    #                              weight=1,
-    #                              opacity=0.7,
-    #                              layerId = ~code,
-    #                              group = "Streams",
-    #                              label = ~Name,
-    #                              highlightOptions = highlightOptions(weight = 5, color="blue", bringToFront = TRUE),
-    #                              data = data.Streams[i, ],
-    #                              options = pathOptions(pane = paste0("Order", data.Streams$StreamOrder[i], "Streams")))
-    # }
     # We only want to have the basemap drawn once here, not every time the data filter changes.
     # Since the various map display functions use reactive expressions dependent on filtering, 
     # make sure all calls to these function are isolated here
@@ -1061,6 +1047,7 @@ observeEvent(input$CUmap_draw_new_feature, {
 # add dynamic map elements when filter changes; 
 # don't render entire map again, since rendering of stream network takes a while
 observeEvent({data.CU.Lookup.filtered()
+  data.filtered()
   mapCtrl.colorScheme()
   data.showPops()}, {
     CUmapProxy %>% clearGroup('CUMarkers') %>% clearGroup('CUPolygons') %>% clearGroup('PopMarkers')

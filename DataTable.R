@@ -119,12 +119,10 @@ output$table_Download <- downloadHandler(filename = getDownloadFilename,
                                                     df <- table.tableData()
                                                   else if (table.downloadType() == 'TS') {
                                                     if (table.dataType() == 'CUs') {
-                                                      CUs <- row.names(data.filtered())
-                                                      df <- data.CU.TimeSeries[data.CU.TimeSeries$CU_ID %in% CUs, c('CU_ID', 'CU_Name', 'Species', 'Year', filter[['DataType']])]
+                                                      df <- data.CU.TimeSeries[data.CU.TimeSeries$CU_ID %in% data.currentCUs(), c('CU_ID', 'CU_Name', 'Species', 'Year', filter[['DataType']])]
                                                     }
                                                     else {
-                                                      pops <- data.Pop.Lookup.filtered()$Pop_UID
-                                                      df <- data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID %in% pops, c('Pop_UID', 'DataSet', 'Year', 'Pop_ID', 'Pop_Name', 'CU_ID', 'CU_Name', filter[['DataType']])]
+                                                      df <- data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID %in% data.currentPops(), c('Pop_UID', 'DataSet', 'Year', 'Pop_ID', 'Pop_Name', 'CU_ID', 'CU_Name', filter[['DataType']])]
                                                     }
                                                   }
                                                   if (table.selectionOnly() == 'selectedOnly') { # download only selection
@@ -150,7 +148,7 @@ observeEvent({table.downloadType()
     alert <- NULL
     if (table.downloadType() == 'TS') {
       if (table.dataType() == 'CUs') {
-        CUs <- row.names(data.filtered())
+        CUs <- data.currentCUs()
         if (table.selectionOnly() == 'selectedOnly') 
           CUs <- CUs[CUs %in% data.currentSelection[['CUs']]]
         CUsWithoutTS <- unlist(lapply(CUs, function(cu) {
@@ -160,7 +158,7 @@ observeEvent({table.downloadType()
           alert <- paste0("No time series data available for ", paste(CUs[CUsWithoutTS], collapse = ', '))
       }
       else { # table.dataType() == "Pops"
-        pops <- data.Pop.Lookup.filtered()$Pop_UID  
+        pops <- data.currentPops() 
         if (table.selectionOnly() == 'selectedOnly') 
           pops <- pops[pops %in% data.currentSelection[['Pops']]]
         popsWithoutTS <- unlist(lapply(pops, function(p) {
