@@ -6,6 +6,9 @@
 .RData
 .RDataTmp
 .Rhistory
+.~lock*
+/data/.~lock*
+/documentation/.~lock*
 /rsconnect
 /data/old
 /aux
