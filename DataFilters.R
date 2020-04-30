@@ -7,8 +7,6 @@ filterChanged <- reactiveVal()
 setFilter <- function(field, val) {
   filter[[field]] <- val
   filterChanged(runif(1))
-#  print('filter now')
-#  lapply(names(filter), function(a) {cat(a, " = ", filter[[a]], '\n')})
 }
 
 for (a in FilterAttributes[FilterAttributes %in% names(data.CU.Metrics)]) {
@@ -27,7 +25,7 @@ for (a in FilterAttributes[FilterAttributes %in% names(data.CU.Metrics)]) {
 filter$year <- max(data.CU.Metrics$Year)
 observeEvent(input$dataFilters_year, setFilter('year', input$dataFilters_year))
 # Select metrics and attributes to show
-filter$metrics <- c(unique(data.CU.MetricsSeries$Metric), FilterMFAttributes) 
+filter$metrics <- c(data.CU.MetricsSeries.MetricNames, FilterMFAttributes) 
 observeEvent(input$dataFilters_metrics, setFilter('metrics', input$dataFilters_metrics))
 # Toggle between annual snapshot (default) and change from a baseline year
 filter$change <- "Annual"

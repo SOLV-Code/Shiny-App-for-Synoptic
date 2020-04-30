@@ -1,0 +1,49 @@
+Species,Species_Short,CU_ID,CU_Name,DU_ID,CU_ID_Alt1,CU_ID_Alt2,CU_Name_Alt1,CU_Name_Alt2,CU_Acro,latitude,long,FAZ,MAZ,JAZ,Area,RunTiming,LifeHistory,DataQualkIdx,Avg_Gen,TrendNumGen,TrendExtraYears,TrendLog,TrendSmooth,AvgType,AvgRecentExcl,LongTrendMinYears,RelAbd_LBM,RelAbd_UBM,AbsAbd_LBM,AbsAbd_UBM,LongTrend_LBM,LongTrend_UBM,PercChange_LBM,PercChange_UBM,ProbDeclBelowLBM_LBM,ProbDeclBelowLBM_UBM
+Chinook,Ck,CK_9006,Fraser-Cross-CU Supplementation Exclusion,,,,,,FR-XCU,49.125664,-122.098166,NA,NA,NA,Fraser,Summer,NA,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_9008,Fraser-Harrison fall transplant_FA_0.3,,,,,,Chil_transp_FA,49.125664,-122.098166,NA,NA,NA,Fraser,Fall,NA,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_03,Lower Fraser River_FA_0.3,,,,,,LFR-fall,49.218903,-121.945066,NA,NA,NA,Fraser_Lower,Fall,Ocean,Abs_Abd,4,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_04,Lower Fraser River_SP_1.3,,,,,,LFR-spring,49.460826,-122.4924814,NA,NA,NA,Fraser_Lower,Spring,Stream,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_06,Lower Fraser River_SU_1.3,,,,,,LFR-summer,49.72016855,-122.157779,NA,NA,NA,Fraser_Lower,Summer,Stream,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_05,Lower Fraser River-Upper Pitt_SU_1.3,,,,,,LFR-UPITT,49.566286,-122.634339,NA,NA,NA,Fraser_Lower,Summer,Stream,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_17,Lower Thompson_SP_1.2,,,,,,LTh,50.336506,-120.9842179,NA,NA,NA,Fraser_Thompson,Spring,Stream,Rel_Idx,4,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_07,Maria Slough_SU_0.3,,,,,,Maria,49.227919,-121.733305,NA,NA,NA,Fraser_Lower,Summer,Ocean,Rel_Idx,4,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_10,Middle Fraser River_SP_1.3,,,,,,MFR-spring,52.72549964,-122.6181922,NA,NA,NA,Fraser_Upper,Spring,Stream,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_11,Middle Fraser River_SU_1.3,,,,,,MFR-summer,52.94072095,-123.4585458,NA,NA,NA,Fraser_Upper,Summer,Stream,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_09,Middle Fraser River-Portage_FA_1.3,,,,,,Portage,50.70803,-122.270059,NA,NA,NA,Fraser_Upper,Fall,Stream,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_08,Middle Fraser-Fraser Canyon_SP_1.3,,,,,,FRCanyon,49.977915,-121.512032,NA,NA,NA,Fraser_Upper,Spring,Stream,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_18,North Thompson_SP_1.3,,,,,,NTh-spr,51.83759443,-119.6156737,NA,NA,NA,Fraser_Thompson,Spring,Stream,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_19,North Thompson_SU_1.3,,,,,,NTh-sum,51.43836057,-120.0999803,NA,NA,NA,Fraser_Thompson,Summer,Stream,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_15,Shuswap River_SU_0.3,,,,,,STh-SHUR,50.576293,-118.8984295,NA,NA,NA,Fraser_Thompson,Summer,Ocean,Abs_abd,4,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_13,South Thompson_SU_0.3,,,,,,STh-0.3,50.94251125,-119.4355425,NA,NA,NA,Fraser_Thompson,Summer,Ocean,Rel_Idx,4,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_14,South Thompson_SU_1.3,,,,,,STh-1.3,50.8752315,-119.251533,NA,NA,NA,Fraser_Thompson,Summer,Stream,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_16,South Thompson-Bessette Creek_SU_1.2,,,,,,STh-BESS,50.25159,-118.935535,NA,NA,NA,Fraser_Thompson,Summer,Stream,Rel_Idx,4,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_82,Upper Adams River_SU_x.x,,,,,,UADAMS,51.411,-119.456,NA,NA,NA,Fraser_Thompson,Summer,Ocean,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Chinook,Ck,CK_12,Upper Fraser River_SP_1.3,,,,,,UFR-spring,53.67953103,-120.9021509,NA,NA,NA,Fraser_Upper,Spring,Stream,Rel_Idx,5,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Coho,Co,CO_02,Fraser Canyon,,CO_05,,,,FrCny,NA,NA,FRCany,GStr,FRCany+GStr,Fraser_Canyon,NA,NA,,3,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Coho,Co,CO_03,Lower Thompson,,CO_07,,,,Lthom,NA,NA,LTHOM,GStr,LTHOM+GStr,Fraser_Thompson,NA,NA,,3,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Coho,Co,CO_01,Middle Fraser,,CO_06,,,,MFr,NA,NA,MFR,GStr,MFR+GStr,Fraser_Mid,NA,NA,,3,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Coho,Co,CO_04,North Thompson,,CO_09,,,,NTh,NA,NA,NTHOM,GStr,NTHOM+GStr,Fraser_Thompson,NA,NA,,3,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Coho,Co,CO_05,South Thompson,,CO_08,,,,STh,NA,NA,STHOM,GStr,STHOM+GStr,Fraser_Thompson,NA,NA,,3,3,0,TRUE,FALSE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_19,Anderson_Seton_ES,,,,,,ES_AndSet,,,,,,,Early Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_1,Bowron_ES,,SEL-07-001,,,,ES_Bowr,53.145776,-121.093205,UFR,GStr,UFR+GStr,Fraser_Mid,Early Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,5100,19000,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_6,Chilko_S_ES,,,,,,S_Chilk,51.325983,-124.095829,MFR,GStr,MFR+GStr,Fraser_Mid,Early Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_17,Chilliwack_ES,,,,,,ES_Chill,49.079098,-121.435047,LFR,GStr,LFR+GStr,Fraser_Lower,Early Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_8,Cultus_L,,,,,,L_Cult,49.061475,-121.983312,LFR,GStr,LFR+GStr,Fraser_Lower,Late,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_7,Fran_Fras_S,,SEL-06-007,,,,S_FranFras,54.074324,-124.767103,MFR,GStr,MFR+GStr,Fraser_Mid,Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,24300,122600,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_13,Harrison_DS_L,,,,,,L_HarrDS,49.566419,-121.869325,LFR,GStr,LFR+GStr,Fraser_Lower,Late,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_9,Harrison_R,,,,,,RT_HarrR,49.286905,-121.899221,LFR,GStr,LFR+GStr,Fraser_Lower,NA,River,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_11,Harrison_US_L,,,,,,L_HarrUS,49.555384,-121.862927,LFR,GStr,LFR+GStr,Fraser_Lower,Late,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_2,Kamloops_ES,,SEL-10-001,,,,ES_Kaml,50.731927,-120.602129,NTh,GStr,NTh+GStr,Fraser_Thompson_Lower,Early Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,5000,17800,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_12,Lillooet_Harr_L,,,,,,L_LilHarr,50.261719,-122.532211,LILL,GStr,LILL+GStr,Fraser_Lower,Late,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_3,Nadina_Francois_ES,,,,,,ES_NadFran,54.025274,-125.690174,MFR,GStr,MFR+GStr,Fraser_Mid,Early Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_14,Nahatlatch_ES,,,,,,ES_Naha,49.978597,-121.775875,FRCany,GStr,FRCany+GStr,Fraser_Canyon,Early Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_4,NBarriere_ES,,,,,,ES_Nbarr,51.330911,-119.853905,NTh,GStr,NTh+GStr,Fraser_Thompson,Early Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_5,Pitt_ES,,,,,,ES_Pitt,49.428248,-122.541373,LFR,GStr,LFR+GStr,Fraser_Lower,Early Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_22,Quesnel_S,,,,,,S_Ques,,,,,,,Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_10,Seton_L,,,,,,L_Set,50.685389,-122.101863,NTh,GStr,NTh+GStr,Fraser_Thompson,Late,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_20,Shuswap_ES,,,,,,ES_Shu,,,,,,,Early Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_23,Shuswap_L,,,,,,L_Shu,,,,,,,Late,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_18,Takla_Trem_EStu,,SEL-06-014,,,,Estu,,,,,,,Early Stuart,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,107900,348000,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_21,Takla_Trem_S_S,,SEL-06-013,,,,S_TakTremStu,,,,,,,Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,126400,505000,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_15,Taseko_ES,,,,,,ES_Tas,51.335367,-123.615414,MFR,GStr,MFR+GStr,Fraser_Mid,Early Summer,Lake,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA
+Sockeye,Sk,CU_16,Widgeon_RT,,,,,,RT_Wid,49.366612,-122.637603,LFR,GStr,LFR+GStr,Fraser_Lower,NA,River,,4,3,0,TRUE,TRUE,geomean,FALSE,20,,,1000,10000,0.5,0.75,-25,-15,NA,NA

@@ -25,11 +25,37 @@
 # to be managed so updates to and from data table selection and parcoords selection are 
 # only propagated when the respective widgets are in focus. 
 
-# ----- explanatory information for the different metrics ---------
 library(xfun)
 library(rgdal)
 library(sp)
 library(sf)
+
+# ----------- Data source customization -----------------
+
+#  ** Data files contributed by SoS **
+
+# CU metrics and status for multiple assessment years; also includes CU life history attributes and other descriptive attributes
+metricsFile <- "data/METRICS_FILE_BY_CU.csv"            
+# CU escapement time series
+CUTimeSeriesFile <- "data/MERGED_FLAT_FILE_BY_CU.csv"
+# escapement time series for individual sites
+PopTimeSeriesFile <- "data/MERGED_FLAT_FILE_BY_POP.csv"
+
+# ** Special-purpose data files created for this web application **
+
+# Lookup table for matching of CU IDs used in SoS files to IDs used in Open Data maps; 
+# also houses additional CU attributes extracted from the map data (e.g., Lat-lon)
+CULookupFile <- 'data/CULookup.csv'
+# Lookup table for matching of Pop IDs/names used in SoS files to IDs/names used in Open Data maps
+PopLookupFile <- "data/PopLookup.csv"
+# CU boundary polygons (extracted from the Open Data polygon coverages for the individual species)
+CUBoundariesFile <- "data/All_Species_CU_Boundaries_Fraser.gpkg"
+# special-purpose stream network created by splitting BC Freshwater Atlas streams into segments and attaching CU and site information
+StreamNetworkFile <- "data/StreamNetwork_Fraser.gpkg"
+# similar to StreamNetworkFile, but the polyline associated with each segment is extended to include the full upstream network above the segment
+ExtendedStreamNetworkFile <- "data/StreamNetwork_Fraser_extended.gpkg"
+         
+# ----- explanatory information for the different metrics ---------
 
 MetricInfo <- list(
   CU_ID = "Conservation Unit",
@@ -83,6 +109,7 @@ PickerOptsMultiSelect <- list(`show-tick`=TRUE, `actions-box`=TRUE, `selected-te
 ButtonStyle <- "color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; font-size: 100%"
 
 # ------------ Data Filtering UI --------------
+
 # attribute filter customization
 # the names of the attributes users may filter by, shown in this order
 FilterAttributes <- c('DataType', 'Species', 'FAZ', 'Area', 'RunTiming', 'LifeHistory', 'AvGen', 'CU_ID')
@@ -174,15 +201,21 @@ MapAttribs <- c('Lat', 'Lon', 'Species', 'HasMetricsData', 'HasTimeSeriesData', 
 # the metrics to include in the map labels (i.e., the metric information shown on clicking on a CU in the map)
 MapLabelMetrics <-  c("RelAbd", "LongTrend", "PercChange")
 
+# species and status metrics are offered as color themes by default. Add additional options here. 
+# then add a corresponding entry in the list of color palettes below
+AdditionalColorThemes <- c('RunTiming', 'LifeHistory', 'HasMetricsData', 'HasTimeSeriesData')
+
 # palettes to use for the different color theme options
 ColorPalette <- list(
                     Species = c(Sk = '#8c1aff', Co = '#ff9900', Ck = '#009999'),
-                    Status = c(Red = '#ff0000', Amber = '#ffa500', Green = '#00ff00', 'NA' = '#bebebe'),
-                    HasMetricsData = c(Yes = '#222222', No = '#999999'),
-                    HasTimeSeriesData = c(Yes = '#222222', No = '#999999'),
+                    Status = c(Red = '#ff0000', Amber = '#ffa500', Green = '#00ff00', 'NA' = '#858585'),
+                    StatusChange = c('-2'='#ff0000', '-1'='#fe7581', '0'='#cca6ce', '1'='#7578fe', '2'='#0000ff', 'NA' = '#858585'),
+                    HasMetricsData = c(Yes = '#105592', No = '#ff0000'),
+                    HasTimeSeriesData = c(Yes = '#105592', No = '#ff0000'),
                     RunTiming = c(Estu = '#fd5c71', Spring = '#cb3f51', Early_Summer = '#b01f32', Summer = '#8c0e0e', Late='#76353e', Fall='#6b464b', 'NA' = '#bebebe'),
-                    LifeHistory = c(Ocean = '#5fd2bb', Stream = '#347266', River = '#d25587', Lake = '#9b1349', 'NA' = '#bebebe')
+                    LifeHistory = c(Ocean = '#5fd2bb', Stream = '#347266', River = '#d25587', Lake = '#9b1349', 'NA' = '#858585')
 )
+
 
 StreamStyle.normal <- list(
   color = 'blue',
@@ -515,69 +548,39 @@ get_CU_ID_From_Pop_UID <- function(UID) {strsplit(UID, '[.]')[[1]][1]}
 # ------------------- put together initial data set -------------------
 
 # Get the metrics and time series data for CUs and populations
-data.CU.MetricsSeries <- read.csv("data/METRICS_FILE_BY_CU.csv", stringsAsFactors = F)
+data.CU.MetricsSeries <- read.csv(metricsFile, stringsAsFactors = F)
 data.CU.Metrics.Years <- sort(unique(data.CU.MetricsSeries$Year))
-data.CU.TimeSeries <- read.csv("data/MERGED_FLAT_FILE_BY_CU.csv", stringsAsFactors = F)
-data.Pop.TimeSeries <- read.csv("data/MERGED_FLAT_FILE_BY_POP.csv", stringsAsFactors = F)
-
-# spatial location of populations
-data.Pop.Spatial <- read.csv("data/All_Species_Sites_with_FWA_watershed_key_Fraser.csv", stringsAsFactors = F)
+data.CU.TimeSeries <- read.csv(CUTimeSeriesFile, stringsAsFactors = F)
+data.Pop.TimeSeries <- read.csv(PopTimeSeriesFile, stringsAsFactors = F)
 
 # CU boundary polygons
-data.CU.Spatial <- convertToLeafletProjection(st_read("data/All_Species_CU_Boundaries_Fraser.gpkg", stringsAsFactors=F, quiet=TRUE))
+data.CU.Spatial <- convertToLeafletProjection(st_read(CUBoundariesFile, stringsAsFactors=F, quiet=TRUE))
 
 # stream selector network data
 # Don't use ESRI shp for this! The lists of CUs and populations associated with the various stream segments will end up truncated.
-data.Streams <- convertToLeafletProjection(st_read("data/StreamNetwork_Fraser.gpkg", stringsAsFactors=F, quiet=TRUE))
-data.StreamsExtended <- convertToLeafletProjection(st_read("data/StreamNetwork_Fraser_extended.gpkg", stringsAsFactors=F, quiet=TRUE))
+data.Streams <- convertToLeafletProjection(st_read(StreamNetworkFile, stringsAsFactors=F, quiet=TRUE))
+data.StreamsExtended <- convertToLeafletProjection(st_read(ExtendedStreamNetworkFile, stringsAsFactors=F, quiet=TRUE))
 row.names(data.Streams) <- data.Streams$code
 row.names(data.StreamsExtended) <- data.StreamsExtended$code
 
 # Lookup table for joining metrics and spatial information for CUs
-data.CU.Lookup <- read.csv("data/CULookup.csv", stringsAsFactors = F)
+data.CU.Lookup <- read.csv(CULookupFile, stringsAsFactors = F)
 
 # Lookup table for joining metrics and spatial information for Populations
-data.Pop.Lookup <- read.csv("data/PopLookup.csv", stringsAsFactors = F)
+data.Pop.Lookup <- read.csv(PopLookupFile, stringsAsFactors = F)
 
 # ** Fix the CU_ID field in the metrics and data files, as well as the map data to make CU IDs consistent across files
 data.CU.MetricsSeries$CU_ID <- SubstituteValues('CU_MetricsData_CU_ID', 'CU_ID', data.CU.Lookup, data.CU.MetricsSeries$CU_ID)
 data.CU.TimeSeries$CU_ID <- SubstituteValues('CU_TimeSeriesData_CU_ID', 'CU_ID', data.CU.Lookup, data.CU.TimeSeries$CU_ID)
 data.CU.Spatial$CU_ID <- SubstituteValues('MapData_CU_ID', 'CU_ID', data.CU.Lookup, data.CU.Spatial$CU_INDEX)
 data.Pop.TimeSeries$CU_ID <- SubstituteValues('Pop_TimeSeriesData_CU_ID', 'CU_ID', data.CU.Lookup, data.Pop.TimeSeries$CU_ID)
-data.Pop.Spatial$CU_ID <- SubstituteValues('MapData_CU_ID', 'CU_ID', data.CU.Lookup, data.Pop.Spatial$CU_INDEX)
 data.Pop.Lookup$CU_ID <- SubstituteValues('MapData_CU_ID', 'CU_ID', data.CU.Lookup, data.Pop.Lookup$MapData_CU_ID)
-# script that builds selector network now translates CU info into current naming scheme, so translation below no longer
-# necessary here
-#data.streams@data$CUs <- unlist(lapply(data.streams@data$CUs, function(CUList) {
-#  CUs <- strsplit(CUList, ':')[[1]]
-#  CUs <- unique(SubstituteValues('MapData_CU_ID', 'CU_ID', data.CULookup, CUs))
-#  if (length(CUs) > 0) {
-#    paste(CUs, collapse=",")
-#  } else {
-#    ""
-#  } 
-#}))
-
 
 #** Create a unique population ID, 'Pop_UID', consisting of CU_ID and Pop_ID, to be used across files.
 # add the unique pop ID to the various files containing population data
 # Pop Lookup file
 data.Pop.Lookup$Pop_UID <- paste(data.Pop.Lookup$CU_ID, data.Pop.Lookup$Pop_ID, sep='.')
 row.names(data.Pop.Lookup) <- data.Pop.Lookup$Pop_UID
-# Spatial pop locations
-data.Pop.Spatial$Pop_UID <- paste(data.Pop.Spatial$CU_ID, data.Pop.Spatial$POP_ID, sep='.')
-popsToUse <- unlist(lapply(1:nrow(data.Pop.Spatial), function(r) {
-    # some pop UIDs are duplicated in map; use site name as secondary criterion to select the one to use here
-    data.Pop.Lookup[data.Pop.Spatial[r, "Pop_UID"], "MapData_Pop_Name"] == data.Pop.Spatial[r, "SITE_NAME"]
-  }
-))
-data.Pop.Spatial <- data.Pop.Spatial[popsToUse, ]
-rm(popsToUse)
-row.names(data.Pop.Spatial) <- data.Pop.Spatial$Pop_UID
-data.Pop.Spatial$Lat <- data.Pop.Spatial$YLAT
-data.Pop.Spatial$Lon <- data.Pop.Spatial$XLONG
-data.Pop.Spatial$FAZ <- data.Pop.Spatial$FAZ_ACRO
-data.Pop.Spatial$Species <- data.Pop.Lookup[row.names(data.Pop.Spatial), 'Species']
 
 # Population time series data
 # right now, pop ID is missing for Coho, so we need to do a somewhat complicated lookup here, by either pop ID or by pop name 
@@ -671,6 +674,7 @@ data.StreamsExtended <- data.StreamsExtended[row.names(data.Streams), ]
 
 #** Rearrange the metrics data so all metrics are in columns and create an associated 'Status' metric for each main metric (labeled <metric>.Status)
 data.CU.MetricsSeries.MetricNames <- unique(data.CU.MetricsSeries$Metric)
+names(data.CU.MetricsSeries)[names(data.CU.MetricsSeries) == 'Label'] <- 'DataType'
 data.CU.MetricsSeries.StatusMetricNames <- paste(data.CU.MetricsSeries.MetricNames, 'Status', sep='.')
 data.CU.Metrics <- unique(data.CU.MetricsSeries[, c("CU_ID", "DataType", "Year")])
 row.names(data.CU.Metrics) <- paste(data.CU.Metrics$CU_ID, data.CU.Metrics$DataType, data.CU.Metrics$Year, sep=".")
@@ -704,8 +708,6 @@ row.names(data.CU.Metrics) <- paste(data.CU.Metrics$CU_ID, data.CU.Metrics$DataT
 # Eliminate unnecessary columns from map data
 attribsToKeep <- c('CU_NAME', 'CU_ID', 'geom')
 data.CU.Spatial[, names(data.CU.Spatial)[!(names(data.CU.Spatial) %in% attribsToKeep)]] <- NULL
-attribsToKeep <- c('Pop_UID', 'CU_ID', 'POP_ID', 'SITE_NAME', 'Species', 'Lat', 'Lon', 'FAZ', 'FWA_WATERSHED_KEY', 'geom')
-data.Pop.Spatial[ , names(data.Pop.Spatial)[!(names(data.Pop.Spatial) %in% attribsToKeep)]] <- NULL
 rm(attribsToKeep)
 
 # identify CUs and populations in dataset
@@ -717,6 +719,7 @@ data.Watersheds <- unique(data.Streams$code)
 getMinYr <- function(df) {if (nrow(df) > 0) min(df$Year) else NA}
 getMaxYr <- function(df) {if (nrow(df) > 0) max(df$Year) else NA}
 data.Pop.Lookup$HasTimeSeriesData <- unlist(lapply(data.Pop.Lookup$Pop_UID, function(uid) {if(uid %in% data.Pop.TimeSeries$Pop_UID) 'Yes' else 'No'}))
+
 data.CU.Lookup$HasMetricsData <- unlist(lapply(data.CU.Lookup$CU_ID, function(cu_id) {if(cu_id %in% data.CU.MetricsSeries$CU_ID) 'Yes' else 'No'}))  
 data.CU.Lookup$HasTimeSeriesData <- unlist(lapply(data.CU.Lookup$CU_ID, function(cu_id) {if(cu_id %in% data.CU.TimeSeries$CU_ID) 'Yes' else 'No'})) 
 data.Pop.Lookup$DataStartYear <- unlist(lapply(data.Pop.Lookup$Pop_UID, function(p) {getMinYr(data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID == p, ])}))
