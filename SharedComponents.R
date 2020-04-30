@@ -227,7 +227,7 @@ addToInfoPane <- function(ui) {
 }
 
 # Get rid of any existing info pane content before putting up new content.
-# Shiny doesn't always pick up mouseout events, 
+# This can be necessary because Shiny doesn't always pick up mouseout events, 
 # so clearing the info pane on mouseout doesn't work reliably. 
 # Also, it's actually sometimes handy to have the pane stay available after the mouse is moved out
 showInfoPane <- function(ui) {
@@ -235,13 +235,6 @@ showInfoPane <- function(ui) {
   addToInfoPane(ui)
 }
 
-# observeEvent(input$dataUnit, {
-#   if (input$dataUnit == 'CUs')
-#     data.setSelection(NULL, type='Pops', widget="dataUnit_toggle")
-#   else
-#     data.setSelection(NULL, type='CUs', widget="dataUnit_toggle")
-#   clearInfoPane()
-#   })
 
 # -------------------------- sparklines and status summary -----------------------
 
