@@ -1,0 +1,97 @@
+/* custom css style definitions for SSET */
+
+/* override bootstrap primary button look */
+.primary { color: #fff; 
+           background-color: #337ab7; 
+           border-color: #2e6da4; 
+           height:70px; 
+           font-size: 100%; 
+          }
+
+.skin-blue { min-height: 400px !important; }
+          
+.skin-blue .main-header .logo { background-color: #3c8dbc; }
+.skin-blue .main-header .logo:hover { background-color: #3c8dbc; }
+                            
+  
+.content-wrapper { height: auto !important; 
+                   position:relative; 
+                   overflow-x:hidden; 
+                   overflow-y:hidden; 
+                   line-hight: 1;
+                   color: #000000 !important;
+                  }
+
+.tooltip-inner { width: 400px !important; }
+ 
+.sidebar-sparkline-box { border: none; 
+                         margin: 10px; 
+                         white-space: normal; 
+                         display: grid; 
+                         font-weight: normal; 
+                         font-size: 12px; 
+                        }
+
+.sidebar-sparkline-box-header { padding-left: 10px; 
+                                padding: 2px; 
+                                font-weight: bold; 
+                                font-size: 14px;
+                               }
+
+.sidebar-sparkline-box-subheader { padding: 2px; 
+                                   font-weight: bold; 
+                                   font-size: 12px;
+                                  }
+
+.sidebar-sparkline-box-text { padding: 2px; 
+                              font-weight: normal; 
+                              font-size: 12px;
+                            }
+
+.sidebar-sparkline-canvas { padding: 2px; 
+                            width: 95% !important; 
+                            height: auto !important; 
+                            display: grid !important;
+                           }
+                           
+.full-sparkline-box { border: none; 
+                      margin: 10px; 
+                      white-space: normal; 
+                      display: grid; 
+                      font-weight: normal; 
+                      font-size: 14px; 
+                    }
+                    
+.full-sparkline-box-header { padding-left: 10px; 
+                             padding: 2px; 
+                             font-weight: bold; 
+                             font-size: 16px;
+                            }
+
+.full-sparkline-box-subheader { padding: 2px; 
+                                font-weight: bold; 
+                                font-size: 14px;
+                              }
+
+.full-sparkline-box-text { padding: 2px; 
+                           font-weight: normal; 
+                           font-size: 14px;
+                          }
+ 
+.full-canvas .sparkline canvas { padding: 5px; 
+                                 width: 200px !important; 
+                                 height: 50px !important;
+                               }
+
+.sidebar-canvas .sparkline canvas { padding: 2px; 
+                                    width: 95% !important; 
+                                    height: auto !important; 
+                                    display: grid !important;
+                                  }
+
+.dataTableHead { padding: 5px; }
+
+.scroll-container { width: 1200px;   
+                    overflow: auto;    
+                    scrollbar-base-color: #ffeaff;
+                  }
