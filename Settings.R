@@ -144,19 +144,19 @@ HistoSummaryAttribs <- c("Area", "FAZ", "RelAbd.Status", "AbsAbd.Status", "LongT
 HistoMaxDots <- 40
 
 # this list specifies the information necessary to construct a histogram from a numeric metric 
-# HistoCustomInfo <- list(
-#   Annual = list( 
-#     Recent.ER = list(
-#       breaks = c( 0,10,20,30,40,50,60,70,80,90,100),
-#       names = c("Below 10%","10-20%","20-30%","30%-40%","40-50%", "50%-60%","60-70%","70%-80%","80-90%","Above 90%")
-#     )
-#   ),
-#   Change = list(
-#     Recent.ER = list(
-#       breaks = c(-100, -10, -5, -1, 1, 5, 10, 100),
-#       names = c(">10% decr", "5%-10% decr", "0-5% decr","No Change", "0-5% incr", "5-10% incr",">10% incr")
-#     )
-#   ))
+HistoCustomInfo <- list(
+  Annual = list(
+    Recent.ER = list(
+      breaks = c( 0,10,20,30,40,50,60,70,80,90,100),
+      names = c("Below 10%","10-20%","20-30%","30%-40%","40-50%", "50%-60%","60-70%","70%-80%","80-90%","Above 90%")
+    )
+  ),
+  Change = list(
+    Recent.ER = list(
+      breaks = c(-100, -10, -5, -1, 1, 5, 10, 100),
+      names = c(">10% decr", "5%-10% decr", "0-5% decr","No Change", "0-5% incr", "5-10% incr",">10% incr")
+    )
+  ))
 
 # --------------- Radar Plot UI ----------------
 
