@@ -3,14 +3,13 @@
 # state information for controls; can't use shiny inputs directly for these, 
 # because the inputs don't exist until modal menus are opened
 mapCtrl.isVisible <- reactiveValues(CUMarkers = TRUE, CUPolygons=FALSE, PopMarkers=TRUE, Streams=TRUE)
-mapCtrl.colorScheme <- reactiveVal(value = 'Species', label = 'colorScheme')
-mapCtrl.colorOpts <- reactiveVal(value = c('Species', paste0(MapLabelMetrics, '.Status'), AdditionalColorThemes), label = 'colorOpts')
+mapCtrl.backdrop <- reactiveVal('map')
 mapCtrl.CUmarkerHoverHighlights <- reactiveVal(value = c('Polygon', 'Pops'), label = 'CUmarkerHoverHighlights')
 mapCtrl.CUpolyHoverHighlights <- reactiveVal(value = c('Polygon', 'Pops'), label = 'CUpolyHoverHighlights')
 mapCtrl.CUstreamHoverHighlights <- reactiveVal(value = c('Marker','Pops'), label = 'CUstreamHoverHighlights')
 
 # ---------- Spider fly (functions for pulling overlapping markers apart ) ---------------
-getOverlapping <- function(id, type) {
+map.getOverlapping <- function(id, type) {
   if (type == 'CUs') {
     df <- map.CUMarkerData()
     df[df$Lat == df[df$CU_ID == id, 'Lat'] & df$Lon == df[df$CU_ID == id, 'Lon'], 'CU_ID']
@@ -29,7 +28,7 @@ TwoPi <- 2* pi
 # and then back-transforming the locations to lat-long after arranging points on the circle
 # instead, use a quick and dirty correction factor to put lat and long coordinates
 # on approximately the same scale
-spreadOnCircle <- function(df) {
+map.spreadOnCircle <- function(df) {
   cLat <- mean(df$Lat)
   cLon <- mean(df$Lon) 
   markerSep <- abs(input$CUmap_bounds$north - input$CUmap_bounds$south) / 40
@@ -53,13 +52,13 @@ spiderFlyMarkers <- reactiveVal()
 # some helper functions for putting together information to be shown in the popover panes
 
 # get the list of CUs associated with the given stream segment
-getCUsFromStreamSeg <- function(seg) {
+map.getCUsFromStreamSeg <- function(seg) {
   CUs <- unpack(data.Streams$CUsSelectable[data.Streams$code == seg]) 
   CUs[CUs %in% data.currentCUs()]
 }
 
 # get the list of populations associated with the given stream segment
-getPopsFromStreamSeg <- function(seg) {
+map.getPopsFromStreamSeg <- function(seg) {
   pops <- unpack(data.Streams$PopsSelectable[data.Streams$code == seg]) 
   pops[pops %in% data.currentPops()]
 }
@@ -146,11 +145,11 @@ map.makeMarkerInfoPane <- function(items, type) {
 # put together an information pane to be shown when user moves mouse over a stream segment
 map.makeStreamInfoPane <- function(segCode) {
   p <- tags$div('no CUs on this stream segment match current filter criteria')
-  CUs <- getCUsFromStreamSeg(segCode)
+  CUs <- map.getCUsFromStreamSeg(segCode)
   if (length(CUs) > 0) 
     p <- spark.makeCUSparklineTable(CUs)
   if(data.showPops()) {
-    pops <- getPopsFromStreamSeg(segCode)
+    pops <- map.getPopsFromStreamSeg(segCode)
     if (length(pops) > 0) {
       p <- tagList(p, spark.makePopSparklineTable(pops, mode='sidebar', CUheader = 'labelOnly'))
     } else {
@@ -165,7 +164,7 @@ map.makeStreamInfoPane <- function(segCode) {
 # add markers to map
 map.renderMarkers <- function(map, df, pane, group, styleOpts, spiderFly=FALSE) {
   if (spiderFly) {
-    df <- spreadOnCircle(df)
+    df <- map.spreadOnCircle(df)
     spiderFlyMarkers(df)
     map.showSpiderLegs(map, df, pane=pane, group=group)
   }
@@ -220,28 +219,6 @@ map.showSpiderLegs <- function(map, df, pane, group, styleOpts=SpiderLegs) {
                options = pathOptions(pane = pane))
 }
 
-# translate from specific scheme to generic scheme 
-map.getColors <- function(scheme) {
-  if (scheme %in% paste0(MapLabelMetrics, '.Status')) {
-    if (filter$change == "Annual" )
-      ColorPalette[['Status']]
-    else
-      ColorPalette[['StatusChange']]
-  }
-  else
-    ColorPalette[[scheme]]
-}
-
-# get the color to use for the given attribute values
-map.getColor <- function(attribVals, override=NULL, scheme = mapCtrl.colorScheme()) {
-  if (!is.null(override)) return(rep(override, length(attribVals)))
-  attribVals <- as.character(attribVals)
-  attribVals[is.na(attribVals)] <- 'NA'
-  colPal <- map.getColors(scheme)
-  unlist(lapply(attribVals, function(a) {as.character(colPal[a])}))
-}
-
-
 map.CUMarkerData <- reactive({
   df <- unique.data.frame(data.CU.Lookup.filtered()[, c('CU_ID', MapAttribs)])
   if (nrow(df) > 0) {
@@ -251,9 +228,9 @@ map.CUMarkerData <- reactive({
       df.m$CU_ID <- row.names(df.m)
       metrics <- names(df.m)[grep('.Status', names(df.m))]
       df <- merge(df, df.m[ , c('CU_ID', metrics)], by=c("CU_ID"), all.x=T, all.y=F)
-      if (mapCtrl.colorScheme() %in% names(df)) {
-        df$color <- map.getColor(df[ , mapCtrl.colorScheme()], override=CUMarkerStyle.normal$color)
-        df$fillColor <- map.getColor(df[ , mapCtrl.colorScheme()], override=CUMarkerStyle.normal$fillColor)
+      if (colorCtrl.colorScheme() %in% names(df)) {
+        df$color <- colorCtrl.getColor(df[ , colorCtrl.colorScheme()], override=CUMarkerStyle.normal$color)
+        df$fillColor <- colorCtrl.getColor(df[ , colorCtrl.colorScheme()], override=CUMarkerStyle.normal$fillColor)
       }
       else {
         df$color <- rep('black', nrow(df))
@@ -288,9 +265,9 @@ map.popMarkerData <- reactive({
     #df.sp <- df.sp[, attribsToKeep]
     df.sp$label <- unlist(lapply(df.sp$Pop_UID, getPopName))
     df.sp$layer <- df.sp$Pop_UID
-    if (mapCtrl.colorScheme() %in% names(df.sp)) {
-      df.sp$color <- map.getColor(df.sp[ , mapCtrl.colorScheme()], override=PopMarkerStyle.normal$color)
-      df.sp$fillColor <- map.getColor(df.sp[ , mapCtrl.colorScheme()], override=PopMarkerStyle.normal$fillColor)
+    if (colorCtrl.colorScheme() %in% names(df.sp)) {
+      df.sp$color <- colorCtrl.getColor(df.sp[ , colorCtrl.colorScheme()], override=PopMarkerStyle.normal$color)
+      df.sp$fillColor <- colorCtrl.getColor(df.sp[ , colorCtrl.colorScheme()], override=PopMarkerStyle.normal$fillColor)
     }
     else {
       df.sp$color <- rep('black', nrow(df.sp))
@@ -368,7 +345,7 @@ map.showCUPolys <- function(leafletMap, CUs=data.currentCUs(), styleOpts = CUPol
 }
 
 # hide a group and associated selection group
-hide <- function(map, group) {
+map.hide <- function(map, group) {
   map %>% hideGroup(map, group) %>% hideGroup(map, paste0('selected.', group))
 }
 
@@ -383,8 +360,8 @@ map.hideMarkers <- function() {
 
 # unhide markers if they are supposed to be visible
 map.unhideMarkers <- function() {
-  setVisibility('CUMarkers')
-  setVisibility('PopMarkers')
+  map.setVisibility('CUMarkers')
+  map.setVisibility('PopMarkers')
 }
 
 # clear spiderFly
@@ -396,151 +373,217 @@ map.clearSpiderFly <- function() {
 
 # ------ Leaflet map rendering ------
 
-output$CUmap <- renderLeaflet({
-  leafletOutput <- try({
-    leafletMap <- leaflet(options = leafletOptions(zoomSnap = 0.1, zoomDelta = 0.1)) %>% 
-      addProviderTiles('CartoDB.Positron', layerId='map', group='map')  %>% 
-      addProviderTiles('Esri.WorldImagery', layerId='satellite', group='satellite')
-
-    leafletMap <- addMiniMap(leafletMap,
-                             tiles = providers$CartoDB.Positron,
-                             zoomLevelOffset = -4,
-                             toggleDisplay = TRUE)
-    
-    # set up custom z-panes for content; need this to control the order in which map elements are layered
-    z <- 400 # 400 is the leaflet default overlay pane; start at pane 401 for custom panes
-    # CU polygons
-    for (i in 1:length(zPaneOrder)) {
-      z <- z+1
-      leafletMap <- addMapPane(leafletMap, name = paste0("CUPolygons.", zPaneOrder[i]), zIndex = z)
-    }
-    for (i in 1:length(zPaneOrder)) {
-      z <- z+1
-      leafletMap <- addMapPane(leafletMap, name = paste0("selected.CUPolygons.", zPaneOrder[i]), zIndex = z)
-    }
-    for (i in 1:length(zPaneOrder)) {
-      z <- z+1
-      leafletMap <- addMapPane(leafletMap, name = paste0("mouseover.CUPolygons.", zPaneOrder[i]), zIndex = z)
-    }
-    
-    # stream segments
-    z <- z + 1
-    leafletMap <- addMapPane(leafletMap, name = "streams", zIndex = z)
-    z <- z + 1
-    leafletMap <- addMapPane(leafletMap, name = "selected.streams", zIndex = z)    
-    z <- z + 1
-    leafletMap <- addMapPane(leafletMap, name = "mouseover.streams", zIndex = z)    
-      
-    # CU markers
-    z <- z + 1
-    leafletMap <- addMapPane(leafletMap, name = "CUMarkers", zIndex = z)
-    z <- z + 1
-    leafletMap <- addMapPane(leafletMap, name = "selected.CUMarkers", zIndex = z)
-    z <- z + 1
-    leafletMap <- addMapPane(leafletMap, name = "mouseover.CUMarkers", zIndex = z)
-
-    # Pop markers
-    z <- z + 1
-    leafletMap <- addMapPane(leafletMap, name = "PopMarkers", zIndex = z)
-    z <- z + 1
-    leafletMap <- addMapPane(leafletMap, name = "selected.PopMarkers", zIndex = z)
-    z <- z + 1
-    leafletMap <- addMapPane(leafletMap, name = "mouseover.PopMarkers", zIndex = z)
- 
-    z <- z + 1
-    leafletMap <- addMapPane(leafletMap, name = "spider.CUMarkers", zIndex = z)
-    
-    z <- z + 1
-    leafletMap <- addMapPane(leafletMap, name = "spider.PopMarkers", zIndex = z)
-    
-    # add the stream segments
-    leafletMap <- addPolylines(leafletMap, 
-                               color=StreamStyle.normal$color,
-                               weight=StreamStyle.normal$weight,
-                               opacity=StreamStyle.normal$opacity,
-                               layerId = ~code,
-                               group = "Streams",
-                               label = ~Name,
-#                                highlightOptions = highlightOptions(weight = 5, color="blue", bringToFront = TRUE),
-                               data = data.Streams,
-                               options = pathOptions(pane = 'streams'))
-
-    # We only want to have the basemap drawn once here, not every time the data filter changes.
-    # Since the various map display functions use reactive expressions dependent on filtering, 
-    # make sure all calls to these function are isolated here
-    isolate(leafletMap <- map.showCUMarkers(leafletMap))
-    isolate(leafletMap <- map.showCUPolys(leafletMap))
-    isolate(if(!data.currentSelectionEmpty('CUs')) {
-      CUs <- data.currentSelection[['CUs']]
-      leafletMap <- map.showCUMarkers(leafletMap, CUs=CUs, styleOpts = CUMarkerStyle.highlighted, layer='selected')
-      leafletMap <- map.showCUPolys(leafletMap, CUs=CUs, styleOpts = CUPolyStyle.highlighted, layer='selected')
-    })
-    isolate(leafletMap <- map.showPopMarkers(leafletMap))
-    isolate(if(!data.currentSelectionEmpty('Pops')) {
-      leafletMap <- map.showPopMarkers(leafletMap, pops=data.currentSelection[['Pops']], styleOpts = PopMarkerStyle.highlighted, layer='selected')
-    })
-    # could use native layersCotrol here, but it works slightly differently from shiny modals in that the modal
-    # disappears on mouseout, rather than on mouse click outside modal. 
-    # Implement this with an easyButton and shiny modal instead to maintain consistent UI
-    # add controls for drawing masks for selection
-    leafletMap <- addDrawToolbar(leafletMap,
-                                 targetGroup = "mask",
-                                 rectangleOptions = T,
-                                 polylineOptions = F,
-                                 markerOptions = F,
-                                 circleMarkerOptions = F,
-                                 editOptions = F,
-                                 circleOptions = F)
-    leafletMap <- addEasyButton(leafletMap, 
-                                easyButton(icon="fa-arrows", 
-                                           title="Zoom to map",
-                                           onClick=JS("function(btn, map){ 
-                                                // Don't care about the value here. It just needs to change every time the button is clicked.
-                                                Shiny.onInputChange('leaflet_button_zoom_out', Math.random());
-                                             }")))
-    leafletMap <- addEasyButton(leafletMap, 
-                                easyButton(icon="fa-eye", 
-                                           title="Show/hide layers",
-                                           onClick=JS("function(btn, map){ 
-                                              // Don't care about the value here. It just needs to change every time the button is clicked.
-                                              Shiny.onInputChange('leaflet_button_layer_visibility', Math.random());
-                                             }")))
-    leafletMap <- addEasyButton(leafletMap, 
-                                easyButton(icon="fa-paint-brush", 
-                                           title="Set color scheme",
-                                           onClick=JS("function(btn, map){ 
-                                              // Don't care about the value here. It just needs to change every time the button is clicked.
-                                              Shiny.onInputChange('leaflet_button_color_scheme', Math.random());
-                                             }")))
-    leafletMap <- addEasyButton(leafletMap, 
-                                easyButton(icon="fa-cog", 
-                                           title="Additional settings",
-                                           onClick=JS("function(btn, map){ 
-                                                console.log(map);
-                                                // Don't care about the value here. It just needs to change every time the button is clicked.
-                                                Shiny.onInputChange('leaflet_button_settings', Math.random());
-                                             }")))
-    isolate(colorScheme <- map.getColors(mapCtrl.colorScheme()))
-    leafletMap <- addLegend(leafletMap, 
-                            position='bottomleft', 
-                            layerId = 'legend',
-                            colors=as.character(colorScheme),
-                            labels=names(colorScheme)) 
-    leafletMap <- addLayersControl(leafletMap,
-                                   position='bottomleft',
-                                   baseGroups=c('map', 'satellite'))
-    # hide any groups that aren't supposed to be visible 
-    # need to isolate these to avoid re-rendering of entire map when mapCtrl.isVisible changes
-    for (group in c('CUMarkers', 'PopMarkers', 'CUPolygons')) {
-      isolate(if (!mapCtrl.isVisible[[group]]) {
-        leafletMap <- hideGroup(leafletMap, group)
-        leafletMap <- hideGroup(leafletMap, paste0('selected.', group))
-      })
-    }
-    isolate(if(!mapCtrl.isVisible[['Streams']])
-      leafletMap <- hideGroup(leafletMap, 'Streams'))
+# add control widgets to the map
+map.addMapControls <- function(leafletMap)  {
+  # add a minimap that shows current map extent within the wider geographic context
+  leafletMap <- addMiniMap(leafletMap,
+                           tiles = providers$CartoDB.Positron,
+                           zoomLevelOffset = -4,
+                           toggleDisplay = TRUE,
+                           minimized = TRUE)
+  
+  # add controls for drawing masks for selection
+  leafletMap <- addDrawToolbar(leafletMap,
+                               targetGroup = "mask",
+                               rectangleOptions = T,
+                               polylineOptions = F,
+                               markerOptions = F,
+                               circleMarkerOptions = F,
+                               editOptions = F,
+                               circleOptions = F)
+  leafletMap <- addEasyButton(leafletMap, 
+                              easyButton(icon="fa-arrows", 
+                                         title="Zoom to map",
+                                         onClick=JS("function(btn, map){ 
+                                                    // Don't care about the value here. It just needs to change every time the button is clicked.
+                                                    Shiny.onInputChange('leaflet_button_zoom_out', Math.random());
+                                                 }")))
+  # could use native layersCotrol here to show/hide layers, but it works slightly differently 
+  # from shiny modals in that the modal disappears on mouseout, rather than on mouse click outside modal. 
+  # Implement this with an easyButton and shiny modal instead to maintain consistent UI
+  leafletMap <- addEasyButton(leafletMap, 
+                              easyButton(icon="fa-eye", 
+                                         title="Show/hide layers",
+                                         onClick=JS("function(btn, map){ 
+                                                  // Don't care about the value here. It just needs to change every time the button is clicked.
+                                                  Shiny.onInputChange('leaflet_button_layer_visibility', Math.random());
+                                                 }")))
+  leafletMap <- addEasyButton(leafletMap, 
+                              easyButton(icon="fa-paint-brush", 
+                                         title="Set color scheme",
+                                         onClick=JS("function(btn, map){ 
+                                                  // Don't care about the value here. It just needs to change every time the button is clicked.
+                                                  Shiny.onInputChange('leaflet_button_color_scheme', Math.random());
+                                                 }")))
+  leafletMap <- addEasyButton(leafletMap, 
+                              easyButton(icon="fa-camera", 
+                                         title="Save snapshot",
+                                         position="topright",
+                                         onClick=JS("function(btn, map){ 
+                                                    console.log(map);
+                                                    // Don't care about the value here. It just needs to change every time the button is clicked.
+                                                    Shiny.onInputChange('leaflet_button_snapshot', Math.random());
+                                                 }")))
+  # added to visibility menu
+  # leafletMap <- addLayersControl(leafletMap,
+  #                                position='bottomleft',
+  #                                baseGroups=c('map', 'satellite'))
+  leafletMap <- addEasyButton(leafletMap, 
+                              easyButton(icon="fa-cog", 
+                                         title="Additional settings",
+                                         onClick=JS("function(btn, map){ 
+                                                    console.log(map);
+                                                    // Don't care about the value here. It just needs to change every time the button is clicked.
+                                                    Shiny.onInputChange('leaflet_button_snapshot', Math.random());
+                                                 }")))
+  
   leafletMap
+}
+
+# add SoS logo to the lower right corner of the map
+# note: there seems to be a bug in leafem::addLogo that prevents the logo
+# from showing up when the map gets re-rendered
+# also doesn't seem to work with a leaflet proxy :(
+map.addLogo <- function(map) {
+  if (mapCtrl.backdrop() == 'map') logo <- 'SoS-01.png' else logo <- 'SoS-02.png'
+  leafem::addLogo(map, img=logo, src='local',
+                  position = 'bottomright',
+                  offset.x = 50,
+                  offset.y = 10,
+                  width = 220,
+                  height = 60)
+}
+
+# create the map
+map.buildMap <- function(forPrinting = FALSE) {
+  if (forPrinting) { 
+    # only pull in what's actually visible and match view to currently shown map
+    # since satellite tiles can take a while to load over a slow connection  
+    if (mapCtrl.backdrop() == 'map') 
+      tiles <- 'CartoDB.Positron' 
+    else 
+      tiles  <- 'Esri.WorldImagery'
+    leafletMap <- leaflet(options = leafletOptions(zoomControl = FALSE)) %>%
+                  addProviderTiles(tiles) %>%
+                  fitBounds(lng1 = input$CUmap_bounds$west,
+                            lat1 = input$CUmap_bounds$south,
+                            lng2 = input$CUmap_bounds$east,
+                            lat2 = input$CUmap_bounds$north,
+                             ) #%>%
+                  # setView(lng = input$CUmap_center$lng,
+                  #         lat = input$CUmap_center$lat,
+                  #         zoom = input$CUmap_zoom)
+  }
+  else { # building for interactive
+    leafletMap <- leaflet(options = leafletOptions(zoomSnap = 0.1, zoomDelta = 0.1)) %>% 
+                  addProviderTiles('CartoDB.Positron', layerId='map', group='map') %>%
+                  addProviderTiles('Esri.WorldImagery', layerId='satellite', group='satellite')
+    if(mapCtrl.backdrop() == 'map')
+      leafletMap <- hideGroup(leafletMap, 'satellite')
+    else
+      leafletMap <- hideGroup(leafletMap, 'map')
+  }
+  
+  leafletMap <- map.addLogo(leafletMap)
+  
+  # set up custom z-panes for content; need this to control the order in which map elements are layered
+  z <- 400 # 400 is the leaflet default overlay pane; start at pane 401 for custom panes
+  # CU polygons
+  for (i in 1:length(zPaneOrder)) {
+    z <- z+1
+    leafletMap <- addMapPane(leafletMap, name = paste0("CUPolygons.", zPaneOrder[i]), zIndex = z)
+  }
+  for (i in 1:length(zPaneOrder)) {
+    z <- z+1
+    leafletMap <- addMapPane(leafletMap, name = paste0("selected.CUPolygons.", zPaneOrder[i]), zIndex = z)
+  }
+  for (i in 1:length(zPaneOrder)) {
+    z <- z+1
+    leafletMap <- addMapPane(leafletMap, name = paste0("mouseover.CUPolygons.", zPaneOrder[i]), zIndex = z)
+  }
+  
+  # stream segments
+  z <- z + 1
+  leafletMap <- addMapPane(leafletMap, name = "streams", zIndex = z)
+  z <- z + 1
+  leafletMap <- addMapPane(leafletMap, name = "selected.streams", zIndex = z)    
+  z <- z + 1
+  leafletMap <- addMapPane(leafletMap, name = "mouseover.streams", zIndex = z)    
+  
+  # CU markers
+  z <- z + 1
+  leafletMap <- addMapPane(leafletMap, name = "CUMarkers", zIndex = z)
+  z <- z + 1
+  leafletMap <- addMapPane(leafletMap, name = "selected.CUMarkers", zIndex = z)
+  z <- z + 1
+  leafletMap <- addMapPane(leafletMap, name = "mouseover.CUMarkers", zIndex = z)
+  
+  # Pop markers
+  z <- z + 1
+  leafletMap <- addMapPane(leafletMap, name = "PopMarkers", zIndex = z)
+  z <- z + 1
+  leafletMap <- addMapPane(leafletMap, name = "selected.PopMarkers", zIndex = z)
+  z <- z + 1
+  leafletMap <- addMapPane(leafletMap, name = "mouseover.PopMarkers", zIndex = z)
+  
+  z <- z + 1
+  leafletMap <- addMapPane(leafletMap, name = "spider.CUMarkers", zIndex = z)
+  
+  z <- z + 1
+  leafletMap <- addMapPane(leafletMap, name = "spider.PopMarkers", zIndex = z)
+  
+  # add the stream segments
+  leafletMap <- addPolylines(leafletMap, 
+                             color=StreamStyle.normal$color,
+                             weight=StreamStyle.normal$weight,
+                             opacity=StreamStyle.normal$opacity,
+                             layerId = ~code,
+                             group = "Streams",
+                             label = ~Name,
+                             data = data.Streams,
+                             options = pathOptions(pane = 'streams'))
+  
+  # We only want to have the basemap drawn once here, not every time the data filter changes.
+  # Since the various map display functions use reactive expressions dependent on filtering, 
+  # make sure all calls to these function are isolated here
+  isolate(leafletMap <- map.showCUMarkers(leafletMap))
+  isolate(leafletMap <- map.showCUPolys(leafletMap))
+  isolate(if(!data.currentSelectionEmpty('CUs')) {
+    CUs <- data.currentSelection[['CUs']]
+    leafletMap <- map.showCUMarkers(leafletMap, CUs=CUs, styleOpts = CUMarkerStyle.highlighted, layer='selected')
+    leafletMap <- map.showCUPolys(leafletMap, CUs=CUs, styleOpts = CUPolyStyle.highlighted, layer='selected')
   })
+  isolate(leafletMap <- map.showPopMarkers(leafletMap))
+  isolate(if(!data.currentSelectionEmpty('Pops')) {
+    leafletMap <- map.showPopMarkers(leafletMap, pops=data.currentSelection[['Pops']], styleOpts = PopMarkerStyle.highlighted, layer='selected')
+  })
+  
+  # hide any groups that aren't supposed to be visible 
+  # need to isolate these to avoid re-rendering of entire map when mapCtrl.isVisible changes
+  for (group in c('CUMarkers', 'PopMarkers', 'CUPolygons')) {
+    isolate(if (!mapCtrl.isVisible[[group]]) {
+      leafletMap <- hideGroup(leafletMap, group)
+      leafletMap <- hideGroup(leafletMap, paste0('selected.', group))
+    })
+  }
+  isolate(if(!mapCtrl.isVisible[['Streams']])
+    leafletMap <- hideGroup(leafletMap, 'Streams'))
+  
+  isolate(colorScheme <- colorCtrl.getColors(colorCtrl.colorScheme()))
+  leafletMap <- addLegend(leafletMap, 
+                          position='bottomleft', 
+                          layerId = 'legend',
+                          colors=as.character(colorScheme),
+                          labels=names(colorScheme)) 
+  
+  # map controls should not be shown in printed version
+  if (!forPrinting) leafletMap <- map.addMapControls(leafletMap)
+
+  leafletMap
+} 
+  
+output$CUmap <- renderLeaflet({
+  leafletOutput <- try({map.buildMap()})
   if (!inherits(leafletOutput, "try-error")) {
     leafletOutput
   } else {
@@ -583,25 +626,30 @@ observeEvent(input$leaflet_button_zoom_out, {
 observeEvent(input$leaflet_button_layer_visibility, {
   showModal(modalDialog(
     title = "Layer Visibility",
-    prettyToggle(inputId= 'map.CUMarkers.visible', value = mapCtrl.isVisible[['CUMarkers']],
+    radioButtons(inputId = 'map_backdrop', label='Backdrop',
+                 choices = c('map', 'satellite'),
+                 selected = mapCtrl.backdrop(),
+                 inline=TRUE),
+    tags$hr(),
+    prettyToggle(inputId= 'map_CUMarkers_visible', value = mapCtrl.isVisible[['CUMarkers']],
                  label_on= 'CU Markers', label_off = 'CU Markers',
                  icon_on = icon("eye"), icon_off = icon("eye-slash"),
-                 status_on = "info", status_off = "info",
+                 status_on = "primary", status_off = "primary",
                  outline = TRUE, plain = TRUE),
-    prettyToggle(inputId= 'map.CUPolygons.visible', value = mapCtrl.isVisible[['CUPolygons']],
+    prettyToggle(inputId= 'map_CUPolygons_visible', value = mapCtrl.isVisible[['CUPolygons']],
                  label_on= 'CU Boundaries', label_off = 'CU Boundaries',
                  icon_on = icon("eye"), icon_off = icon("eye-slash"),
-                 status_on = "info", status_off = "info",
+                 status_on = "primary", status_off = "primary",
                  outline = TRUE, plain = TRUE),
-    prettyToggle(inputId= 'map.PopMarkers.visible', value = mapCtrl.isVisible[['PopMarkers']],
+    prettyToggle(inputId= 'map_PopMarkers_visible', value = mapCtrl.isVisible[['PopMarkers']],
                  label_on= 'Sites', label_off = 'Sites',
                  icon_on = icon("eye"), icon_off = icon("eye-slash"),
-                 status_on = "info", status_off = "info",
+                 status_on = "primary", status_off = "primary",
                  outline = TRUE, plain = TRUE),
-    prettyToggle(inputId= 'map.Streams.visible', value = mapCtrl.isVisible[['Streams']],
+    prettyToggle(inputId= 'map_Streams_visible', value = mapCtrl.isVisible[['Streams']],
                  label_on= 'Streams', label_off = 'Streams',
                  icon_on = icon("eye"), icon_off = icon("eye-slash"),
-                 status_on = "info", status_off = "info",
+                 status_on = "primary", status_off = "primary",
                  outline = TRUE, plain = TRUE ),
     easyClose = TRUE,
     footer = NULL,
@@ -610,21 +658,31 @@ observeEvent(input$leaflet_button_layer_visibility, {
 })
 
 # set the visibility of a group in the map, based on the value of mapCtrl.isVisible[[group]]
-setVisibility <- function(group) {
+map.setVisibility <- function(group) {
   if (mapCtrl.isVisible[[group]]) 
     CUmapProxy %>% showGroup(group) %>% showGroup(paste0('selected.', group))
   else 
     CUmapProxy %>% hideGroup(group) %>% hideGroup(paste0('selected.', group))
 }
 
-observeEvent(input$map.CUPolygons.visible, mapCtrl.isVisible[['CUPolygons']] <- input$map.CUPolygons.visible)
-observeEvent(mapCtrl.isVisible[['CUPolygons']], setVisibility('CUPolygons'))
-observeEvent(input$map.CUMarkers.visible, mapCtrl.isVisible[['CUMarkers']] <- input$map.CUMarkers.visible)
-observeEvent(mapCtrl.isVisible[['CUMarkers']], setVisibility('CUMarkers'))
-observeEvent(input$map.PopMarkers.visible, mapCtrl.isVisible[['PopMarkers']] <- input$map.PopMarkers.visible)
-observeEvent(mapCtrl.isVisible[['PopMarkers']], setVisibility('PopMarkers'))
-observeEvent(input$map.Streams.visible, mapCtrl.isVisible[['Streams']] <- input$map.Streams.visible)
-observeEvent(mapCtrl.isVisible[['Streams']], setVisibility('Streams'))
+observeEvent(input$map_backdrop, mapCtrl.backdrop(input$map_backdrop))
+# observeEvent(mapCtrl.backdrop(), {
+#   CUmapProxy %>% hideGroup('map') %>% hideGroup('satellite')
+#   if (mapCtrl.backdrop() == 'map')
+#     CUmapProxy %>% showGroup('map')
+#   else
+#     CUmapProxy %>% showGroup('satellite')
+# #  map.addLogo(CUmapProxy)
+# }, ignoreInit = TRUE)
+
+observeEvent(input$map_CUPolygons_visible, mapCtrl.isVisible[['CUPolygons']] <- input$map_CUPolygons_visible)
+observeEvent(mapCtrl.isVisible[['CUPolygons']], map.setVisibility('CUPolygons'))
+observeEvent(input$map_CUMarkers_visible, mapCtrl.isVisible[['CUMarkers']] <- input$map_CUMarkers_visible)
+observeEvent(mapCtrl.isVisible[['CUMarkers']], map.setVisibility('CUMarkers'))
+observeEvent(input$map_PopMarkers_visible, mapCtrl.isVisible[['PopMarkers']] <- input$map_PopMarkers_visible)
+observeEvent(mapCtrl.isVisible[['PopMarkers']], map.setVisibility('PopMarkers'))
+observeEvent(input$map_Streams_visible, mapCtrl.isVisible[['Streams']] <- input$map_Streams_visible)
+observeEvent(mapCtrl.isVisible[['Streams']], map.setVisibility('Streams'))
 
 observeEvent(mapCtrl.isVisible[['PopMarkers']], {
   updateCheckboxInput(session, 'sidebarMenu_showPops', 
@@ -634,7 +692,7 @@ observeEvent(mapCtrl.isVisible[['PopMarkers']], {
 
 observeEvent(input$leaflet_button_settings, {
   showModal(modalDialog(
-    checkboxGroupInput(inputId= 'map.showOnCUmarkerHover', label = "On hover over CU marker: ", 
+    checkboxGroupInput(inputId= 'map_showOnCUmarkerHover', label = "On hover over CU marker: ", 
                        choiceNames = c('Highlight CU marker',
                                        'Highlight CU boundaries',
                                        'Highlight sites associated with CU',
@@ -642,7 +700,7 @@ observeEvent(input$leaflet_button_settings, {
                        choiceValues = c('Marker', 'Polygon', 'Pops', 'hideOthers'),
                        selected = mapCtrl.CUmarkerHoverHighlights(),
                        inline = FALSE, width = NULL),
-    checkboxGroupInput(inputId= 'map.showOnCUpolyHover', label = "On hover over CU polygons: ", 
+    checkboxGroupInput(inputId= 'map_showOnCUpolyHover', label = "On hover over CU polygons: ", 
                        choiceNames = c('Highlight CU marker',
                                        'Highlight CU boundaries',
                                        'Highlight sites associated with CU',
@@ -650,7 +708,7 @@ observeEvent(input$leaflet_button_settings, {
                        choiceValues = c('Marker', 'Polygon', 'Pops', 'hideOthers'),
                        selected = mapCtrl.CUpolyHoverHighlights(),
                        inline = FALSE, width = NULL),
-    checkboxGroupInput(inputId= 'map.showOnStreamHover', label = "On hover over stream segments: ", 
+    checkboxGroupInput(inputId= 'map_showOnStreamHover', label = "On hover over stream segments: ", 
                        choiceNames = c('Highlight CU markers of CUs on stream',
                                        'Highlight CU boundaries of CUs on stream',
                                        'Highlight sites on stream',
@@ -664,9 +722,9 @@ observeEvent(input$leaflet_button_settings, {
   ))
 })
 
-observeEvent(input$map.showOnCUmarkerHover, mapCtrl.CUmarkerHoverHighlights(input$map.showOnCUmarkerHover))
-observeEvent(input$map.showOnCUpolyHover, mapCtrl.CUpolyHoverHighlights(input$map.showOnCUpolyHover))
-observeEvent(input$map.showOnStreamHover, mapCtrl.CUstreamHoverHighlights(input$map.showOnStreamHover))
+observeEvent(input$map_showOnCUmarkerHover, mapCtrl.CUmarkerHoverHighlights(input$map_showOnCUmarkerHover))
+observeEvent(input$map_showOnCUpolyHover, mapCtrl.CUpolyHoverHighlights(input$map_showOnCUpolyHover))
+observeEvent(input$map_showOnStreamHover, mapCtrl.CUstreamHoverHighlights(input$map_showOnStreamHover))
 
 observeEvent(data.showPops(), {
   if (!data.showPops()) { #  hide pop markers
@@ -691,15 +749,15 @@ observeEvent(data.showPops(), {
 
 observeEvent(input$leaflet_button_color_scheme, {
   showModal(modalDialog(
-    selectInput(inputId = 'map.colorScheme', label = 'Color by', 
-                choices = mapCtrl.colorOpts(), selected = mapCtrl.colorScheme(), multiple = FALSE),      
+    selectInput(inputId = 'map_colorScheme', label = 'Color by', 
+                choices = colorCtrl.colorOpts(), selected = colorCtrl.colorScheme(), multiple = FALSE),      
     easyClose = TRUE,
     footer = NULL,
     size = 's'
   ))
 }) 
 
-observeEvent(input$map.colorScheme , {mapCtrl.colorScheme(input$map.colorScheme)})
+observeEvent(input$map_colorScheme , {colorCtrl.colorScheme(input$map_colorScheme)})
 
 # -------- Highlighting of map elements ------
 
@@ -766,6 +824,7 @@ map.clearHighlights <- function(CUPolys=NULL, CUMarkers=NULL, PopMarkers=NULL, S
   
   }
 }
+
 
 # ------ Event handlers for Marker events ------
 
@@ -836,9 +895,9 @@ observeEvent(input$CUmap_shape_mouseover,
                  # special treatment of Pops here: if user wants to see populations, they should only be the ones associated with
                  # the stream segment, not all the ones associated with the CUs that are associated with the stream segment
                  elementsToHighlight <- mapCtrl.CUstreamHoverHighlights()
-                 map.showCUMouseoverHighlights(getCUsFromStreamSeg(sel), elementsToHighlight[elementsToHighlight != 'Pops'])
+                 map.showCUMouseoverHighlights(map.getCUsFromStreamSeg(sel), elementsToHighlight[elementsToHighlight != 'Pops'])
                  if ('Pops' %in% elementsToHighlight)
-                   map.showPopMouseoverHighlights(getPopsFromStreamSeg(sel))
+                   map.showPopMouseoverHighlights(map.getPopsFromStreamSeg(sel))
                #  InfoPane <- map.makeStreamInfoPane(sel)
                #  map.highlightStream(sel, 'mouseover')
                } else {
@@ -872,7 +931,7 @@ observeEvent(input$CUmap_marker_click,
                if (spiderMode) 
                  markersAtClickLocation <- c(sel)
                else 
-                 markersAtClickLocation <- getOverlapping(sel, markerType)
+                 markersAtClickLocation <- map.getOverlapping(sel, markerType)
                InfoPane <- map.makeMarkerInfoPane(markersAtClickLocation, markerType)
                if(length(markersAtClickLocation) == 1) { # select/unselect marker
                  if (markerType == 'CUs')  { # select both CU and associated populations
@@ -921,8 +980,8 @@ observeEvent(input$CUmap_shape_click,
                InfoPane <- NULL
                if (sel %in% data.Watersheds) { # user clicked on a stream segment
                  #InfoPane <- map.makeStreamInfoPane(sel)
-                 CUs <- getCUsFromStreamSeg(sel)
-                 pops <- getPopsFromStreamSeg(sel)
+                 CUs <- map.getCUsFromStreamSeg(sel)
+                 pops <- map.getPopsFromStreamSeg(sel)
                  if (all(CUs %in% data.currentSelection[['CUs']]) && all(pops %in% data.currentSelection[['Pops']])) {
                    data.removeFromSelection(CUs, 'CUs', 'map')
                    data.removeFromSelection(pops, 'Pops', 'map')
@@ -957,8 +1016,8 @@ observeEvent(input$CUmap_click,
 observeEvent({data.currentSelection[['CUs']]
              data.currentSelection[['Pops']]}, {
   stillHighlighted <- unlist(lapply(highlightedStreams(), function(s) {
-    CUs <- getCUsFromStreamSeg(s)
-    pops <- getPopsFromStreamSeg(s)
+    CUs <- map.getCUsFromStreamSeg(s)
+    pops <- map.getPopsFromStreamSeg(s)
     if (any(CUs %in% data.currentSelection[['CUs']]) || 
         (data.showPops() && any(pops %in% data.currentSelection[['Pops']]))) {
        s 
@@ -1012,13 +1071,13 @@ map.addToSelection <- function(sel, type) {
 proj <- CRS("+proj=longlat +datum=WGS84")
 
 # create a SpatialPolygons object from the coordinate list returned by leafletDraw events
-makeSPpoly <- function(geomList, ID) {
+map.makeSPpoly <- function(geomList, ID) {
   geom <- t(matrix(unlist(geomList), nrow=2)) # convert from list to matrix 
   SpatialPolygons(c(Polygons(c(Polygon(coords=geom, hole=F)), ID=as.character(ID))), proj4string = proj)
 }
 
 # given a SpatialPoints object and a SpatialPolygons object, identify which of the points are inside the polygon(s)
-ptsInsidePoly <- function(pts, poly) {
+map.ptsInsidePoly <- function(pts, poly) {
   sel <- over(pts, poly)
   # over returns the index of the polygon each point is contained in, or NA for points not inside any of the polygons
   # convert this into a vector of booleans
@@ -1030,15 +1089,15 @@ ptsInsidePoly <- function(pts, poly) {
 observeEvent(input$CUmap_draw_new_feature, {
   id <- input$CUmap_draw_new_feature$properties$`_leaflet_id`
   geomList <- input$CUmap_draw_new_feature$geometry$coordinates[[1]]
-  selPoly <- makeSPpoly(geomList, id)
+  selPoly <- map.makeSPpoly(geomList, id)
   df <- unique(data.CU.Lookup.filtered()[ , c("CU_ID", "Lat", "Lon")])
   pts <- SpatialPoints(data.frame(lng=df$Lon, lat=df$Lat), proj4string = proj)
-  CUs <- df$CU_ID[ptsInsidePoly(pts, selPoly)] 
+  CUs <- df$CU_ID[map.ptsInsidePoly(pts, selPoly)] 
   map.addToSelection(CUs, 'CUs')
   if (data.showPops()) {
     df <- data.Pop.Lookup.filtered()[ , c("Pop_UID", "Lat", "Lon")]
     pts <- SpatialPoints(data.frame(lng=df$Lon, lat=df$Lat), proj4string = proj)
-    pops <- df$Pop_UID[ptsInsidePoly(pts, selPoly)] 
+    pops <- df$Pop_UID[map.ptsInsidePoly(pts, selPoly)] 
     map.addToSelection(pops, 'Pops')
   }
   # Remove selection polygon from map
@@ -1053,7 +1112,7 @@ observeEvent(input$CUmap_draw_new_feature, {
 # don't render entire map again, since rendering of stream network takes a while
 observeEvent({data.CU.Lookup.filtered()
   data.filtered()
-  mapCtrl.colorScheme()
+  colorCtrl.colorScheme()
   data.showPops()}, {
     CUmapProxy %>% clearGroup('CUMarkers') %>% clearGroup('CUPolygons') %>% clearGroup('PopMarkers')
     CUmapProxy %>% clearGroup('selected.CUMarkers') %>% clearGroup('selected.CUPolygons') %>% clearGroup('selected.PopMarkers')
@@ -1067,10 +1126,35 @@ observeEvent({data.CU.Lookup.filtered()
     if (!data.currentSelectionEmpty('Pops')) {
       map.highlightMarkers(data.currentSelection[['Pops']], 'Pops')
     }
-    colorScheme <- map.getColors(mapCtrl.colorScheme())
+    colorScheme <- colorCtrl.getColors(colorCtrl.colorScheme())
     addLegend(CUmapProxy, 
               position='bottomleft',
               layerId = 'legend',
               colors=as.character(colorScheme),
               labels=names(colorScheme))
   }, ignoreInit=T)
+
+# ------ map screenshot -------
+
+observeEvent(input$leaflet_button_snapshot, {
+    showModal(modalDialog(
+      'Use the download button below to create a print-quality map without control widgets. ',
+      'Depending on your browser, you may experience a delay before the download starts or a save-as dialog window appears.',
+      'Please be patient ...',
+      tags$hr(),
+      downloadButton('mapDownload', label = "Download"),
+      footer = NULL,
+      easyClose = TRUE)) 
+  width <- input$window_size[1] - 292 # deduct width of sidebar and various margins
+  print('width = ')
+  print(width)
+  output$mapDownload <- downloadHandler(
+    filename = paste0( "SoS_map_", Sys.Date(), ".png"),
+    content = function(file) { mapshot( x = map.buildMap(forPrinting = TRUE),
+                                        file = file,
+                                        vheight = 500,
+                                        vwidth = width,
+                                        debug = TRUE
+                                        #selfcontained = FALSE
+                                        )})
+})

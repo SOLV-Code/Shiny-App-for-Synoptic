@@ -35,7 +35,10 @@ source('Settings.R', local=TRUE)
 # --------------------- Helper functions for data display and restructuring ---------
 
 # get full name of a CU, given the CU's ID
-getCUname <- function(CU_ID) {paste0(data.CU.Lookup[data.CU.Lookup$CU_ID == CU_ID, 'CU_Name'][1], ' (', CU_ID, ')')}
+getCUname <- function(CU_ID) {
+  paste0(CU_ID, ':', data.CU.Lookup[data.CU.Lookup$CU_ID == CU_ID, 'CU_Name'][1])
+#  paste0(data.CU.Lookup[data.CU.Lookup$CU_ID == CU_ID, 'CU_Name'][1], ' (', CU_ID, ')')}
+}
 
 # get full name of a population, given the population Pop_UID
 getPopName <- function(Pop_UID) {paste0(data.Pop.Lookup[Pop_UID, 'CU_ID'], ': ', data.Pop.Lookup[Pop_UID, 'Pop_Name'], ' (', data.Pop.Lookup[Pop_UID, 'Pop_ID'], ')')}
@@ -309,4 +312,12 @@ data.Pop.Lookup$DataStartYear <- unlist(lapply(data.Pop.Lookup$Pop_UID, function
 data.Pop.Lookup$DataEndYear <- unlist(lapply(data.Pop.Lookup$Pop_UID, function(p) {getMaxYr(data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID == p, ])}))
 data.CU.Lookup$DataStartYear <- unlist(lapply(data.CU.Lookup$CU_ID, function(CU) {getMinYr(data.CU.TimeSeries[data.CU.TimeSeries$CU_ID == CU, ])}))
 data.CU.Lookup$DataEndYear <- unlist(lapply(data.CU.Lookup$CU_ID, function(CU) {getMaxYr(data.CU.TimeSeries[data.CU.TimeSeries$CU_ID == CU, ])}))
+
+# add CU names to Labels structure
+for (cu in data.CUs) Labels[[cu]] <- getCUname(cu)
+
+# set the color options 
+default.colorOpts <- c('Species', paste0(MapLabelMetrics, '.Status'), AdditionalColorThemes)
+
+
 

@@ -18,6 +18,10 @@ observeEvent(data.showPops(), {
 table.tableData <- reactive({
   if (table.dataType() == 'CUs') {
     df <- data.filtered()
+    df2 <- unique(data.CU.Lookup.filtered()[data.CU.Lookup.filtered()$CU_ID %in% row.names(df), c(CULookupAttribsToInclude, 'CU_ID')])
+    row.names(df2) <- df2$CU_ID
+    df2 <- df2[row.names(df), CULookupAttribsToInclude, drop=F]
+    df <- cbind(df2, df)
   } else if (table.dataType() == 'Pops') {
     df <- data.Pop.Lookup.filtered()
   }

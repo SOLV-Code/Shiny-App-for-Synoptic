@@ -1,4 +1,10 @@
-# 
+# ------------ Contact form customization ----------------
+SoS_email <- 'StateOfTheSalmon@gmail.com'
+# after changing this email or the associated password, run the following R command on the command line, 
+# then upload the resulting gmail_credentials file to shinyapps.io:
+# create_smtp_creds_file(file = "gmail_credentials", user = SoS_email, provider = "gmail")
+# if email fails to send, make sure google isn't blocking smtp requests from R/Shiny
+# go to https://myaccount.google.com/lesssecureapps to allow login
 
 # ----------- Data source customization -----------------
 
@@ -78,7 +84,10 @@ BoxHeaderStatus = 'primary'
 WellPanelStyle <- "background: white"
 PickerOptsSingleSelect <- list(`show-tick`=TRUE)
 PickerOptsMultiSelect <- list(`show-tick`=TRUE, `actions-box`=TRUE, `selected-text-format`='count')
-ButtonStyle <- "color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; font-size: 100%"
+#ButtonStyle <- "color: #fff; background-color: #337ab7; border-color: #2e6da4; height:70px; font-size: 100%"
+ButtonStyle <- "color: #fff; background-color: #337ab7; border-color: #337ab7; height:40px; font-size: 100%"
+
+default.colorScheme <-'Species'
 
 # ------------ Data Filtering UI --------------
 
@@ -136,6 +145,20 @@ ParcoordsCUOrder <- c("Species", "FAZ", "AbsAbd")
 # rotation of axis labels for metric axes (in degrees from horizontal)
 ParcoordsLabelRotation <- -15 
 
+# use these rounding factors to control what is shown on the slider inputs that control the axes
+# e.g., 0 rounds to nearest integer, 2 rounds to nearest 2 digits after . etc
+ParcoordsRound <- list( RelAbd = 0,
+                        AbsAbd = 0,
+                        LongTrend = 2,
+                        PercChange = 0,
+                        ProbDeclBelowLBM = 2,
+                        # for change metrics
+                        RelAbd.Status = 0,  
+                        AbsAbd.Status = 0,
+                        LongTrend.Status = 0,
+                        ProbDeclBelowLBM.Status = 0)
+                        
+
 # ---------------- Historgram Summaries UI ------------------
 # histogram summaries will be generated for these metrics/attributes in the order specified
 HistoSummaryAttribs <- c("Area", "FAZ", "RelAbd.Status", "AbsAbd.Status", "LongTrend.Status", "PercChange.Status")
@@ -191,7 +214,7 @@ ColorPalette <- list(
 
 StreamStyle.normal <- list(
   color = 'blue',
-  weight = 1,
+  weight = 2,
   opacity = 0.7
 )
 
@@ -424,3 +447,14 @@ CUTableAttribs[['sidebar']] <- list(
   metricCellValue = 'padding-left: 1px;',
   metricCellArrow = 'padding-right: 1px;'
 )
+
+# -------------------- DataTable UI ______________________
+
+# include these attributes from lookup file when displaying table
+#CULookupAttribsToInclude <- c('CU_Name', 'DataStartYear', 'DataEndYear')
+CULookupAttribsToInclude <- c('CU_Name')
+
+
+
+
+
