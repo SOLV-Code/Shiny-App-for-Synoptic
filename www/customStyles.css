@@ -24,6 +24,23 @@
 
 .tooltip-inner { width: 400px !important; }
  
+.sidebar-input-container { background-color: #303235; }
+                         
+.sidebar-checkbox-active { padding-left: 0px;
+                           padding-right: 0px;
+                           line-height: 1;
+                           margin-bottom: -15px;
+                           font-size:13px;
+                          }
+                  
+.sidebar-checkbox-inactive { padding-left: 0px;
+                             padding-right: 0px;
+                             line-height: 1;
+                             margin-bottom: -15px;
+                             font-size: 13px;
+                           }
+          
+                
 .sidebar-sparkline-box { border: none; 
                          margin: 10px; 
                          white-space: normal; 

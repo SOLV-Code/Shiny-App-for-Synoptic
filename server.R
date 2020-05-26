@@ -22,7 +22,6 @@ list.of.packages <- c("shiny",
                       "xfun",
                       "readxl",
                       "markdown",
-                      "parcoordsSoS",
                       "crosstalk",
                       "rgdal",
                       "sp",
@@ -30,7 +29,11 @@ list.of.packages <- c("shiny",
                       "leaflet.extras",
                       "shinyBS",
                       "shinycssloaders",
-                      "sparkline")
+                      "sparkline",
+                      "mapview", 
+                      "leafem",
+                      "blastula",
+                      "parcoordsSoS")
 # 
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 #if(length(new.packages)) install.packages(new.packages)
@@ -55,6 +58,37 @@ function(input, output, session){
   source('TSPlots.R', local=TRUE)
   source('DataTable.R', local=TRUE)
   source('HistogramSummary.R', local=TRUE)
+  
+  observeEvent(input$contact_Btn, {
+    showModal(
+      modalDialog(
+        includeMarkdown("Markdown/contact.md"),
+        wellPanel(style = WellPanelStyle,
+        textInput(inputId = "contact_Name", label = NULL, placeholder = "Your name", width = '100%'),
+        textInput(inputId = "contact_Email", label = NULL, placeholder = "Your email", width = '100%'),
+        textAreaInput(inputId = "contact_Msg", label = NULL, placeholder = 'Your message', width = '100%', rows = '10'),
+        actionButton(inputId = "contact_Send", "Send")),
+        footer = modalButton('Close'),
+        size = 'l'))
+  }) 
+  
+  observeEvent(input$contact_Send, {
+    emailMsg <- compose_email(body=htmlEscape(input$contact_Msg))
+    # send the email
+    smtp_send(email = emailMsg,
+              from = SoS_email,
+              to = SoS_email,
+              subject = paste0(input$contact_Name, ' (', input$contact_Email, ')', ' via SSET contact form'),
+              credentials = creds_file('gmail_credentials')
+#             verbose = TRUE # turn on for debugging
+            )
+    # clear the form
+    updateTextInput(session, inputId = "contact_Name", value = "", placeholder = "Your name")
+    updateTextInput(session, inputId = "contact_Email", value = "", placeholder = "Your email")
+    updateTextAreaInput(session, inputId = "contact_Msg", value = "", placeholder = 'Your message')
+    # let user know message went
+    showNotification("Your message was sent successfully")
+  })
 } # end server function
 #   
 

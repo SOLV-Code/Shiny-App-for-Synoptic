@@ -18,10 +18,22 @@ parcoords.data <- reactive({
   }
   # identify all-NA columns and columns without contrast, i.e. columns where all values are the same
   colsToDrop <- apply(df, 2, function(c) {all(is.na(c)) || all(c == c[1])}) 
+  names(colsToDrop) <- names(df)
   colsToDrop[is.na(colsToDrop)] <- FALSE # don't drop columns for which the function returned NA; these are columns that have a mix of NAs and data
+  # clean up, add CU_ID and pretty row names
   df <- arrangeColumns(df, colOrder=ParcoordsMetricOrder, hide=c(names(df)[colsToDrop], ParcoordsDrop))
   df$CU_ID <- row.names(df)
   row.names(df) <- unlist(lapply(row.names(df), getCUname))
+  
+  # add colorAttrib column; this will always be hidden
+  if (colorCtrl.colorScheme() %in% names(data.filtered())) {
+    df$colorAttrib <- data.filtered()[, colorCtrl.colorScheme()] 
+  }
+  else if (colorCtrl.colorScheme() %in% names(data.CU.Lookup.filtered())) {
+    df$colorAttrib <- unlist(lapply(df$CU_ID, function(cu) {
+      data.CU.Lookup.filtered()[data.CU.Lookup.filtered()$CU_ID == cu, colorCtrl.colorScheme()][1]}))
+  }
+
   if (!is.data.frame(df)) {df <- NULL} 
   df
 })
@@ -36,7 +48,7 @@ parcoords.axisSettings <- reactiveValues()
 observeEvent(parcoords.data(), {
   df <- parcoords.data()
   metrics <- names(df)
-  hidden <- ifelse(metrics %in% ParcoordsHideOnInit, TRUE, FALSE)
+  hidden <- ifelse(metrics %in% c(ParcoordsHideOnInit, 'colorAttrib'), TRUE, FALSE)
   names(hidden) <- metrics
   lapply(metrics, function(m) {
       parcoords.axisSettings[[sId("parcoords_visible", m)]] <- !hidden[m]
@@ -64,8 +76,8 @@ dims <- reactive({
            d <- list() # add any information on metric m here that we want to pass on to javascript
            # if there is a checkbox for this dim; allow it to set visibility, otherwise make it always visible
            d[['hide']] <- ifelse (any(names(parcoords.axisSettings) == sId("parcoords_visible", m)), !parcoords.axisSettings[[sId("parcoords_visible", m)]], FALSE) 
-           # CU_ID special: always keep hidden
-           #if (m == 'CU_ID') d[['hide']] <- T
+           # color special: always keep hidden
+           if (m == 'colorAttrib') d[['hide']] <- T 
            d[['title']] <- GetLabel(m)
            if (m %in% numericMetrics(dataset)) {
              if (nrow(dataset) > 0 && any(!is.na(dataset[, m]))) {
@@ -113,22 +125,30 @@ parcoords.makeColorFunc <- function(colPal) {
 }
 
 output$parcoords_Plot <- parcoordsSoS::renderParcoords({ 
-  p <- try({scheme <- mapCtrl.colorScheme()  # dependency on control in map widget here - may want to move this to side-bar at some point ...
-            parcoordsSoS::parcoords(data=parcoords.sharedDS,
-                            autoresize=TRUE,
-#                            color= list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Species"),
-                            color= list(colorScale=htmlwidgets::JS(parcoords.makeColorFunc(map.getColors(scheme))), 
-                                        colorBy=scheme),
-                            rownames=T,
-                            alpha=0.6, 
-                            alphaOnBrushed = 0,
-                            brushMode="1D-axes-multi",
-                            brushPredicate="and",
-                            reorderable = TRUE, 
-                            dimensions=dims(),
-                            #selectedRows = data.currentSelection[['CUs']], #this works, but makes it impossible to brush more than one CU at a time
-                            nullValueSeparator="nullValue",
-                            dimensionTitleRotation=ParcoordsLabelRotation)})
+  p <- try({scheme <- colorCtrl.colorScheme() 
+            if ('colorAttrib' %in% names(parcoords.data()))
+              color <- list(colorScale=htmlwidgets::JS(parcoords.makeColorFunc(colorCtrl.getColors(scheme))), 
+                            colorBy="colorAttrib")
+            else
+              color <- '#000000'
+            parcoordsSoS::parcoords(data = parcoords.sharedDS,
+                                    autoresize = TRUE,
+#                                   color = list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Species"),
+                                    color = color,
+                                    rownames = T,
+                                    alpha = 0.6, 
+                                    alphaOnBrushed = 0,
+                                    brushMode = "1D-axes-multi",
+                                    brushPredicate = "and",
+                                    reorderable = TRUE, 
+                                    margin = list(top = 50, 
+                                                  bottom = 50, 
+                                                  left= 200, 
+                                                  right = 50),
+                                    dimensions = dims(),
+                                    #selectedRows = data.currentSelection[['CUs']], #this works, but makes it impossible to brush more than one CU at a time
+                                    nullValueSeparator = "nullValue",
+                                    dimensionTitleRotation = ParcoordsLabelRotation)})
   if (inherits(p, "try-error")) {
     print('parcoords call failed!')
     NULL
@@ -137,48 +157,64 @@ output$parcoords_Plot <- parcoordsSoS::renderParcoords({
   }
 })
 
-# Create a block with miscellaneous controls for the parcoords plot
+
 output$parcoords_Controls <- renderUI({
-    df <- parcoords.data()
-    metrics <- names(parcoords.data())
-    names(metrics) <- metrics
-    # control widgets for categorical metrics
-    catWidgets <- lapply(metrics[!(metrics %in% numericMetrics(df))], 
-                         function(m) { 
-                           tags$tr(
-                            tags$td(tags$div(title=MetricInfo[[m]], 
-                                             style='width:70px; font-size:11px; padding-left:5px;', 
-                                             GetLabel(m))),
-                            tags$td(tags$div(title=MetricInfo[[m]], style='width:120px;', '')),
-                            tags$td(tags$div(style = 'width: 20px;', 
-                                             checkboxInput(inputId = sId("parcoords_visible", m), 
-                                                  label=NULL, #GetLabel(m),
-                                                  value=parcoords.axisSettings[[sId("parcoords_visible", m)]]))))})
-    # control widgets for numerical metrics
-    numWidgets <- lapply(metrics[metrics %in% numericMetrics(df)], 
-                         function(m) { 
-                           minVal <- min(df[, m], na.rm = T)
-                           maxVal <- max(df[, m], na.rm = T)
-                           tags$tr(
-                             tags$td(tags$div(title=MetricInfo[[m]], 
-                                              style='width:70px; font-size:11px; padding-left:5px; white-space:normal; word-break:break-all;', 
-                                              GetLabel(m))),
-                           tags$td(tags$div(style = 'width: 120px;',
-                                            sliderInput(inputId = sId("parcoords_yrange", m),
-                                                label = NULL,
-                                                min = minVal,
-                                                max = maxVal,
-                                                value = c(parcoords.axisSettings[[sId("parcoords_yrange", m)]][1], parcoords.axisSettings[[sId("parcoords_yrange", m)]][2])))),
-                          tags$td(tags$div(style = 'width: 20px;'),
-                                  checkboxInput(inputId = sId("parcoords_visible", m), 
-                                                           label=NULL, #GetLabel(m),
-                                                           value=parcoords.axisSettings[[sId("parcoords_visible", m)]])))})
-    tagList(tags$div(style='padding-left:5px;', tags$b("Adjust axes:")), 
-            tags$div(style='line=height: 1;', 
-              tags$table(do.call(tagList, c(numWidgets, catWidgets)))))
-  })
-
-
+  df <- parcoords.data()
+  metrics <- names(parcoords.data())
+  names(metrics) <- metrics
+  metrics <- metrics[!(metrics %in% c('CU_ID', 'colorAttrib'))] # always hide CU_ID and colorAttrib
+  # control widgets for categorical metrics
+  catWidgets <- lapply(metrics[!(metrics %in% numericMetrics(df))], 
+                       function(m) { 
+                         if (dims()[[m]][['hide']])
+                           div_class <- 'sidebar-checkbox-inactive'
+                         else
+                           div_class <- 'sidebar-checkbox-active'
+                         tags$div(prettySwitch(inputId = sId("parcoords_visible", m),
+                                               label = GetLabel(m),
+                                               status = 'primary',
+                                               fill = TRUE,
+                                               value = parcoords.axisSettings[[sId("parcoords_visible", m)]]),
+                                  class = div_class, 
+                                  title = MetricInfo[[m]])})
+  # control widgets for numerical metrics
+  numWidgets <- lapply(metrics[metrics %in% numericMetrics(df)], 
+                       function(m) { 
+                         if (dims()[[m]][['hide']]) {
+                           tags$div(prettySwitch(inputId = sId("parcoords_visible", m),
+                                                 label = GetLabel(m),
+                                                 status = 'primary',
+                                                 fill = TRUE,
+                                                 value = parcoords.axisSettings[[sId("parcoords_visible", m)]]),
+                                    class = 'sidebar-checkbox-inactive', 
+                                    title = MetricInfo[[m]] )}
+                         else {
+                           digits <- 2
+                           if (m %in% names(ParcoordsRound)) digits <- ParcoordsRound[[m]]
+                           minVal <- round(min(df[, m], na.rm = T), digits)
+                           maxVal <- round(max(df[, m], na.rm = T), digits)
+                           tags$div(class = 'sidebar-input-container', 
+                             tags$div(prettySwitch(inputId = sId("parcoords_visible", m), 
+                                                   label = GetLabel(m),
+                                                   status = 'primary',
+                                                   fill = TRUE,
+                                                   value = parcoords.axisSettings[[sId("parcoords_visible", m)]]),
+                                      class='sidebar-checkbox-active', 
+                                      title=MetricInfo[[m]]),
+                             sliderInput(inputId = sId("parcoords_yrange", m),
+                                         min = minVal,
+                                         max = maxVal,
+                                         label = NULL,
+                                         round = -digits,
+                                         value = c(max(round(parcoords.axisSettings[[sId("parcoords_yrange", m)]][1], 
+                                                             digits = digits),
+                                                       minVal),
+                                                   min(round(parcoords.axisSettings[[sId("parcoords_yrange", m)]][2],
+                                                             digits = digits),
+                                                       maxVal))))}})
+#  tagList(tags$div(style='padding-left:5px;', tags$b("Adjust axes:")), 
+          tags$div(do.call(tagList, c(numWidgets, catWidgets)))
+})
 # scale parcoords graph axes to current selection, 
 # by setting sliders and thereby triggering corresponding changes in dims()
 observeEvent({input$parcoords_scale_to_selected}, {
@@ -187,6 +223,8 @@ observeEvent({input$parcoords_scale_to_selected}, {
   if (nrow(df) > 0) {
     for (m in names(df)) {
       if (sId("parcoords_yrange", m) %in% names(input)) { # adjust the sliders so ylims correspond to range of selected data
+        print('adjusting slider for')
+        print(m)
         updateSliderInput(session, sId("parcoords_yrange", m), 
                           value = c(min(df[, m], na.rm=T),
                                     max(df[, m], na.rm=T)))
@@ -254,17 +292,11 @@ observeEvent(input$UIPanels, {
 
 output$box_Parcoords <- renderUI({ 
   tagList( tags$div('style' = "text-align:right;", 
-                    #actionButton(inputId = "parcoords_reset_brush",
-                    #             label="Reset Highlighting",icon("paper-plane"), 
-                    #             style=ButtonStyle),
-                    #actionButton(inputId = "parcoords_scale_to_selected",
-                    #             label="Scale to Selected",icon("search-plus"), 
-                    #             style=ButtonStyle)),
-                    #This is where the "how to" button will be created"
                     actionButton(inputId = "how_to_video",
-                                 label="How do I use this chart?",icon("question"), 
-                                 style=ButtonStyle,
-                                 onclick ="window.open('http://michaelbarrus.com/parallel-coordinates', '_blank')")),
-           parcoordsSoS::parcoordsOutput("parcoords_Plot", height="600px"))           # 400px is defaultheight
-           #uiOutput("parcoords_Controls"))
+                                  label="How do I use this chart?",icon("question"), 
+                                  style=ButtonStyle,
+                                  onclick = "window.open('http://michaelbarrus.com/parallel-coordinates', '_blank')")),
+           parcoordsSoS::parcoordsOutput("parcoords_Plot", 
+                                         width="100%", 
+                                         height="600px"))          # 400px is default height
 })

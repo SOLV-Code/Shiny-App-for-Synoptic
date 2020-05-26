@@ -1,5 +1,44 @@
 # ----------------- Shared data structures used in several widgets ---------------
 
+colorCtrl.colorScheme <- reactiveVal(value = default.colorScheme, label = 'colorScheme')
+colorCtrl.colorOpts <- reactiveVal(value = default.colorOpts, label = 'colorOpts')
+
+observeEvent({colorCtrl.colorScheme()
+  colorCtrl.colorOpts()}, {
+  updateSelectInput(session = session, 
+                    inputId = 'sidebarMenu_colorScheme',
+                    choices = colorCtrl.colorOpts(),
+                    selected = colorCtrl.colorScheme())
+  updateSelectInput(session = session, 
+                    inputId = 'map_colorScheme',
+                    choices = colorCtrl.colorOpts(),
+                    selected = colorCtrl.colorScheme())
+})
+
+observeEvent(input$sidebarMenu_colorScheme, colorCtrl.colorScheme(input$sidebarMenu_colorScheme))
+  
+# translate from specific scheme to generic scheme 
+colorCtrl.getColors <- function(scheme) {
+  if (scheme %in% paste0(MapLabelMetrics, '.Status')) {
+    if (filter$change == "Annual" )
+      ColorPalette[['Status']]
+    else
+      ColorPalette[['StatusChange']]
+  }
+  else
+    ColorPalette[[scheme]]
+}
+
+# get the color to use for the given attribute values
+colorCtrl.getColor <- function(attribVals, override=NULL, scheme = colorCtrl.colorScheme()) {
+  if (!is.null(override)) return(rep(override, length(attribVals)))
+  attribVals <- as.character(attribVals)
+  attribVals[is.na(attribVals)] <- 'NA'
+  colPal <- colorCtrl.getColors(scheme)
+  unlist(lapply(attribVals, function(a) {as.character(colPal[a])}))
+}
+
+
 # create a data frame analogous to data.CU.Metrics, but with status metrics coverted to numeric and 
 # metric values replaced by change in metric values 
 data.getChangeMetricsData <- function() {
@@ -160,7 +199,15 @@ data.isSelected <- function(sel, type) {sel %in% data.currentSelection[[type]]}
 
 data.showPops <- reactiveVal(FALSE)
 observeEvent(input$sidebarMenu_showPops, {data.showPops(input$sidebarMenu_showPops)})
-             
+      
+observeEvent({data.currentSelection[['CUs']]
+              data.currentSelection[['Pops']]}, {
+  if (data.currentSelectionEmpty('CUs') && data.currentSelectionEmpty('Pops'))
+    updateButton(session, "sidebarMenu_clearHighlighting", disabled = TRUE)
+  else
+    updateButton(session, "sidebarMenu_clearHighlighting", disabled = FALSE)
+}, ignoreNULL = FALSE)       
+
 observeEvent(input$sidebarMenu_clearHighlighting,{
   data.setSelection(NULL, type='CUs', widget="clearHighlighting_button")
   data.setSelection(NULL, type='Pops', widget="clearHighlighting_button")
@@ -249,7 +296,7 @@ spark.makeSparklineData <- function(df, attrib, minYr=NULL, maxYr=NULL) {
   yrs <- c(minYr:maxYr)
   out <- rep(NA, length(yrs))
   names(out) <- as.character(yrs)
-  out[row.names(df)] <- df[ ,attrib]
+  out[row.names(df)] <- round(df[ ,attrib])
   out
 }
 

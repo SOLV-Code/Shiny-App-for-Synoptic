@@ -6,6 +6,7 @@
 .RData
 .RDataTmp
 .Rhistory
+.DS_Store
 .~lock*
 /data/.~lock*
 /documentation/.~lock*
@@ -15,3 +16,4 @@
 /aux
 .Rproj.user
 Shiny-App-for-Synoptic.Rproj
+gmail_credentials

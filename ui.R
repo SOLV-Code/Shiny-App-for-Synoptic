@@ -1,6 +1,6 @@
 # web interface for SoS database and SSET toolbox
 # Written by B. Dorner & B. MacDonald
-# April 2020
+# May 2020
 # This is a Shiny web application. You can run the application by clicking
 # the 'Run App' button above.
 
@@ -24,27 +24,42 @@ sidebar <- shinydashboard::dashboardSidebar(
     
     conditionalPanel("input.tabs == 'CUSelection'",
                      tags$hr(),
-                     bsButton(inputId = "sidebarMenu_clearHighlighting", 
-                              label = "Clear highlighting", 
-                              style='primary', 
-                              type='action'),
-                     bsButton(inputId = "sidebarMenu_freezeDataToHighlighted", 
-                              label = "Work with highlighted CUs only", 
-                              style='primary', 
-                              type='action', 
-                              disabled=TRUE),
-                     bsButton(inputId = "sidebarMenu_resetDataToFilter", 
-                              label = "Revert to full dataset", 
-                              style='primary', 
-                              type='action', 
-                              disabled=TRUE),
+                     selectInput(inputId = 'sidebarMenu_colorScheme', 
+                                 label = 'Color CUs by', 
+                                 choices = default.colorScheme, 
+                                 selected = default.colorScheme, 
+                                 multiple = FALSE,
+                                 width = '100%'),      
+                     conditionalPanel("input.dataFilters_change == 'Annual'",
+                        selectInput( inputId="sidebarMenu_year",					 
+                                     label="Assessment Year",
+                                     choices = as.character(data.CU.Metrics.Years),
+                                     selected = as.character(data.CU.Metrics.Years[length(data.CU.Metrics.Years)]),
+                                     width = '100%'
+                                     )),
                      conditionalPanel("input.UIPanels == 'Map' || input.UIPanels == 'TSPlots' || input.UIPanels == 'Table'", 
                                       checkboxInput(inputId = 'sidebarMenu_showPops', label = 'Show sites', value = FALSE)),
+                     tags$hr(),
+                     actionButton(inputId = "sidebarMenu_clearHighlighting", 
+                                  label = "Clear highlighting", 
+                                  style=ButtonStyle, 
+                                  width = '90%',
+                                  disabled=TRUE),
+                     actionButton(inputId = "sidebarMenu_freezeDataToHighlighted", 
+                              label = "Work with highlighted CUs only", 
+                              style=ButtonStyle, 
+                              width = '90%',
+                              disabled=TRUE),
+                     actionButton(inputId = "sidebarMenu_resetDataToFilter", 
+                              label = "Revert to full dataset", 
+                              style=ButtonStyle, 
+                              width = '90%',
+                              disabled=TRUE),
                      tags$hr(),
                      tags$div(id = 'insertMarkInfoPane')
                     ),
     tags$div(
-      style = "position: absolute; bottom: 0;",
+      style = "position: absolute; bottom: -100px;",
       hr(),
       h5("Built with",
         img(src = "https://www.rstudio.com/wp-content/uploads/2014/04/shiny.png", height = "30px"),
@@ -60,7 +75,19 @@ body <- shinydashboard::dashboardBody(`style` = "min-height: 400px",
   includeScript('www/customJSCode.js'),
   tags$head(HTML("<script type='text/javascript' src='sbs/shinyBS.js'></script>")),
   tags$link(rel = "stylesheet", type = "text/css", href = "customStyles.css"),
-
+  tags$head(tags$script('
+                        var window_size = [0, 0];
+                        $(document).on("shiny:connected", function(e) {
+                            window_size[0] = window.innerWidth;
+                            window_size[1] = window.innerHeight;
+                            Shiny.onInputChange("window_size", window_size);
+                        });
+                        $(window).resize(function(e) {
+                            window_size[0] = window.innerWidth;
+                            window_size[1] = window.innerHeight;
+                            Shiny.onInputChange("window_size", window_size);
+                        });
+                    ')),
   tabItems(
     tabItem(
       tabName = "DISCLAIM",
@@ -85,8 +112,9 @@ body <- shinydashboard::dashboardBody(`style` = "min-height: 400px",
           #hid the data selector box
           #bsCollapsePanel(title = "Select by attributes and/or metric values", uiOutput("box_DataSelectors"), value='Select', style='primary'),
           bsCollapsePanel(title = "View and highlight on map", uiOutput("box_LeafletMap"), value='Map', style='primary'),
-          bsCollapsePanel(title = "Compare CUs", uiOutput("box_Parcoords"), value='Parcoords', style='primary'),
-          bsCollapsePanel(title = "Time series and status overview", shinycssloaders::withSpinner(uiOutput("box_TSPlots")), value='TSPlots', style='primary'),
+          bsCollapsePanel(title = "Compare CUs", div(style = 'overflow-x: scroll', uiOutput("box_Parcoords")), value='Parcoords', style='primary'),
+          bsCollapsePanel(title = "Time series and status overview", div(style = 'overflow-x: scroll', shinycssloaders::withSpinner(uiOutput("box_TSPlots"))), value='TSPlots', style='primary'),
+#          bsCollapsePanel(title = "Time series and status overview", shinycssloaders::withSpinner(uiOutput("box_TSPlots")), value='TSPlots', style='primary'),
           bsCollapsePanel(title = "Table view and download", div(style = 'overflow-x: scroll', uiOutput("box_Table")), value='Table', style='primary'),
           bsCollapsePanel(title = "Summary report", uiOutput("box_HistoSummary"), value='Histogram', style='primary')
           #hid the radar plots
@@ -108,10 +136,8 @@ ui <- dashboardPage(
      #         tags$style(".main-header {max-height: 100px}"),
      #         tags$style(".main-header .logo {height: 100px}")
      # ),
-    # Use image in title
-    #title = tags$a(href='http://company.fr/',     # Note we can add a web link to the logo in the future using this structure if we want!
-     #              tags$img(src='logo.jpg'))
-    title = tags$img(src='Final - State of the Salmon Program - LT. Design-03.png', height="60px")
+    title = tags$img(src='Final - State of the Salmon Program - LT. Design-03.png', height="60px"),
+    tags$li(class = "dropdown", actionBttn("contact_Btn", label = "Contact", size="sm", style="minimal"))
   ),     
 
   #  dashboardSidebar(disable=F),

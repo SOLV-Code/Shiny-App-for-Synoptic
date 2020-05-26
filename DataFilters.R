@@ -4,7 +4,7 @@
 filter <- reactiveValues()
 filterChanged <- reactiveVal()
 
-setFilter <- function(field, val) {
+filter.setFilter <- function(field, val) {
   filter[[field]] <- val
   filterChanged(runif(1))
 }
@@ -17,31 +17,44 @@ for (a in FilterAttributes[FilterAttributes %in% names(data.CU.Metrics)]) {
     else
       filter[[lc_a]] <- unique(as.character(data.CU.Metrics[, lc_a]))
     observeEvent(input[[sId("dataFilters", lc_a)]], 
-                 setFilter(lc_a, input[[sId("dataFilters", lc_a)]]), ignoreNULL = F, ignoreInit = T)
+                 filter.setFilter(lc_a, input[[sId("dataFilters", lc_a)]]), ignoreNULL = F, ignoreInit = T)
   })
 }
 
 # -- Year selection: set to most recent year as default
 filter$year <- max(data.CU.Metrics$Year)
-observeEvent(input$dataFilters_year, setFilter('year', input$dataFilters_year))
+
+# change year - this may be done from filter menu or sidebar shortcut; keep both in sync
+filter.setYear <- function(year) {
+  filter.setFilter('year', year)
+  updatePickerInput(session = session,
+                    inputId = 'dataFilters_year',
+                    selected = year)
+  updatePickerInput(session = session,
+                    inputId = 'sidebarMenu_year',
+                    selected = year)
+}
+observeEvent(input$dataFilters_year, filter.setYear(input$dataFilters_year))
+observeEvent(input$sidebarMenu_year, filter.setYear(input$sidebarMenu_year))
+
 # Select metrics and attributes to show
 filter$metrics <- c(data.CU.MetricsSeries.MetricNames, FilterMFAttributes) 
-observeEvent(input$dataFilters_metrics, setFilter('metrics', input$dataFilters_metrics))
+observeEvent(input$dataFilters_metrics, filter.setFilter('metrics', input$dataFilters_metrics))
 # Toggle between annual snapshot (default) and change from a baseline year
 filter$change <- "Annual"
-observeEvent(input$dataFilters_change, setFilter('change', input$dataFilters_change))
+observeEvent(input$dataFilters_change, filter.setFilter('change', input$dataFilters_change))
 # If showing change from baseline year, select the two years to use (baseline and year to calculate change from baseline)
 filter$changeyear_1 <- data.CU.Metrics.Years[length(data.CU.Metrics.Years) - 1]
-observeEvent(input$dataFilters_changeyear_1, setFilter('changeyear_1', input$dataFilters_changeyear_1))
+observeEvent(input$dataFilters_changeyear_1, filter.setFilter('changeyear_1', input$dataFilters_changeyear_1))
 filter$changeyear_2 <- data.CU.Metrics.Years[length(data.CU.Metrics.Years)]
-observeEvent(input$dataFilters_changeyear_2, setFilter('changeyear_2', input$dataFilters_changeyear_2))
+observeEvent(input$dataFilters_changeyear_2, filter.setFilter('changeyear_2', input$dataFilters_changeyear_2))
 
 # -- some helper functions and structures for nested filtering 
 
 # given a list of data attributes and a data frame, 
 # update the associated selector widgets to show the choices corresponding
 # to the values available in the data frame for the given attributes
-updatePickerInputs <- function(attribs, df) {
+filter.updatePickerInputs <- function(attribs, df) {
   for (a in attribs[attribs %in% names(df)]) {
     choices <- GetNamedChoices(a, df)
     updatePickerInput(session, sId("dataFilters", a), choices=choices, selected=choices)
@@ -51,7 +64,7 @@ updatePickerInputs <- function(attribs, df) {
 # given a list of data attributes and a data frame, 
 # filter data frame based on the set of selector values
 # associated with the given data attributes  
-getFilteredDF <- function(attribs, df) {
+filter.getFilteredDF <- function(attribs, df) {
   selection <- rep(T, nrow(df))
   for (a in attribs[attribs %in% names(df)]) {
     selection <- selection & (df[, a] %in% filter[[a]])
@@ -62,21 +75,21 @@ getFilteredDF <- function(attribs, df) {
 # -- logic for nested filtering of data:
 # Data type selection: 
 observeEvent(filter$DataType, {
-  df <- getFilteredDF(c('DataType'), data.CU.Metrics)
-  updatePickerInputs(c('Species', 'FAZ', 'Area', 'RunTiming', 'LifeHistory', 'CU_ID'), df) 
+  df <- filter.getFilteredDF(c('DataType'), data.CU.Metrics)
+  filter.updatePickerInputs(c('Species', 'FAZ', 'Area', 'RunTiming', 'LifeHistory', 'CU_ID'), df) 
 }, ignoreNULL = FALSE)
 
 # -- logic for nested filtering of data:
 # all other filters are limited to what's available for the selected species
 observeEvent(filter$Species, {
-  df <- getFilteredDF(c('Species'), data.CU.Metrics)
-  updatePickerInputs(c('FAZ', 'Area', 'RunTiming', 'LifeHistory', 'CU_ID'), df) 
+  df <- filter.getFilteredDF(c('Species'), data.CU.Metrics)
+  filter.updatePickerInputs(c('FAZ', 'Area', 'RunTiming', 'LifeHistory', 'CU_ID'), df) 
 }, ignoreNULL = FALSE)
 
 # -- Area limits what FAZs and CUs are available
 observeEvent(filter$Area, {
-  df <- getFilteredDF(c('Species', 'Area', 'RunTiming', 'LifeHistory'), data.CU.Metrics)
-  updatePickerInputs(c('FAZ', 'CU_ID'), df) 
+  df <- filter.getFilteredDF(c('Species', 'Area', 'RunTiming', 'LifeHistory'), data.CU.Metrics)
+  filter.updatePickerInputs(c('FAZ', 'CU_ID'), df) 
 }, ignoreNULL = FALSE)
 
 # -- FAZ, RunTiming, and LifeHistory limit what CUs are available
@@ -85,8 +98,8 @@ observeEvent({
   filter$RunTiming
   filter$LifeHistory
 }, {
-  df <- getFilteredDF(c('Species', 'Area','RunTiming', 'LifeHistory', 'FAZ'), data.CU.Metrics)
-  updatePickerInputs(c('CU_ID'), df) 
+  df <- filter.getFilteredDF(c('Species', 'Area','RunTiming', 'LifeHistory', 'FAZ'), data.CU.Metrics)
+  filter.updatePickerInputs(c('CU_ID'), df) 
 }, ignoreNULL = FALSE)
 
 # -- Years available for changeyear_1 are dependent on selection of changeyear_2 and vice versa
@@ -106,27 +119,26 @@ observeEvent(
                       selected=choices[length(choices)] )  
   }) 
 
-# Add tooltip to checkbox input. Borrowed from
-#https://stackoverflow.com/questions/36670065/tooltip-in-shiny-ui-for-help-text
-makeCheckboxTooltip <- function(checkboxValue, buttonLabel, buttonId, Tooltip){
+# Add tooltip to checkbox input by creating an info button dynamically in javascript. 
+# Adapted from https://stackoverflow.com/questions/36670065/tooltip-in-shiny-ui-for-help-text
+filter.makeCheckboxTooltip <- function(checkboxValue, buttonId, Tooltip){
   tags$script(HTML(paste0("
                             $(document).ready(function() {
-                            var inputElements = document.getElementsByTagName('input');
-                            for(var i = 0; i < inputElements.length; i++) {
-                            var input = inputElements[i];
-                            if(input.getAttribute('value') == '", checkboxValue, "' && input.getAttribute('value') != 'null') {
-                            var button = document.createElement('button');
-                            button.setAttribute('id', '", buttonId, "');
-                            button.setAttribute('type', 'button');
-                            button.setAttribute('class', 'btn action-button btn-inverse btn-xs');
-                            button.style.float = 'right';
-                            button.appendChild(document.createTextNode('", buttonLabel, "'));
-                            
-                            input.parentElement.parentElement.appendChild(button);
-                            shinyBS.addTooltip('", buttonId, "', \"tooltip\", {\"placement\": \"right\", \"trigger\": \"click\", \"title\": \"", Tooltip, "\"})
-                            console.log(button)
-                            };
-                            }
+                              var inputElements = document.getElementsByTagName('input');
+                              for(var i = 0; i < inputElements.length; i++) {
+                                var input = inputElements[i];
+                                if(input.getAttribute('value') == '", checkboxValue, "' && input.getAttribute('value') != 'null') {
+                                  var button = document.createElement('button');
+                                  button.setAttribute('id', '", buttonId, "');
+                                  button.setAttribute('type', 'button');
+                                  button.setAttribute('class', 'fa fa-info btn-xs');
+                                  button.style.fontSize = '9px';
+                                  button.style.borderRadius = '10px';
+                                  button.style.float = 'right';
+                                  input.parentElement.parentElement.appendChild(button);
+                                  shinyBS.addTooltip('", buttonId, "', \"tooltip\", {\"placement\": \"right\", \"trigger\": \"click\", \"title\": \"", Tooltip, "\"})
+                                };
+                              };
                             });
                             ")))
 }
@@ -139,8 +151,7 @@ output$box_DataFilters <- renderUI({
   names(metricChoices$Attributes) = as.character(lapply(metricChoices$Attributes, GetLabel))
   allMetricChoices <- c(metricChoices$Metrics, metricChoices$Attributes)
   metricHelp <- lapply(as.character(allMetricChoices), function(m) {
-    makeCheckboxTooltip(checkboxValue = m,
-                        buttonLabel = "ⓘ",
+    filter.makeCheckboxTooltip(checkboxValue = m,
                         buttonId = sId("dataFiltersMetricHelp", which(as.character(allMetricChoices) == m)),
                         Tooltip = htmlEscape(MetricInfo[[m]], attribute=TRUE))
   })
