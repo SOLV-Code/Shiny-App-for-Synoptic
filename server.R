@@ -6,6 +6,8 @@
 
 list.of.packages <- c("shiny",
                       "shinydashboard",
+                      "shinydashboardPlus",
+                      "shinyjs",
                       "tibble",
                       "devtools",
                       "ggplot2",
@@ -73,9 +75,9 @@ function(input, output, session){
   }) 
   
   observeEvent(input$contact_Send, {
-    emailMsg <- compose_email(body=htmlEscape(input$contact_Msg))
+    emailMsg <- blastula::compose_email(body=htmlEscape(input$contact_Msg))
     # send the email
-    smtp_send(email = emailMsg,
+    blastula::smtp_send(email = emailMsg,
               from = SoS_email,
               to = SoS_email,
               subject = paste0(input$contact_Name, ' (', input$contact_Email, ')', ' via SSET contact form'),
