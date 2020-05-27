@@ -308,7 +308,7 @@ spark.makeSparkline <- function(df, minYr=NULL, maxYr=NULL, attribs) {
     df <- as.numeric(spark.makeSparklineData(df, ts, minYr, maxYr))
     if (!all(is.na(df))) {
       ID <- as.character(runif(1))
-      output[[ID]] <- renderSparkline({sparkline(df, 
+      output[[ID]] <- sparkline::renderSparkline({sparkline(df, 
                                                  width=attribs$chartWidth,
                                                  height=attribs$chartHeight,
                                                  #lineWidth=attribs$lineWidth,

@@ -383,7 +383,7 @@ map.addMapControls <- function(leafletMap)  {
                            minimized = TRUE)
   
   # add controls for drawing masks for selection
-  leafletMap <- addDrawToolbar(leafletMap,
+  leafletMap <- leaflet.extras::addDrawToolbar(leafletMap,
                                targetGroup = "mask",
                                rectangleOptions = T,
                                polylineOptions = F,
@@ -1137,6 +1137,13 @@ observeEvent({data.CU.Lookup.filtered()
 # ------ map screenshot -------
 
 observeEvent(input$leaflet_button_snapshot, {
+   if (!is_phantomjs_installed())
+     showModal(modalDialog(
+       "Using this functionality requires PhantomJS, which doesn't appear to be installed on this system.",
+       "Please use your computer's screen capture capabilities instead.",
+       footer = NULL,
+       easyClose = TRUE)) 
+   else { # good to go
     showModal(modalDialog(
       'Use the download button below to create a print-quality map without control widgets. ',
       'Depending on your browser, you may experience a delay before the download starts or a save-as dialog window appears.',
@@ -1145,16 +1152,15 @@ observeEvent(input$leaflet_button_snapshot, {
       downloadButton('mapDownload', label = "Download"),
       footer = NULL,
       easyClose = TRUE)) 
-  width <- input$window_size[1] - 292 # deduct width of sidebar and various margins
-  print('width = ')
-  print(width)
-  output$mapDownload <- downloadHandler(
-    filename = paste0( "SoS_map_", Sys.Date(), ".png"),
-    content = function(file) { mapshot( x = map.buildMap(forPrinting = TRUE),
-                                        file = file,
-                                        vheight = 500,
-                                        vwidth = width,
-                                        debug = TRUE
-                                        #selfcontained = FALSE
-                                        )})
+    width <- input$window_size[1] - 292 # deduct width of sidebar and various margins
+    output$mapDownload <- downloadHandler(
+      filename = paste0( "SoS_map_", Sys.Date(), ".png"),
+      content = function(file) { mapview::mapshot( x = map.buildMap(forPrinting = TRUE),
+                                          file = file,
+                                          vheight = 500,
+                                          vwidth = width,
+                                          #debug = TRUE,
+                                          selfcontained = FALSE
+                                          )})
+   }
 })
