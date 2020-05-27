@@ -119,24 +119,21 @@ observeEvent(
                       selected=choices[length(choices)] )  
   }) 
 
-# Add tooltip to checkbox input by creating an info button dynamically in javascript. 
+# Add an info button dynamically in javascript. 
 # Adapted from https://stackoverflow.com/questions/36670065/tooltip-in-shiny-ui-for-help-text
-filter.makeCheckboxTooltip <- function(checkboxValue, buttonId, Tooltip){
+filter.makeInfoButton <- function(value, buttonId, tooltip){
   tags$script(HTML(paste0("
                             $(document).ready(function() {
                               var inputElements = document.getElementsByTagName('input');
                               for(var i = 0; i < inputElements.length; i++) {
                                 var input = inputElements[i];
-                                if(input.getAttribute('value') == '", checkboxValue, "' && input.getAttribute('value') != 'null') {
+                                if(input.getAttribute('value') == '", value, "' && input.getAttribute('value') != 'null') {
                                   var button = document.createElement('button');
                                   button.setAttribute('id', '", buttonId, "');
                                   button.setAttribute('type', 'button');
-                                  button.setAttribute('class', 'fa fa-info btn-xs');
-                                  button.style.fontSize = '9px';
-                                  button.style.borderRadius = '10px';
-                                  button.style.float = 'right';
+                                  button.setAttribute('class', 'fa fa-info btn-xs info-btn');
                                   input.parentElement.parentElement.appendChild(button);
-                                  shinyBS.addTooltip('", buttonId, "', \"tooltip\", {\"placement\": \"right\", \"trigger\": \"click\", \"title\": \"", Tooltip, "\"})
+                                  shinyBS.addTooltip('", buttonId, "', \"tooltip\", {\"placement\": \"right\", \"trigger\": \"click\", \"title\": \"", tooltip, "\"})
                                 };
                               };
                             });
@@ -151,9 +148,9 @@ output$box_DataFilters <- renderUI({
   names(metricChoices$Attributes) = as.character(lapply(metricChoices$Attributes, GetLabel))
   allMetricChoices <- c(metricChoices$Metrics, metricChoices$Attributes)
   metricHelp <- lapply(as.character(allMetricChoices), function(m) {
-    filter.makeCheckboxTooltip(checkboxValue = m,
-                        buttonId = sId("dataFiltersMetricHelp", which(as.character(allMetricChoices) == m)),
-                        Tooltip = htmlEscape(MetricInfo[[m]], attribute=TRUE))
+    filter.makeInfoButton(value = m,
+                          buttonId = sId("dataFiltersMetricHelp", which(as.character(allMetricChoices) == m)),
+                          tooltip = htmlEscape(MetricInfo[[m]], attribute=TRUE))
   })
   
   tagList(
