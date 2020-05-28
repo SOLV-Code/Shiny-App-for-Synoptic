@@ -1,8 +1,3 @@
-THIS IS A PRELIMINARY PROTOTYPE FOR TESTING.
-
-### Citation
-This prototype version is not citable.
-
 ### Bug Reports
 For bug reports or suggestions for how to improve this software, please use the issue tracking system
 in our [Github repository](https://github.com/BronwynMacDonald/Shiny-App-for-Synoptic/issues)
