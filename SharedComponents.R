@@ -115,6 +115,10 @@ data.currentCUs <- reactive({
 data.Pop.Lookup.filtered <- reactive({
   df <- data.Pop.Lookup
   df <- df[df$CU_ID %in% data.currentCUs(), ]
+  if (data.WSPsitesOnly()) 
+    df[df$WSP_ts == 'yes', ]
+  else
+    df
 })
 
 # keep track of current populations within filtered data
@@ -199,7 +203,13 @@ data.isSelected <- function(sel, type) {sel %in% data.currentSelection[[type]]}
 
 data.showPops <- reactiveVal(FALSE)
 observeEvent(input$sidebarMenu_showPops, {data.showPops(input$sidebarMenu_showPops)})
-      
+ 
+data.additionalSpawnerTS <- reactiveVal('none')
+observeEvent(input$sidebarMenu_additionalSpawnerTS, {data.additionalSpawnerTS(input$sidebarMenu_additionalSpawnerTS)})
+
+data.WSPsitesOnly <- reactiveVal(TRUE)
+observeEvent(input$sidebarMenu_WSPSites, {data.WSPsitesOnly(input$sidebarMenu_WSPSites)})
+
 observeEvent({data.currentSelection[['CUs']]
               data.currentSelection[['Pops']]}, {
   if (data.currentSelectionEmpty('CUs') && data.currentSelectionEmpty('Pops'))
@@ -207,6 +217,14 @@ observeEvent({data.currentSelection[['CUs']]
   else
     updateButton(session, "sidebarMenu_clearHighlighting", disabled = FALSE)
 }, ignoreNULL = FALSE)       
+
+observeEvent(data.currentCUs(), {
+  data.currentSelection[['CUs']] <- data.currentSelection[['CUs']][data.currentSelection[['CUs']] %in% data.currentCUs()]
+  }, ignoreNULL = FALSE)
+
+observeEvent(data.currentPops(), {
+  data.currentSelection[['Pops']] <- data.currentSelection[['Pops']][data.currentSelection[['Pops']] %in% data.currentPops()]
+}, ignoreNULL = FALSE)
 
 observeEvent(input$sidebarMenu_clearHighlighting,{
   data.setSelection(NULL, type='CUs', widget="clearHighlighting_button")
@@ -286,7 +304,7 @@ showInfoPane <- function(ui) {
 # -------------------------- sparklines and status summary -----------------------
 
 # extract attribute 'attrib' from df and create a vector of attrib values to use for creating a sparkline, 
-# padding with NAs if needed to fill the range of years (either explicity specified in args, or taken from column 'Year')
+# padding with NAs if needed to fill the range of years (either explicitly specified in args, or taken from column 'Year')
 spark.makeSparklineData <- function(df, attrib, minYr=NULL, maxYr=NULL) {
   df <- df[, c('Year', attrib)]
   row.names(df) <- as.character(df$Year)
@@ -300,25 +318,56 @@ spark.makeSparklineData <- function(df, attrib, minYr=NULL, maxYr=NULL) {
   out
 }
 
-# create a sparkline, given a data frame with a year column and a time series column specified in the 'DataType' filter attribute 
-spark.makeSparkline <- function(df, minYr=NULL, maxYr=NULL, attribs) {
-  spark <- tags$div(style=(attribs$style$missingTS), attribs$missingTSText)
-  if ((nrow(df) > 0) && (filter$DataType %in% names(df))) {
-    ts <- filter$DataType
-    df <- as.numeric(spark.makeSparklineData(df, ts, minYr, maxYr))
-    if (!all(is.na(df))) {
+spark.makeSparkline <- function(df, attribs, tsName, showYear = T, chartRangeMin = NULL, chartRangeMax = NULL) {
+   if (is.null(chartRangeMin)) chartRangeMin <- min(df, na.rm = T)
+   if (is.null(chartRangeMax)) chartRangeMax <- max(df, na.rm = T)
+   tooltipFormat <- paste0('<span>', tsName, ': {{y}}</span>')
+   if (showYear) 
+     tooltipFormat <- paste0('<div>{{x}}</div>', tooltipFormat) 
+   sparkline(as.numeric(df), 
+              width=attribs$chartWidth,
+              height=attribs$chartHeight,
+              #lineWidth=attribs$lineWidth,
+              lineColor=attribs$lineColor, 
+              fillColor=attribs$fillColor,
+              chartRangeMin = chartRangeMin,
+              chartRangeMax = chartRangeMax,
+              xvalues = as.numeric(names(df)),
+              numberDigitGroupSep = '',
+              tooltipFormat = tooltipFormat
+   )
+}
+  
+  
+# create a sparkline or sparkline composite, given a data frame with a year column and a time series data type (wild or total)
+# if withAbsAbd is set, add absolute abundance behind trend bars
+spark.makeSparklineChart <- function(df, minYr=NULL, maxYr=NULL, attribs) {
+  out <- tags$div(style=(attribs$style$missingTS), attribs$missingTSText)
+  if (nrow(df) > 0) {
+    df1 <- spark.makeSparklineData(df, sparkDefaultDataType, minYr, maxYr)
+    if (length(df1) > 0 && !all(is.na(df1))) {
+      rangeMin <- min(df1, na.rm = T)
+      rangeMax <- max(df1, na.rm = T)
+      if (data.additionalSpawnerTS() != 'none') {
+        df2 <- spark.makeSparklineData(df, data.additionalSpawnerTS(), minYr, maxYr)
+        rangeMin <- min(c(df1, df2), na.rm = T)
+        rangeMax <- max(c(df1, df2), na.rm = T)
+      }
+      if (data.additionalSpawnerTS() != 'none') {
+        spark1 <- spark.makeSparkline(df1, attribs, sparkDefaultDataType, showYear = F, chartRangeMin = rangeMin, chartRangeMax = rangeMax)
+        attribs$lineColor <- attribs$lineColor2
+        attribs$fillColor <- attribs$fillColor2
+        spark2 <- spark.makeSparkline(df2, attribs, data.additionalSpawnerTS(), showYear = T, chartRangeMin = rangeMin, chartRangeMax = rangeMax) 
+        spark <- spk_composite(spark2, spark1)
+      } else {
+        spark <- spark.makeSparkline(df1, attribs, sparkDefaultDataType, showYear = T, chartRangeMin = rangeMin, chartRangeMax = rangeMax)
+      }
       ID <- as.character(runif(1))
-      output[[ID]] <- sparkline::renderSparkline({sparkline(df, 
-                                                 width=attribs$chartWidth,
-                                                 height=attribs$chartHeight,
-                                                 #lineWidth=attribs$lineWidth,
-                                                 lineColor=attribs$lineColor, 
-                                                 fillColor=attribs$fillColor
-                                                 )})
-      spark <- tags$div(class=attribs$sparkCanvas, sparklineOutput(ID))
+      output[[ID]] <- sparkline::renderSparkline({spark})
+      out <- tags$div(class=attribs$sparkCanvas, sparklineOutput(ID))
     }
   }
-  spark
+  out
 }
 
 # table row for a table with sparklines 
@@ -326,7 +375,7 @@ spark.makeSparklineTableRow <- function(df, labels, attribs, minYr, maxYr) {
  tagList(lapply(names(labels)[names(labels) %in% attribs$labelAttribs], function(l) {
                     tags$td(labels[l], style=attribs$styles[[l]])
                   }), 
-          tags$td(spark.makeSparkline(df, minYr=minYr, maxYr=maxYr, attribs=attribs)))
+          tags$td(spark.makeSparklineChart(df, minYr=minYr, maxYr=maxYr, attribs=attribs)))
 }
 
 # table row for a table with sparklines from population data
@@ -373,7 +422,7 @@ spark.makeCUSparklineTableRow <- function(CU, attribs) {
   # put the labels in td tags
   labels <- lapply(names(labels)[names(labels) %in% attribs$labelAttribs], function(l) {
                     tags$td(labels[l], style=attribs$styles[[l]])})
-  sparkline <- tags$td( spark.makeSparkline(df=df, 
+  sparkline <- tags$td( spark.makeSparklineChart(df=df, 
                                             minYr=min(data.CU.Lookup$DataStartYear, na.rm=T), 
                                             maxYr=max(data.CU.Lookup$DataEndYear, na.rm=T),
                                             attribs=attribs))
@@ -503,11 +552,11 @@ spark.makeCUTableMetricsEntries <- function(metrics, CU, attribs) {
     }
   } 
   tagList(lapply(metrics, function(m) {
-    end <- c( Value = data.CU.Metrics[paste(CU, filter$DataType, endYear, sep="."), m],
-              Status = as.character(data.CU.Metrics[paste(CU, filter$DataType, endYear, sep="."), paste0(m, '.Status')]))
+    end <- c( Value = data.CU.Metrics[paste(CU, endYear, sep="."), m],
+              Status = as.character(data.CU.Metrics[paste(CU, endYear, sep="."), paste0(m, '.Status')]))
     if (is.null(startYear)) start <- NULL
-    else start <- c( Value = data.CU.Metrics[paste(CU, filter$DataType, startYear, sep="."), m],
-                     Status = as.character(data.CU.Metrics[paste(CU, filter$DataType, startYear, sep="."), paste0(m, '.Status')]))
+    else start <- c( Value = data.CU.Metrics[paste(CU, startYear, sep="."), m],
+                     Status = as.character(data.CU.Metrics[paste(CU, startYear, sep="."), paste0(m, '.Status')]))
     spark.makeCUTableEntry(m, start = start, end = end, attribs)
   }))
 }

@@ -166,19 +166,15 @@ data.StreamsExtended <- data.StreamsExtended[row.names(data.Streams), ]
 
 #** Rearrange the metrics data so all metrics are in columns and create an associated 'Status' metric for each main metric (labeled <metric>.Status)
 data.CU.MetricsSeries.MetricNames <- unique(data.CU.MetricsSeries$Metric)
-names(data.CU.MetricsSeries)[names(data.CU.MetricsSeries) == 'Label'] <- 'DataType'
-data.CU.MetricsSeries.StatusMetricNames <- paste(data.CU.MetricsSeries.MetricNames, 'Status', sep='.')
-data.CU.Metrics <- unique(data.CU.MetricsSeries[, c("CU_ID", "DataType", "Year")])
-row.names(data.CU.Metrics) <- paste(data.CU.Metrics$CU_ID, data.CU.Metrics$DataType, data.CU.Metrics$Year, sep=".")
-for (l in unique(data.CU.Metrics$DataType)) {
-  for (m in data.CU.MetricsSeries.MetricNames) {
-    data.subs <- unique(data.CU.MetricsSeries[data.CU.MetricsSeries$Metric == m & data.CU.MetricsSeries$DataType == l, c('CU_ID', 'Year', 'Value', 'Status')])
-    row.names(data.subs) <- paste(data.subs$CU_ID, l, data.subs$Year, sep='.')
-    data.CU.Metrics[row.names(data.subs), m] <- data.subs$Value
-    data.CU.Metrics[row.names(data.subs), paste(m, "Status", sep=".")] <- factor(data.subs$Status, levels=c('Red', 'Amber', 'Green'), ordered=T)
-  }
+data.CU.MetricsSeries.StatusMetricNames <- paste0(data.CU.MetricsSeries.MetricNames, '.Status')
+data.CU.Metrics <- unique(data.CU.MetricsSeries[, c("CU_ID", "Year")])
+row.names(data.CU.Metrics) <- paste(data.CU.Metrics$CU_ID, data.CU.Metrics$Year, sep=".")
+for (m in data.CU.MetricsSeries.MetricNames) {
+  data.CU.Metrics[, m] <- data.CU.MetricsSeries[data.CU.MetricsSeries$Metric == m, 'Value']
+  data.CU.Metrics[, paste(m, "Status", sep=".")] <- factor(data.CU.MetricsSeries[data.CU.MetricsSeries$Metric == m, 'Status'], 
+                                                           levels=c('Red', 'Amber', 'Green'), ordered=T)
 }
-rm(l, m)
+rm(m)
 
 # Identify data years present in CU metrics data
 data.CU.Metrics.Years <- as.character(sort(unique(as.numeric(data.CU.Metrics$Year))))
@@ -192,7 +188,7 @@ for (attrib in names(data.CU.Metrics)) {
     data.CU.Metrics[, attrib] <- factor(as.character(data.CU.Metrics[, attrib]), levels = AttribLevels[[attrib]])
   }
 }
-row.names(data.CU.Metrics) <- paste(data.CU.Metrics$CU_ID, data.CU.Metrics$DataType, data.CU.Metrics$Year, sep=".")
+row.names(data.CU.Metrics) <- paste(data.CU.Metrics$CU_ID, data.CU.Metrics$Year, sep=".")
 
 # Attach attributes to CU polygon data
 #data.CU.Spatial <- sp::merge(data.CU.Spatial, unique(data.CU.Lookup[ , c('CU_Name' , 'CU_ID', MapAttribs)]), by=c("CU_ID"), all.x=T, all.y=F)

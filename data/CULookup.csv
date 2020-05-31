@@ -22,8 +22,8 @@ CO-05,CO-02,CO_02,CO_02,CO-05,Fraser Canyon,Coho,Co,49.65,-121.3,FRCany,GStr,FRC
 CO-07,CO-03,CO_03,CO_03,CO-07,Lower Thompson,Coho,Co,51.56,-121.1,LTh,GStr,LTh+GStr,Fraser_Thompson,3,NA,NA
 CO-08,CO-05,CO_05,CO_05,CO-08,South Thompson,Coho,Co,50.74,-118.9,STh,GStr,STh+GStr,Fraser_Thompson,3,NA,NA
 CO-09,CO-04,CO_04,CO_04,CO-09,North Thompson,Coho,Co,52.22,-120,NTh,GStr,NTh+GStr,Fraser_Thompson,4,NA,NA
-CO-47,,,,CO-47,Lower Fraser,Coho,Co,49.36,-122.15,LFR,GStr,LFR+GStr,Fraser_Lower,?,NA,NA
-CO-48,CO-01,CO_01,CO_06,CO-48,Interior Fraser,Coho,Co,53.52,-123.19,MFR,GStr,MFR+GStr,Fraser_Mid,?,NA,NA
+CO-47,,,,CO-47,Lower Fraser,Coho,Co,49.36,-122.15,LFR,GStr,LFR+GStr,Fraser_Lower,3,NA,NA
+CO-48,CO-01,CO_01,CO_06,CO-48,Interior Fraser,Coho,Co,53.52,-123.19,MFR,GStr,MFR+GStr,Fraser_Mid,3,NA,NA
 SEL-07-01,CU-1,CU_1,L-07-01,CU-01,Bowron_ES,Sockeye,Sk,53.145776,-121.093205,UFR,GStr,UFR+GStr,Fraser_Mid,4,Early_Summer,Lake
 SEL-06-11,CU-10,CU_10,L-06-11,CU-10,Seton_L,Sockeye,Sk,50.685389,-122.101863,NTh,GStr,NTh+GStr,Fraser_Thompson,4,Late,Lake
 SEL-03-04,CU-11,CU_11,L-03-04,CU-11,Harrison_US_L,Sockeye,Sk,49.555384,-121.862927,LFR,GStr,LFR+GStr,Fraser_Lower,4,Late,Lake
