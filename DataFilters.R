@@ -73,13 +73,6 @@ filter.getFilteredDF <- function(attribs, df) {
 }
 
 # -- logic for nested filtering of data:
-# Data type selection: 
-observeEvent(filter$DataType, {
-  df <- filter.getFilteredDF(c('DataType'), data.CU.Metrics)
-  filter.updatePickerInputs(c('Species', 'FAZ', 'Area', 'RunTiming', 'LifeHistory', 'CU_ID'), df) 
-}, ignoreNULL = FALSE)
-
-# -- logic for nested filtering of data:
 # all other filters are limited to what's available for the selected species
 observeEvent(filter$Species, {
   df <- filter.getFilteredDF(c('Species'), data.CU.Metrics)

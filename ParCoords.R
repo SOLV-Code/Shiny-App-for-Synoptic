@@ -67,7 +67,7 @@ observeEvent(parcoords.data(), {
 # create dimensions list with auxiliary information on numeric metrics to pass on to parcoords
 # each element in dims is a list with a set of parameters specific to dims[[metric]], where 'metric'
 # is one of the metrics included in the parcoords dataset
-dims <- reactive({
+parcoords.dims <- reactive({
   dataset <- parcoords.data()
   metrics <- names(dataset)
   names(metrics) <- metrics
@@ -145,7 +145,7 @@ output$parcoords_Plot <- parcoordsSoS::renderParcoords({
                                                   bottom = 50, 
                                                   left= 200, 
                                                   right = 50),
-                                    dimensions = dims(),
+                                    dimensions = parcoords.dims(),
                                     #selectedRows = data.currentSelection[['CUs']], #this works, but makes it impossible to brush more than one CU at a time
                                     nullValueSeparator = "nullValue",
                                     dimensionTitleRotation = ParcoordsLabelRotation)})
@@ -157,64 +157,62 @@ output$parcoords_Plot <- parcoordsSoS::renderParcoords({
   }
 })
 
+# make a togglel widget for turning an axis on and off
+parcoords.makeToggleSwitch <- function(m) { 
+  if (parcoords.dims()[[m]][['hide']])
+    div_class <- 'sidebar-checkbox-inactive'
+  else
+    div_class <- 'sidebar-checkbox-active'
+  tags$div(prettySwitch(inputId = sId("parcoords_visible", m),
+                        label = GetLabel(m),
+                        status = 'primary',
+                        fill = TRUE,
+                        value = parcoords.axisSettings[[sId("parcoords_visible", m)]]),
+           class = div_class, 
+           title = MetricInfo[[m]])
+}
 
+# make a control widget for a numeric metric
+parcoords.makeNumCtrWidget <- function(df, m) { 
+    toggleSwitch <- parcoords.makeToggleSwitch(m) 
+    if (parcoords.dims()[[m]][['hide']]) 
+      return(tags$div(class = 'sidebar-input-container-plain', toggleSwitch))
+    else {
+      digits <- 2
+      if (m %in% names(ParcoordsRound)) digits <- ParcoordsRound[[m]]
+      minVal <- round(min(df[, m], na.rm = T), digits)
+      maxVal <- round(max(df[, m], na.rm = T), digits)
+      tags$div(class = 'sidebar-input-container-box', 
+               toggleSwitch,
+               sliderInput(inputId = sId("parcoords_yrange", m),
+                           min = minVal,
+                           max = maxVal,
+                           label = NULL,
+                           round = -digits,
+                           value = c(max(round(parcoords.axisSettings[[sId("parcoords_yrange", m)]][1], 
+                                               digits = digits),
+                                         minVal),
+                                     min(round(parcoords.axisSettings[[sId("parcoords_yrange", m)]][2],
+                                               digits = digits),
+                                         maxVal))))
+    }
+}
+  
 output$parcoords_Controls <- renderUI({
   df <- parcoords.data()
   metrics <- names(parcoords.data())
   names(metrics) <- metrics
   metrics <- metrics[!(metrics %in% c('CU_ID', 'colorAttrib'))] # always hide CU_ID and colorAttrib
-  # control widgets for categorical metrics
-  catWidgets <- lapply(metrics[!(metrics %in% numericMetrics(df))], 
-                       function(m) { 
-                         if (dims()[[m]][['hide']])
-                           div_class <- 'sidebar-checkbox-inactive'
-                         else
-                           div_class <- 'sidebar-checkbox-active'
-                         tags$div(prettySwitch(inputId = sId("parcoords_visible", m),
-                                               label = GetLabel(m),
-                                               status = 'primary',
-                                               fill = TRUE,
-                                               value = parcoords.axisSettings[[sId("parcoords_visible", m)]]),
-                                  class = div_class, 
-                                  title = MetricInfo[[m]])})
-  # control widgets for numerical metrics
-  numWidgets <- lapply(metrics[metrics %in% numericMetrics(df)], 
-                       function(m) { 
-                         if (dims()[[m]][['hide']]) {
-                           tags$div(prettySwitch(inputId = sId("parcoords_visible", m),
-                                                 label = GetLabel(m),
-                                                 status = 'primary',
-                                                 fill = TRUE,
-                                                 value = parcoords.axisSettings[[sId("parcoords_visible", m)]]),
-                                    class = 'sidebar-checkbox-inactive', 
-                                    title = MetricInfo[[m]] )}
-                         else {
-                           digits <- 2
-                           if (m %in% names(ParcoordsRound)) digits <- ParcoordsRound[[m]]
-                           minVal <- round(min(df[, m], na.rm = T), digits)
-                           maxVal <- round(max(df[, m], na.rm = T), digits)
-                           tags$div(class = 'sidebar-input-container', 
-                             tags$div(prettySwitch(inputId = sId("parcoords_visible", m), 
-                                                   label = GetLabel(m),
-                                                   status = 'primary',
-                                                   fill = TRUE,
-                                                   value = parcoords.axisSettings[[sId("parcoords_visible", m)]]),
-                                      class='sidebar-checkbox-active', 
-                                      title=MetricInfo[[m]]),
-                             sliderInput(inputId = sId("parcoords_yrange", m),
-                                         min = minVal,
-                                         max = maxVal,
-                                         label = NULL,
-                                         round = -digits,
-                                         value = c(max(round(parcoords.axisSettings[[sId("parcoords_yrange", m)]][1], 
-                                                             digits = digits),
-                                                       minVal),
-                                                   min(round(parcoords.axisSettings[[sId("parcoords_yrange", m)]][2],
-                                                             digits = digits),
-                                                       maxVal))))}})
-#  tagList(tags$div(style='padding-left:5px;', tags$b("Adjust axes:")), 
-          tags$div(do.call(tagList, c(numWidgets, catWidgets)))
+  # control widgets
+  ctrlWidgets <- lapply(metrics, function(m) {
+    if (m %in% numericMetrics(df))
+      parcoords.makeNumCtrWidget(df, m)
+    else
+      tags$div(class = 'sidebar-input-container-plain',  parcoords.makeToggleSwitch(m))
+  })
+  tags$div(tagList(ctrlWidgets)) 
 })
+
 # scale parcoords graph axes to current selection, 
 # by setting sliders and thereby triggering corresponding changes in dims()
 observeEvent({input$parcoords_scale_to_selected}, {

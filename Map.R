@@ -95,11 +95,11 @@ map.makeCUInfoMetricRow <- function(m, CU) {
         startYear <- NULL
       }
   } 
-  end <- c( Value = data.CU.Metrics[paste(CU, filter$DataType, endYear, sep="."), m],
-            Status = as.character(data.CU.Metrics[paste(CU, filter$DataType, endYear, sep="."), paste0(m, '.Status')]))
+  end <- c( Value = data.CU.Metrics[paste(CU, endYear, sep="."), m],
+            Status = as.character(data.CU.Metrics[paste(CU, endYear, sep="."), paste0(m, '.Status')]))
   if (is.null(startYear)) start <- NULL
-  else start <- c( Value = data.CU.Metrics[paste(CU, filter$DataType, startYear, sep="."), m],
-                   Status = as.character(data.CU.Metrics[paste(CU, filter$DataType, startYear, sep="."), paste0(m, '.Status')]))
+  else start <- c( Value = data.CU.Metrics[paste(CU, startYear, sep="."), m],
+                   Status = as.character(data.CU.Metrics[paste(CU, startYear, sep="."), paste0(m, '.Status')]))
   map.makeCUInfoTableRow(m, start = start, end = end)
 }
 
@@ -109,7 +109,7 @@ map.makeCUInfoPane <- function(CU) {
   df <- data.CU.TimeSeries[data.CU.TimeSeries$CU_ID == CU, ]
   p <- tags$div(class = 'sidebar-sparkline-box',
                 tags$div(class = 'sidebar-sparkline-box-header', getCUname(CU)),
-                spark.makeSparkline(df, attribs=CUTableAttribs[['sidebar']]),
+                spark.makeSparklineChart(df, attribs=CUTableAttribs[['sidebar']]),
                 tags$table(lapply(MapLabelMetrics[MapLabelMetrics %in% filter$metrics], map.makeCUInfoMetricRow , CU)))
   if (data.showPops()) {
     p <- tagList(p, spark.makePopSparklineTable(getPopsForCUs(CU), mode='sidebar', CUheader='none'))
@@ -1111,6 +1111,7 @@ observeEvent(input$CUmap_draw_new_feature, {
 # add dynamic map elements when filter changes; 
 # don't render entire map again, since rendering of stream network takes a while
 observeEvent({data.CU.Lookup.filtered()
+  data.Pop.Lookup.filtered()
   data.filtered()
   colorCtrl.colorScheme()
   data.showPops()}, {

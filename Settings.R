@@ -37,10 +37,12 @@ ExtendedStreamNetworkFile <- "data/StreamsExtended_simplified.gpkg"
 MetricInfo <- list(
   CU_ID = "Conservation Unit",
   Species = "Species",
-  RelAbd = "Spawner abundance relative to ?",
-  AbsAbd = "Spawner Abundance",
-  LongTrend = "Long-term trend",
-  PercChange = "Percent change over ??",
+  RelUBM = "Ratio of the current generational average (geometric) in relation to the CU-specific upper abundance benchmark",
+  AbsUBM = "Ratio of the current generational average (geometric) in relation to the COSEWIC criteria D1 upper benchmark (10,000 spawners)",
+  RelLBM = "Ratio of the current generational average (geometric) in relation to the CU-specific lower abundance benchmark",
+  AbsLBM = "Ratio of the current generational average (geometric) in relation to the COSEWIC criteria D1 lower benchmark (1,000 spawners)",
+  LongTrend = "Ratio of the current generational average (geometric) in relation to the long-term average (geometric)",
+  PercChange = "Percent change over the most recent three generations (geometric)",
   ProbDeclBelowLBM = "Probability of decline below lower benchmark",
   FAZ = "Freshwater Adaptive Zone"
 )
@@ -60,8 +62,10 @@ Labels <- list(Species = 'Species',
                Summer="Summer", 
                Late="Late",
                CU_ID='Conservation Unit',
-               RelAbd = "RelAbd",
-               AbsAbd = "AbsAbd",
+               RelUBM = "RelUBM",
+               AbsUBM = "AbsUBM",
+               RelLBM = "RelLBM",
+               AbsLBM = "AbsLBM",
                LongTrend = "LongTrend",
                PercChange = "PercChange",
                ProbDeclBelowLBM = "ProbDeclBelowLBM"
@@ -74,7 +78,7 @@ AttribLevels <- list(
   Area = c('Fraser_Lower', 'Fraser_Canyon', 'Fraser_Mid','Fraser_Upper', 'Fraser_Thompson_Lower', 'Fraser_Thompson'),
   RunTiming = c('Estu', 'Spring', 'Early_Summer', 'Summer', 'Late', 'Fall', 'NA'),
   LifeHistory = c('Ocean', 'Stream', 'River', 'Lake', 'NA'),
-  AvGen = c('3', '4', '5', '?')
+  AvGen = c('3', '4', '5')
 )
 
 # ------------------------ UI customization -----------------
@@ -93,10 +97,10 @@ default.colorScheme <-'Species'
 
 # attribute filter customization
 # the names of the attributes users may filter by, shown in this order
-FilterAttributes <- c('DataType', 'Species', 'FAZ', 'Area', 'RunTiming', 'LifeHistory', 'AvGen', 'CU_ID')
+FilterAttributes <- c('Species', 'FAZ', 'Area', 'RunTiming', 'LifeHistory', 'AvGen', 'CU_ID')
 
 # allow only a single choice for these attributes:
-SingleChoice <- c('DataType') 
+SingleChoice <- c() 
 
 # metric selector customization
 # the names of the metrics users may choose from
@@ -106,7 +110,7 @@ SingleChoice <- c('DataType')
 FilterMFAttributes <- c("Species", "FAZ", "Area", "RunTiming", "LifeHistory", "AvGen")
 
 # attributes for which it doesn't make sense to let the user select whether they should be shown
-FilterMFhiddenAttributes <- c("CU_ID", "DataType")
+FilterMFhiddenAttributes <- c("CU_ID")
 
 # ---------------- Data Selector UI ------------------
 
@@ -123,45 +127,55 @@ SelectAttributes <- c('Species',
 # ---------------- Parcoords UI ------------------
 # show the following axes in parcoords, in the order specified here
 ParcoordsMetricOrder <- c("FAZ",
-                          "RelAbd", "RelAbd.Status", 
-                          "AbsAbd", "AbsAbd.Status",
-                          "LongTrend", "LongTrend.Status",
-                          "PercChange", "PercChange.Satus",
-                          "ProbDeclBelowLBM", "ProbDeclBelowLBM.Status",
+                          "RelUBM.Status", "RelUBM",
+                          "AbsUBM.Status", "AbsUBM",
+                          "RelLBM.Status", "RelLBM",
+                          "AbsLBM.Status", "AbsLBM",
+                          "LongTrend.Status", "LongTrend", 
+                          "PercChange.Satus", "PercChange", 
+                          "ProbDeclBelowLBM.Status", "ProbDeclBelowLBM",
                           "Species",
                           "RunTiming",
                           "LifeHistory",
                           "CU_ID")
 
 # don't ever display these columns
-ParcoordsDrop <-c("ProbDeclBelowLBM", "ProbDeclBelowLBM.Status")
+ParcoordsDrop <-c("ProbDeclBelowLBM.Status", "ProbDeclBelowLBM")
 
 # hide these columns initially (i.e., make them appear as unchecked by default)
-ParcoordsHideOnInit <- c('CU_ID')
+ParcoordsHideOnInit <- c('RelUBM', 'AbsUBM', 'RelLBM', 'AbsLBM', 'LongTrend', 'PercChange', 'ProbDeclBelowLBM', 'CU_ID')
 
 # sort CUs on y-axis by these attributes
-ParcoordsCUOrder <- c("Species", "FAZ", "AbsAbd")
+ParcoordsCUOrder <- c("Species", "FAZ", "RelLBM")
 
 # rotation of axis labels for metric axes (in degrees from horizontal)
 ParcoordsLabelRotation <- -15 
 
 # use these rounding factors to control what is shown on the slider inputs that control the axes
 # e.g., 0 rounds to nearest integer, 2 rounds to nearest 2 digits after . etc
-ParcoordsRound <- list( RelAbd = 0,
-                        AbsAbd = 0,
+ParcoordsRound <- list( RelUBM = 2,
+                        AbsUBM = 2,
+                        RelLBM = 2,
+                        AbsLBM = 2,
                         LongTrend = 2,
                         PercChange = 0,
                         ProbDeclBelowLBM = 2,
-                        # for change metrics
-                        RelAbd.Status = 0,  
-                        AbsAbd.Status = 0,
+                        # when 'status' actually shows change in status between years
+                        RelUBM.Status = 0,  
+                        AbsUBM.Status = 0,
+                        RelLBM.Status = 0,  
+                        AbsLBM.Status = 0,
                         LongTrend.Status = 0,
                         ProbDeclBelowLBM.Status = 0)
                         
 
 # ---------------- Historgram Summaries UI ------------------
 # histogram summaries will be generated for these metrics/attributes in the order specified
-HistoSummaryAttribs <- c("Area", "FAZ", "RelAbd.Status", "AbsAbd.Status", "LongTrend.Status", "PercChange.Status")
+HistoSummaryAttribs <- c("Area", "FAZ", 
+                         "RelUBM.Status", "AbsUBM.Status", 
+                         "RelLBM.Status", "AbsLBM.Status", 
+                         "LongTrend.Status", 
+                         "PercChange.Status")
 
 # the number of CUs afte which display switches to bars by default
 HistoMaxDots <- 40
@@ -169,13 +183,13 @@ HistoMaxDots <- 40
 # this list specifies the information necessary to construct a histogram from a numeric metric 
 HistoCustomInfo <- list(
   Annual = list(
-    Recent.ER = list(
+    Sample.metric = list(
       breaks = c( 0,10,20,30,40,50,60,70,80,90,100),
       names = c("Below 10%","10-20%","20-30%","30%-40%","40-50%", "50%-60%","60-70%","70%-80%","80-90%","Above 90%")
     )
   ),
   Change = list(
-    Recent.ER = list(
+    Sample.metric = list(
       breaks = c(-100, -10, -5, -1, 1, 5, 10, 100),
       names = c(">10% decr", "5%-10% decr", "0-5% decr","No Change", "0-5% incr", "5-10% incr",">10% incr")
     )
@@ -184,7 +198,7 @@ HistoCustomInfo <- list(
 # --------------- Radar Plot UI ----------------
 
 # the metrics offered as choices for the radar plot
-RadarMetricOpts <- c("RelAbd.Status", "AbsAbd.Status", "LongTrend", "PercChange", "ProbDeclBelowLBM")
+RadarMetricOpts <- c("RelUBM", "AbsUBM", "RelLBM", "AbsLBM", "LongTrend", "PercChange", "ProbDeclBelowLBM")
 
 # -------------------- Map UI ______________________
 
@@ -194,7 +208,7 @@ MapAttribs <- c('Lat', 'Lon', 'Species', 'HasMetricsData', 'HasTimeSeriesData', 
 
 
 # the metrics to include in the map labels (i.e., the metric information shown on clicking on a CU in the map)
-MapLabelMetrics <-  c("RelAbd", "LongTrend", "PercChange")
+MapLabelMetrics <-  c("RelUBM", "AbsUBM", "RelLBM", "AbsLBM", "LongTrend", "PercChange")
 
 # species and status metrics are offered as color themes by default. Add additional options here. 
 # then add a corresponding entry in the list of color palettes below
@@ -314,6 +328,13 @@ SpiderLegs <- list(
 # CU boundaries and markers will be shown overlaid in this order, i.e., the species listed first will be on bottom
 zPaneOrder <- c("Co", "Ck", "Sk")
 
+# sparkline options
+sparkDefaultDataType <- "SpnForTrend_Wild"
+sparkAdditionalDataTypeOpts <- list('none' = 'none',
+                                    'Wild spawners (all sites)' = 'SpnForAbd_Wild',
+                                    'Total spawners (trend data)' = 'SpnForTrend_Total',
+                                    'Total spawners (all sites)' = 'SpnForAbd_Total')
+
 # sparkline styling
 popTableAttribs <- list()         # styling for table rows showing information for individual selected populations
 popTableAttribsCUHeader <- list() # styling for the table row showing information for the CU containing the selected populations
@@ -330,8 +351,12 @@ popTableAttribs[['full']] <- list(
                TS_Name = '',
                missingTS = ''),
   sparkCanvas = 'full-canvas',
+  # lineColor and fillColor are used to style the primary sparkline (SpnForTrend_Wild); 
+  # lineColor2 and fillColor2 are for styling the (optional) secondary sparkline 
   lineColor = '#3333ff',
   fillColor = '#33ccff',
+  lineColor2 = '#000000',
+  fillColor2 = '#555555',
   lineWidth = '3px',
   chartWidth = '200px',
   chartHeight = '50px'
@@ -348,8 +373,12 @@ popTableAttribsCUHeader[['full']] <- list(
                                missingTS = ''),
                   sparkCanvas = 'full-canvas',
                   metricCell = 'full-metric',
+                  # lineColor and fillColor are used to style the primary sparkline (SpnForTrend_Wild); 
+                  # lineColor2 and fillColor2 are for styling the (optional) secondary sparkline 
                   lineColor = '#000000',          
                   fillColor = '#a9a9a9',  
+                  lineColor2 = '#000000',
+                  fillColor2 = '#555555',
                   lineWidth = '3px',
                   chartWidth = '200px',
                   chartHeight = '50px',
@@ -362,8 +391,12 @@ popTableAttribsCUHeader[['full']] <- list(
                               missingTS = ''),
                  sparkCanvas = 'full-canvas',
                  metricCell = 'full-metric',
+                 # lineColor and fillColor are used to style the primary sparkline (SpnForTrend_Wild); 
+                 # lineColor2 and fillColor2 are for styling the (optional) secondary sparkline 
                  lineColor = '#707070',          
                  fillColor = '#d0d0d0',
+                 lineColor2 = '#000000',
+                 fillColor2 = '#555555',
                  lineWidth = '3px',
                  chartWidth = '200px',
                  chartHeight = '50px',
@@ -379,8 +412,12 @@ CUTableAttribs[['full']] <- list(
                 CU_Name = 'padding: 2px;',
                 missingTS = ''),
   sparkCanvas = 'full-canvas',
+  # lineColor and fillColor are used to style the primary sparkline (SpnForTrend_Wild); 
+  # lineColor2 and fillColor2 are for styling the (optional) secondary sparkline 
   lineColor = '#000000',
   fillColor = '#a9a9a9',
+  lineColor2 = '#000000',
+  fillColor2 = '#555555',
   lineWidth = '3px',
   chartWidth = '200px',
   chartHeight = '50px',
@@ -396,11 +433,15 @@ popTableAttribs[['sidebar']] <- list(
   styles = list(TS_Name = 'width: 40px;',
                 missingTS = 'background-color: black; color: #b0b0b0;'),
   sparkCanvas = 'sidebar-canvas',
+  # lineColor and fillColor are used to style the primary sparkline (SpnForTrend_Wild); 
+  # lineColor2 and fillColor2 are for styling the (optional) secondary sparkline 
   lineColor = '#1aa3ff',
   fillColor = '#99d6ff',
+  lineColor2 = '#909090',
+  fillColor2 = '#909090',
   lineWidth = '2px',
-  chartWidth = '60px',
-  chartHeight = '20px'
+  chartWidth = '200px',
+  chartHeight = '50px'
 )
 
 # styling for the CU entry that serves as a 'header' for the selected populations shown in the table
@@ -412,11 +453,15 @@ popTableAttribsCUHeader[['sidebar']] <- list(
                   styles = list(CU_ID = 'width: 40px; font-weight: bold;',
                                 missingTS = 'background-color: black; color: #b0b0b0;'),
                   sparkCanvas = 'sidebar-canvas',
+                  # lineColor and fillColor are used to style the primary sparkline (SpnForTrend_Wild); 
+                  # lineColor2 and fillColor2 are for styling the (optional) secondary sparkline 
                   lineColor = '#e0e0e0',
                   fillColor = '#f0f0f0',
+                  lineColor2 = '#909090',
+                  fillColor2 = '#909090',
                   lineWidth = '2px',
-                  chartWidth = '60px',
-                  chartHeight = '20px',
+                  chartWidth = '200px',
+                  chartHeight = '50px',
                   metricCellValue = 'padding-left: 1px;',
                   metricCellArrow = 'padding-right: 1px;'),
   partial = list(labelAttribs = c('CU_ID'),
@@ -424,11 +469,15 @@ popTableAttribsCUHeader[['sidebar']] <- list(
                  styles = list(CU_ID = 'width: 40px; font-weight: bold;',
                                missingTS = 'background-color: black; color: #b0b0b0;'),
                  sparkCanvas = 'sidebar-canvas',
+                 # lineColor and fillColor are used to style the primary sparkline (SpnForTrend_Wild); 
+                 # lineColor2 and fillColor2 are for styling the (optional) secondary sparkline 
                  lineColor = '#d0d0d0',
                  fillColor = '#e0e0e0',  
+                 lineColor2 = '#909090',
+                 fillColor2 = '#909090',
                  lineWidth = '2px',
-                 chartWidth = '60px',
-                 chartHeight = '20px',
+                 chartWidth = '200px',
+                 chartHeight = '50px',
                  metricCellValue = 'padding-left: 1px;',
                  metricCellArrow = 'padding-right: 1px;')
 )
@@ -439,11 +488,15 @@ CUTableAttribs[['sidebar']] <- list(
   styles = list(CU_ID = 'width: 20px;',
                 missingTS = 'background-color: black; color: #b0b0b0;'),
   sparkCanvas = 'sidebar-canvas',
+  # lineColor and fillColor are used to style the primary sparkline (SpnForTrend_Wild); 
+  # lineColor2 and fillColor2 are for styling the (optional) secondary sparkline 
   lineColor = '#f5f5f5',
   fillColor = '#f0f0f0',
+  lineColor2 = '#909090',
+  fillColor2 = '#909090',
   lineWidth = '2px',
-  chartWidth = '60px',
-  chartHeight = '20px',
+  chartWidth = '200px',
+  chartHeight = '50px',
   metricCellValue = 'padding-left: 1px;',
   metricCellArrow = 'padding-right: 1px;'
 )

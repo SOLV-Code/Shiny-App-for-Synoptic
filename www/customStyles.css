@@ -14,6 +14,23 @@
 .skin-blue .main-header .logo { background-color: #3c8dbc; }
 .skin-blue .main-header .logo:hover { background-color: #3c8dbc; }
   
+.bttn-minimal.bttn-sm {
+    padding-top: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 2px;
+    font-size: 18px;
+}
+
+.sitesMenu.row.col-sm-6 {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.sidebar .shiny-input-container {
+    padding: 5px 0px 0px 5px !important;
+}
+
 .content-wrapper { 
   height: auto !important; 
   position:relative; 
@@ -36,21 +53,33 @@
  
 /* styling for sidebar input widgets */
 
-.sidebar-input-container { background-color: #303235; }
-                         
+.sidebar-input-container-box { 
+  background-color: #303235; 
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+  
+.sidebar-input-container-plain { 
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}                         
 .sidebar-checkbox-active {
    padding-left: 0px;
    padding-right: 0px;
    line-height: 1;
-   margin-bottom: -15px;
-   font-size:13px;
+   margin-bottom: -5px;
+   font-size: 13px;
 }
                   
 .sidebar-checkbox-inactive { 
   padding-left: 0px;
   padding-right: 0px;
   line-height: 1;
-  margin-bottom: -15px;
+  margin-bottom: -5px;
   font-size: 13px;
 }
        

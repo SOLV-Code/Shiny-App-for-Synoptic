@@ -87,10 +87,11 @@ histoSummaries <- reactive({
       vals <- data.filtered()[ ,a]
       CUs <- row.names(data.filtered())
       selectedCUs <- CUs %in% data.currentSelection[['CUs']]
+      CUlabels <- as.character(lapply(CUs, getCUname))
       if (is.numeric(vals)) {
-        labels <- paste(CUs, '(', vals, ')', sep=" ")
+        labels <- paste(CUlabels, '(', vals, ')', sep=" ")
       } else {
-        labels <- CUs
+        labels <- CUlabels
       }
       plots[[a]] <- dotHistogram(vals, labels=labels, selected=selectedCUs, customIntervals=iInfo)
     } else {
@@ -128,9 +129,9 @@ output$box_HistoSummary <- renderUI({
                                individual = FALSE)
     summaryAttribs <- HistoSummaryAttribs[HistoSummaryAttribs %in% names(data.filtered())]
     plots <- lapply(summaryAttribs, function(a) {
-      column(width=4, tags$div(title=MetricInfo[[a]],
+      column(width=6, tags$div(title=MetricInfo[[a]],
                                h4(GetLabel(a)),
-                               shinycssloaders::withSpinner(plotly::plotlyOutput(sId('summary', a), height=200))))})
+                               shinycssloaders::withSpinner(plotly::plotlyOutput(sId('summary', a), height='200px'))))})
     tagList(fluidRow(column(width=3, cntrl)),
             fluidRow(do.call(tagList, plots)))
 })

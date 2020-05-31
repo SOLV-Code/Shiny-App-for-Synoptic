@@ -46,9 +46,6 @@ lapply(list.of.packages, require, character.only = TRUE)
 # locally, but the install on shinyapps.io will fail unless all required packages
 # are installed from CRAN or github.
 
-# helper functions
-source('helpers.R')
-
 # ==========Define server components ================
 
 # Define server logic 
