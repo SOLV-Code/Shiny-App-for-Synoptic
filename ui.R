@@ -121,7 +121,8 @@ body <- shinydashboard::dashboardBody(`style` = "min-height: 400px",
       h2("DISCLAIMER"),
       fluidRow(
         column(width=8,
-               includeMarkdown("Markdown/about.md")
+               includeMarkdown("Markdown/about.md"),
+               actionBttn("contact_Btn2", label = "Contact", size="sm", style="minimal", color='primary')
         )
       )
     ),

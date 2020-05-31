@@ -58,7 +58,8 @@ function(input, output, session){
   source('DataTable.R', local=TRUE)
   source('HistogramSummary.R', local=TRUE)
   
-  observeEvent(input$contact_Btn, {
+  observeEvent({input$contact_Btn
+               input$contact_Btn2}, {
     showModal(
       modalDialog(
         includeMarkdown("Markdown/contact.md"),

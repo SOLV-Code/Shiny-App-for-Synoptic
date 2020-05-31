@@ -331,9 +331,9 @@ zPaneOrder <- c("Co", "Ck", "Sk")
 # sparkline options
 sparkDefaultDataType <- "SpnForTrend_Wild"
 sparkAdditionalDataTypeOpts <- list('none' = 'none',
-                                    'Wild spawners (all sites)' = 'SpnForAbd_Wild',
-                                    'Total spawners (trend data)' = 'SpnForTrend_Total',
-                                    'Total spawners (all sites)' = 'SpnForAbd_Total')
+                                    'Wild spawners for abundance' = 'SpnForAbd_Wild',
+                                    'Total spawners for trend' = 'SpnForTrend_Total',
+                                    'Total spawners for abundance' = 'SpnForAbd_Total')
 
 # sparkline styling
 popTableAttribs <- list()         # styling for table rows showing information for individual selected populations
