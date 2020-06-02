@@ -9,11 +9,15 @@ parcoords.data <- reactive({
     df <- df[order(df[, sortKey]), , drop=F]
   }
   # replace 'NA' with true NAs in factors
+  # replace Inf with true NAs in numeric metrics
   for (n in names(df)) {
     if (is.factor(df[, n])) {
         old <- df[, n]
         df[!is.na(df[, n]) & df[ ,n] == 'NA', n] <- NA
         df[ ,n] <- factor(as.character(df[ ,n]), levels=levels(old)[levels(old) != 'NA'], ordered=is.ordered(old), exclude=NA)
+    }
+    if (is.numeric(df[, n])) {
+      df[!is.finite(df[, n]), n] <- NA
     }
   }
   # identify all-NA columns and columns without contrast, i.e. columns where all values are the same
@@ -34,7 +38,7 @@ parcoords.data <- reactive({
       data.CU.Lookup.filtered()[data.CU.Lookup.filtered()$CU_ID == cu, colorCtrl.colorScheme()][1]}))
   }
 
-  if (!is.data.frame(df)) {df <- NULL} 
+  if (!is.data.frame(df)) {df <- NULL}
   df
 })
 

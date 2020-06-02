@@ -66,6 +66,10 @@ Labels <- list(Species = 'Species',
                AbsUBM = "AbsUBM",
                RelLBM = "RelLBM",
                AbsLBM = "AbsLBM",
+               RelUBM.Status = 'Rel.Status',
+               RelLBM.Status = 'Rel.Status',
+               AbsUBM.Status = 'Abs.Status',
+               AbsLBM.Status = 'Abs.Status',
                LongTrend = "LongTrend",
                PercChange = "PercChange",
                ProbDeclBelowLBM = "ProbDeclBelowLBM"
@@ -102,10 +106,6 @@ FilterAttributes <- c('Species', 'FAZ', 'Area', 'RunTiming', 'LifeHistory', 'AvG
 # allow only a single choice for these attributes:
 SingleChoice <- c() 
 
-# metric selector customization
-# the names of the metrics users may choose from
-#FilterMFMetrics <- unique(data.CU.MetricSeries$Metric)
-
 # the names of the attributes users may choose from
 FilterMFAttributes <- c("Species", "FAZ", "Area", "RunTiming", "LifeHistory", "AvGen")
 
@@ -127,10 +127,8 @@ SelectAttributes <- c('Species',
 # ---------------- Parcoords UI ------------------
 # show the following axes in parcoords, in the order specified here
 ParcoordsMetricOrder <- c("FAZ",
-                          "RelUBM.Status", "RelUBM",
-                          "AbsUBM.Status", "AbsUBM",
-                          "RelLBM.Status", "RelLBM",
-                          "AbsLBM.Status", "AbsLBM",
+                          "RelLBM.Status", "RelUBM", "RelLBM",
+                          "AbsLBM.Status", "AbsUBM", "AbsLBM",
                           "LongTrend.Status", "LongTrend", 
                           "PercChange.Satus", "PercChange", 
                           "ProbDeclBelowLBM.Status", "ProbDeclBelowLBM",
@@ -139,8 +137,9 @@ ParcoordsMetricOrder <- c("FAZ",
                           "LifeHistory",
                           "CU_ID")
 
-# don't ever display these columns
-ParcoordsDrop <-c("ProbDeclBelowLBM.Status", "ProbDeclBelowLBM")
+# don't ever display these columns 
+# (Note: RelLBM.Status and RelUBM.Status are always the same, ditto for AbsLBM.Status and AbsUBM.Status, so show only one of each)
+ParcoordsDrop <-c("RelUBM.Status", "AbsUBM.Status", "ProbDeclBelowLBM.Status", "ProbDeclBelowLBM")
 
 # hide these columns initially (i.e., make them appear as unchecked by default)
 ParcoordsHideOnInit <- c('RelUBM', 'AbsUBM', 'RelLBM', 'AbsLBM', 'LongTrend', 'PercChange', 'ProbDeclBelowLBM', 'CU_ID')
@@ -172,7 +171,6 @@ ParcoordsRound <- list( RelUBM = 2,
 # ---------------- Historgram Summaries UI ------------------
 # histogram summaries will be generated for these metrics/attributes in the order specified
 HistoSummaryAttribs <- c("Area", "FAZ", 
-                         "RelUBM.Status", "AbsUBM.Status", 
                          "RelLBM.Status", "AbsLBM.Status", 
                          "LongTrend.Status", 
                          "PercChange.Status")
@@ -198,7 +196,7 @@ HistoCustomInfo <- list(
 # --------------- Radar Plot UI ----------------
 
 # the metrics offered as choices for the radar plot
-RadarMetricOpts <- c("RelUBM", "AbsUBM", "RelLBM", "AbsLBM", "LongTrend", "PercChange", "ProbDeclBelowLBM")
+RadarMetricOpts <- c("RelLBM", "AbsLBM", "LongTrend", "PercChange", "ProbDeclBelowLBM")
 
 # -------------------- Map UI ______________________
 
@@ -208,7 +206,7 @@ MapAttribs <- c('Lat', 'Lon', 'Species', 'HasMetricsData', 'HasTimeSeriesData', 
 
 
 # the metrics to include in the map labels (i.e., the metric information shown on clicking on a CU in the map)
-MapLabelMetrics <-  c("RelUBM", "AbsUBM", "RelLBM", "AbsLBM", "LongTrend", "PercChange")
+MapLabelMetrics <-  c("RelLBM", "AbsLBM", "RelUBM", "AbsUBM", "LongTrend", "PercChange")
 
 # species and status metrics are offered as color themes by default. Add additional options here. 
 # then add a corresponding entry in the list of color palettes below
@@ -505,7 +503,10 @@ CUTableAttribs[['sidebar']] <- list(
 
 # include these attributes from lookup file when displaying table
 #CULookupAttribsToInclude <- c('CU_Name', 'DataStartYear', 'DataEndYear')
-CULookupAttribsToInclude <- c('CU_Name')
+DataTable.CULookupAttribsToInclude <- c('CU_Name')
+
+# drop these columns from the dataframe
+DataTable.Drop <-c("RelUBM.Status", "AbsUBM.Status")
 
 
 
