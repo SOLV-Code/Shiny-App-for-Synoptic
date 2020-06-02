@@ -135,7 +135,7 @@ filter.makeInfoButton <- function(value, buttonId, tooltip){
 
 output$box_DataFilters <- renderUI({
   metricChoices <- list(
-    Metrics = data.CU.MetricsSeries.MetricNames, #FilterMFMetrics[FilterMFMetrics %in% names(data.CU.Metrics)],
+    Metrics = data.CU.MetricsSeries.MetricNames, 
     Attributes = FilterMFAttributes[FilterMFAttributes %in% names(data.CU.Metrics)])
   names(metricChoices$Metrics) = as.character(lapply(metricChoices$Metrics, GetLabel))
   names(metricChoices$Attributes) = as.character(lapply(metricChoices$Attributes, GetLabel))
