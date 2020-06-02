@@ -95,7 +95,29 @@ PickerOptsMultiSelect <- list(`show-tick`=TRUE, `actions-box`=TRUE, `selected-te
 #ButtonStyle <- "color: #fff; background-color: #337ab7; border-color: #2e6da4; height:70px; font-size: 100%"
 ButtonStyle <- "color: #fff; background-color: #337ab7; border-color: #337ab7; height:40px; font-size: 100%"
 
-default.colorScheme <-'Species'
+# species and status metrics are offered as color themes by default. Add additional options here. 
+# then add a corresponding entry in the list of color palettes below
+ColorThemes <- c(Species = 'Species', 
+                 Rel.Status = "RelLBM.Status", 
+                 Abs.Status = "AbsLBM.Status", 
+                 LongTrend.Status = "LongTrend.Status", 
+                 PercChange.Status = "PercChange.Status",
+                 'Run Timing' = 'RunTiming', 
+                 'Life History' = 'LifeHistory', 
+                 'Has Metrics Data' = 'HasMetricsData', 
+                 'Has Time Series Data' = 'HasTimeSeriesData')
+
+# palettes to use for the different color theme options
+ColorPalette <- list(
+  Species = c(Sk = '#8c1aff', Co = '#ff9900', Ck = '#009999'),
+  Status = c(Red = '#ff0000', Amber = '#ffa500', Green = '#00ff00', 'NA' = '#858585'),
+  StatusChange = c('-2'='#ff0000', '-1'='#fe7581', '0'='#cca6ce', '1'='#7578fe', '2'='#0000ff', 'NA' = '#858585'),
+  HasMetricsData = c(Yes = '#105592', No = '#ff0000'),
+  HasTimeSeriesData = c(Yes = '#105592', No = '#ff0000'),
+  RunTiming = c(Estu = '#fd5c71', Spring = '#cb3f51', Early_Summer = '#b01f32', Summer = '#8c0e0e', Late='#76353e', Fall='#6b464b', 'NA' = '#bebebe'),
+  LifeHistory = c(Ocean = '#5fd2bb', Stream = '#347266', River = '#d25587', Lake = '#9b1349', 'NA' = '#858585')
+)
+default.colorTheme <-'Species'
 
 # ------------ Data Filtering UI --------------
 
@@ -207,21 +229,6 @@ MapAttribs <- c('Lat', 'Lon', 'Species', 'HasMetricsData', 'HasTimeSeriesData', 
 
 # the metrics to include in the map labels (i.e., the metric information shown on clicking on a CU in the map)
 MapLabelMetrics <-  c("RelLBM", "AbsLBM", "RelUBM", "AbsUBM", "LongTrend", "PercChange")
-
-# species and status metrics are offered as color themes by default. Add additional options here. 
-# then add a corresponding entry in the list of color palettes below
-AdditionalColorThemes <- c('RunTiming', 'LifeHistory', 'HasMetricsData', 'HasTimeSeriesData')
-
-# palettes to use for the different color theme options
-ColorPalette <- list(
-  Species = c(Sk = '#8c1aff', Co = '#ff9900', Ck = '#009999'),
-  Status = c(Red = '#ff0000', Amber = '#ffa500', Green = '#00ff00', 'NA' = '#858585'),
-  StatusChange = c('-2'='#ff0000', '-1'='#fe7581', '0'='#cca6ce', '1'='#7578fe', '2'='#0000ff', 'NA' = '#858585'),
-  HasMetricsData = c(Yes = '#105592', No = '#ff0000'),
-  HasTimeSeriesData = c(Yes = '#105592', No = '#ff0000'),
-  RunTiming = c(Estu = '#fd5c71', Spring = '#cb3f51', Early_Summer = '#b01f32', Summer = '#8c0e0e', Late='#76353e', Fall='#6b464b', 'NA' = '#bebebe'),
-  LifeHistory = c(Ocean = '#5fd2bb', Stream = '#347266', River = '#d25587', Lake = '#9b1349', 'NA' = '#858585')
-)
 
 
 StreamStyle.normal <- list(
