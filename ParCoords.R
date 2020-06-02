@@ -29,15 +29,22 @@ parcoords.data <- reactive({
   df$CU_ID <- row.names(df)
   row.names(df) <- unlist(lapply(row.names(df), getCUname))
   
+  print(data.filtered())
   # add colorAttrib column; this will always be hidden
   if (colorCtrl.colorScheme() %in% names(data.filtered())) {
-    df$colorAttrib <- data.filtered()[, colorCtrl.colorScheme()] 
+    df$colorAttrib <-  unlist(lapply(df$CU_ID, function(cu) {
+      data.filtered()[cu, colorCtrl.colorScheme()]})) 
   }
   else if (colorCtrl.colorScheme() %in% names(data.CU.Lookup.filtered())) {
     df$colorAttrib <- unlist(lapply(df$CU_ID, function(cu) {
       data.CU.Lookup.filtered()[data.CU.Lookup.filtered()$CU_ID == cu, colorCtrl.colorScheme()][1]}))
   }
 
+  print('color scheme is')
+  print(colorCtrl.colorScheme())
+  print('df names')
+  print(df)
+  
   if (!is.data.frame(df)) {df <- NULL}
   df
 })
@@ -135,6 +142,8 @@ output$parcoords_Plot <- parcoordsSoS::renderParcoords({
                             colorBy="colorAttrib")
             else
               color <- '#000000'
+           # print(parcoords.data())
+           # print(color)
             parcoordsSoS::parcoords(data = parcoords.sharedDS,
                                     autoresize = TRUE,
 #                                   color = list(colorScale=htmlwidgets::JS("d3.scale.category10()"), colorBy="Species"),
