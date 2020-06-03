@@ -29,7 +29,6 @@ parcoords.data <- reactive({
   df$CU_ID <- row.names(df)
   row.names(df) <- unlist(lapply(row.names(df), getCUname))
   
-  print(data.filtered())
   # add colorAttrib column; this will always be hidden
   if (colorCtrl.colorScheme() %in% names(data.filtered())) {
     df$colorAttrib <-  unlist(lapply(df$CU_ID, function(cu) {
@@ -39,12 +38,6 @@ parcoords.data <- reactive({
     df$colorAttrib <- unlist(lapply(df$CU_ID, function(cu) {
       data.CU.Lookup.filtered()[data.CU.Lookup.filtered()$CU_ID == cu, colorCtrl.colorScheme()][1]}))
   }
-
-  print('color scheme is')
-  print(colorCtrl.colorScheme())
-  print('df names')
-  print(df)
-  
   if (!is.data.frame(df)) {df <- NULL}
   df
 })
@@ -234,9 +227,7 @@ observeEvent({input$parcoords_scale_to_selected}, {
   if (nrow(df) > 0) {
     for (m in names(df)) {
       if (sId("parcoords_yrange", m) %in% names(input)) { # adjust the sliders so ylims correspond to range of selected data
-        print('adjusting slider for')
-        print(m)
-        updateSliderInput(session, sId("parcoords_yrange", m), 
+         updateSliderInput(session, sId("parcoords_yrange", m), 
                           value = c(min(df[, m], na.rm=T),
                                     max(df[, m], na.rm=T)))
       }

@@ -218,8 +218,6 @@ data.CU.Lookup$DataEndYear <- unlist(lapply(data.CU.Lookup$CU_ID, function(CU) {
 # add CU names to Labels structure
 for (cu in data.CUs) Labels[[cu]] <- getCUname(cu)
 
-# set the color options 
-default.colorOpts <- c('Species', paste0(MapLabelMetrics, '.Status'), AdditionalColorThemes)
 
 
 

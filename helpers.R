@@ -15,6 +15,16 @@ getmode <- function(v) {
 # the names of the numeric metrics in a data frame
 numericMetrics <- function(ds) {names(ds)[unlist(lapply(ds, is.numeric))]}
 
+# round values for display
+fixForDisplay <- function(df, roundInfo) {
+  for (c in names(df)) {
+    if (is.numeric(df[, c]) && (c %in% names(roundInfo))) 
+       df[, c] <- round(df[, c], digits = as.numeric(roundInfo[c]))
+    else if (c == 'FWA_WATERSHED_CODE')    
+       df[, c] <- unlist(lapply(df[, c], strip))
+  }
+  df
+}
 # Arrange data frame according to specified column order, 
 # filtering out any columns that are specified in 'hide'
 # If no order is given, just removes the columns specified as hidden

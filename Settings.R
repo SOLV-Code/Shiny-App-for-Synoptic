@@ -95,7 +95,29 @@ PickerOptsMultiSelect <- list(`show-tick`=TRUE, `actions-box`=TRUE, `selected-te
 #ButtonStyle <- "color: #fff; background-color: #337ab7; border-color: #2e6da4; height:70px; font-size: 100%"
 ButtonStyle <- "color: #fff; background-color: #337ab7; border-color: #337ab7; height:40px; font-size: 100%"
 
-default.colorScheme <-'Species'
+# species and status metrics are offered as color themes by default. Add additional options here. 
+# then add a corresponding entry in the list of color palettes below
+ColorThemes <- c(Species = 'Species', 
+                 Rel.Status = "RelLBM.Status", 
+                 Abs.Status = "AbsLBM.Status", 
+                 LongTrend.Status = "LongTrend.Status", 
+                 PercChange.Status = "PercChange.Status",
+                 'Run Timing' = 'RunTiming', 
+                 'Life History' = 'LifeHistory', 
+                 'Has Metrics Data' = 'HasMetricsData', 
+                 'Has Time Series Data' = 'HasTimeSeriesData')
+
+# palettes to use for the different color theme options
+ColorPalette <- list(
+  Species = c(Sk = '#8c1aff', Co = '#ff9900', Ck = '#009999'),
+  Status = c(Red = '#ff0000', Amber = '#ffa500', Green = '#00ff00', 'NA' = '#858585'),
+  StatusChange = c('-2'='#ff0000', '-1'='#fe7581', '0'='#cca6ce', '1'='#7578fe', '2'='#0000ff', 'NA' = '#858585'),
+  HasMetricsData = c(Yes = '#105592', No = '#ff0000'),
+  HasTimeSeriesData = c(Yes = '#105592', No = '#ff0000'),
+  RunTiming = c(Estu = '#fd5c71', Spring = '#cb3f51', Early_Summer = '#b01f32', Summer = '#8c0e0e', Late='#76353e', Fall='#6b464b', 'NA' = '#bebebe'),
+  LifeHistory = c(Ocean = '#5fd2bb', Stream = '#347266', River = '#d25587', Lake = '#9b1349', 'NA' = '#858585')
+)
+default.colorTheme <-'Species'
 
 # ------------ Data Filtering UI --------------
 
@@ -207,21 +229,6 @@ MapAttribs <- c('Lat', 'Lon', 'Species', 'HasMetricsData', 'HasTimeSeriesData', 
 
 # the metrics to include in the map labels (i.e., the metric information shown on clicking on a CU in the map)
 MapLabelMetrics <-  c("RelLBM", "AbsLBM", "RelUBM", "AbsUBM", "LongTrend", "PercChange")
-
-# species and status metrics are offered as color themes by default. Add additional options here. 
-# then add a corresponding entry in the list of color palettes below
-AdditionalColorThemes <- c('RunTiming', 'LifeHistory', 'HasMetricsData', 'HasTimeSeriesData')
-
-# palettes to use for the different color theme options
-ColorPalette <- list(
-  Species = c(Sk = '#8c1aff', Co = '#ff9900', Ck = '#009999'),
-  Status = c(Red = '#ff0000', Amber = '#ffa500', Green = '#00ff00', 'NA' = '#858585'),
-  StatusChange = c('-2'='#ff0000', '-1'='#fe7581', '0'='#cca6ce', '1'='#7578fe', '2'='#0000ff', 'NA' = '#858585'),
-  HasMetricsData = c(Yes = '#105592', No = '#ff0000'),
-  HasTimeSeriesData = c(Yes = '#105592', No = '#ff0000'),
-  RunTiming = c(Estu = '#fd5c71', Spring = '#cb3f51', Early_Summer = '#b01f32', Summer = '#8c0e0e', Late='#76353e', Fall='#6b464b', 'NA' = '#bebebe'),
-  LifeHistory = c(Ocean = '#5fd2bb', Stream = '#347266', River = '#d25587', Lake = '#9b1349', 'NA' = '#858585')
-)
 
 
 StreamStyle.normal <- list(
@@ -502,13 +509,48 @@ CUTableAttribs[['sidebar']] <- list(
 # -------------------- DataTable UI ______________________
 
 # include these attributes from lookup file when displaying table
-#CULookupAttribsToInclude <- c('CU_Name', 'DataStartYear', 'DataEndYear')
+#DataTable.CULookupAttribsToInclude <- c('CU_Name', 'DataStartYear', 'DataEndYear')
 DataTable.CULookupAttribsToInclude <- c('CU_Name')
 
-# drop these columns from the dataframe
-DataTable.Drop <-c("RelUBM.Status", "AbsUBM.Status")
+# show and download these columns from the metrics data frame when showing the metrics table, in this order
+DataTable.MetricCols <-c("CU_Name",  "Species",
+                         "RelLBM.Status", "RelLBM", "RelUBM", "AbsLBM.Status", "AbsLBM", "AbsUBM",
+                         "LongTrend.Status", "LongTrend",
+                         "PercChange.Status", "PercChange",
+                         "ProbDeclBelowLBM.Status", "ProbDeclBelowLBM",
+                         "FAZ", "Area", "RunTiming", "LifeHistory", "AvGen")
 
+# download these columns when downloading CU time series data
+DataTable.TScolsCU <- c('CU_ID', 'CU_Name', 'Species', 'Year', 
+                        'SpnForTrend_Wild', 'SpnForAbd_Wild', 'SpnForTrend_Total', 'SpnForAbd_Total')
 
+DataTable.ColsPop <- c("Pop_ID", "Pop_Name", "WSP_ts", "Species", "CU_ID", 
+                       "FAZ", "MAZ", "JAZ", 
+                       "Lat", "Lon", "FWA_WATERSHED_CODE",                                      
+                       "HasTimeSeriesData", "tsNames", "DataStartYear", "DataEndYear")  
 
+# download these columns when downloading Pop time series data
+DataTable.TScolsPop <- c('Pop_UID', 'DataSet', 'Year', 'Pop_ID', 'Pop_Name', 'CU_ID', 'CU_Name', 
+                         'SpnForTrend_Wild', 'SpnForAbd_Wild', 'SpnForTrend_Total', 'SpnForAbd_Total')
+
+# use these to round values for display
+DataTable.Round <- list( SpnForTrend_Wild = 0,
+                         SpnForTrend_Total = 0,
+                         SpnForAbd_Wild = 0,
+                         SpnForAbd_Total = 0,
+                        RelUBM = 2,
+                        AbsUBM = 2,
+                        RelLBM = 2,
+                        AbsLBM = 2,
+                        LongTrend = 2,
+                        PercChange = 0,
+                        ProbDeclBelowLBM = 2,
+                        # when 'status' actually shows change in status between years
+                        RelUBM.Status = 0,  
+                        AbsUBM.Status = 0,
+                        RelLBM.Status = 0,  
+                        AbsLBM.Status = 0,
+                        LongTrend.Status = 0,
+                        ProbDeclBelowLBM.Status = 0)
 
 

@@ -1,7 +1,7 @@
 # ----------------- Shared data structures used in several widgets ---------------
 
-colorCtrl.colorScheme <- reactiveVal(value = default.colorScheme, label = 'colorScheme')
-colorCtrl.colorOpts <- reactiveVal(value = default.colorOpts, label = 'colorOpts')
+colorCtrl.colorScheme <- reactiveVal(value = default.colorTheme, label = 'colorScheme')
+colorCtrl.colorOpts <- reactiveVal(value = ColorThemes, label = 'colorOpts')
 
 observeEvent({colorCtrl.colorScheme()
   colorCtrl.colorOpts()}, {
