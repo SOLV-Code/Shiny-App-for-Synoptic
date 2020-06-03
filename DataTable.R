@@ -1,7 +1,8 @@
 #------------------- Table and Download Box ------------------
 
 table.dataType <- reactiveVal('CUs')
-observeEvent(input$table_DataType, {if (input$table_DataType == 'CUs') table.dataType('CUs') else table.dataType('Pops')})
+observeEvent(input$table_DataType, {
+  if (input$table_DataType == 'CUs') table.dataType('CUs') else table.dataType('Pops')})
 table.downloadType <- reactiveVal('Table')
 observeEvent(input$table_DownloadType, {table.downloadType(input$table_DownloadType)})
 table.selectionOnly <- reactiveVal(FALSE)
@@ -16,21 +17,19 @@ observeEvent(data.showPops(), {
 })
 
 table.tableData <- reactive({
+#  print('triggered recalc of tableData')
+#  print('data type now')
+#  print(table.dataType())
   if (table.dataType() == 'CUs') {
     df <- data.filtered()
     df2 <- unique(data.CU.Lookup.filtered()[data.CU.Lookup.filtered()$CU_ID %in% row.names(df), c(DataTable.CULookupAttribsToInclude, 'CU_ID')])
     row.names(df2) <- df2$CU_ID
-    df2 <- df2[row.names(df), CULookupAttribsToInclude, drop=F]
-    df <- cbind(df2, df)
+    df2 <- df2[row.names(df), DataTable.CULookupAttribsToInclude, drop=F]
+    df <- cbind(df2, df)[, DataTable.MetricCols]
   } else if (table.dataType() == 'Pops') {
-    df <- data.Pop.Lookup.filtered()
+    df <- data.Pop.Lookup.filtered()[, DataTable.ColsPop]
   }
-  # get rid of trailing zero segments for display
-  if ('FWA_WATERSHED_CODE' %in% names(df))
-    df$FWA_WATERSHED_CODE <- unlist(lapply(df$FWA_WATERSHED_CODE, strip))
   df <- df[order(row.names(df)), ]
-  # drop unwanted columns
-  df[, DataTable.Drop] <- NULL
   df
 })
 
@@ -39,14 +38,14 @@ table.tableData <- reactive({
 # DT shows only selected values (interprets selection as filter?), instead of 
 # showing full dataset with selected values highlighted. 
 output$table_Table <- DT::renderDataTable({
-  df <- table.tableData()
+  df <- fixForDisplay(table.tableData(), DataTable.Round)
   selected <- isolate(data.currentSelection[[table.dataType()]]) # don't want to re-render this if selection changes; selection handled by using proxy
   sel <- which(row.names(df) %in% selected)
-  colnames <- as.character(sapply(names(df), GetLabel))
-  if (!is.null(sel)) {
-    datatable(df, selection=list(selected=sel), colnames=colnames)
+  colNames <- as.character(sapply(names(df), GetLabel))
+  if (!data.currentSelectionEmpty(table.dataType())) {
+    datatable(df, selection=list(selected=sel, mode='multiple', target='row'), colnames=colNames, options=list(paging=FALSE))
   } else {
-    datatable(df, colnames=colnames)
+    datatable(df, colnames=colNames, options=list(paging=FALSE))
   }
 }, server=FALSE)
 
@@ -56,11 +55,11 @@ table.getCurrentTableSelection <- function() {
 
 table.setTableSelectionFromCurrentSelection <- function() {
   sel <- table.getCurrentTableSelection()
-  if (table.dataType() == 'CUs' && !setequal(sel, data.currentSelection[['CUs']])) {
-    dataTableProxy('table_Table') %>% selectRows(which(row.names(table.tableData()) %in% data.currentSelection[['CUs']]))
-  }
-  else if (table.dataType() == 'Pops' && !setequal(sel, data.currentSelection[['Pops']]))
-    dataTableProxy('table_Table') %>% selectRows(which(row.names(table.tableData()) %in% data.currentSelection[['Pops']]))
+  # if (table.dataType() == 'CUs' && !setequal(sel, data.currentSelection[['CUs']])) {
+  #   dataTableProxy('table_Table') %>% selectRows(which(row.names(table.tableData()) %in% data.currentSelection[['CUs']]))
+  # }
+  # else if (table.dataType() == 'Pops' && !setequal(sel, data.currentSelection[['Pops']]))
+  #   dataTableProxy('table_Table') %>% selectRows(which(row.names(table.tableData()) %in% data.currentSelection[['Pops']]))
 }
 
 # set selection in table in response to change in global selection (e.g., because user clicked 'clear highlighting' button)
@@ -126,10 +125,10 @@ output$table_Download <- downloadHandler(filename = getDownloadFilename,
                                                     df <- table.tableData()
                                                   else if (table.downloadType() == 'TS') {
                                                     if (table.dataType() == 'CUs') {
-                                                      df <- data.CU.TimeSeries[data.CU.TimeSeries$CU_ID %in% data.currentCUs(), c('CU_ID', 'CU_Name', 'Species', 'Year', filter[['DataType']])]
+                                                      df <- data.CU.TimeSeries[data.CU.TimeSeries$CU_ID %in% data.currentCUs(), DataTable.TScolsCU]
                                                     }
                                                     else {
-                                                      df <- data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID %in% data.currentPops(), c('Pop_UID', 'DataSet', 'Year', 'Pop_ID', 'Pop_Name', 'CU_ID', 'CU_Name', filter[['DataType']])]
+                                                      df <- data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID %in% data.currentPops(), DataTable.TScolsPop]
                                                     }
                                                   }
                                                   if (table.selectionOnly() == 'selectedOnly') { # download only selection
@@ -159,7 +158,7 @@ observeEvent({table.downloadType()
         if (table.selectionOnly() == 'selectedOnly') 
           CUs <- CUs[CUs %in% data.currentSelection[['CUs']]]
         CUsWithoutTS <- unlist(lapply(CUs, function(cu) {
-          !(cu %in% data.CU.TimeSeries$CU_ID) || all(is.na(data.CU.TimeSeries[data.CU.TimeSeries$CU_ID == cu, filter[['DataType']]]))
+          !(cu %in% data.CU.TimeSeries$CU_ID) || all(is.na(data.CU.TimeSeries[data.CU.TimeSeries$CU_ID == cu, ]))
         }))
         if (any(CUsWithoutTS)) 
           alert <- paste0("No time series data available for ", paste(CUs[CUsWithoutTS], collapse = ', '))
@@ -169,7 +168,7 @@ observeEvent({table.downloadType()
         if (table.selectionOnly() == 'selectedOnly') 
           pops <- pops[pops %in% data.currentSelection[['Pops']]]
         popsWithoutTS <- unlist(lapply(pops, function(p) {
-          !(p %in% data.Pop.TimeSeries$Pop_UID) || all(is.na(data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID == p, filter[['DataType']]]))
+          !(p %in% data.Pop.TimeSeries$Pop_UID) || all(is.na(data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID == p, ]))
         }))
         popNames <- unlist(lapply(pops[popsWithoutTS], function(p) {getPopNameShort(p)}))
         if (any(popsWithoutTS)) 

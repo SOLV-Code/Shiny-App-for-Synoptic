@@ -509,13 +509,48 @@ CUTableAttribs[['sidebar']] <- list(
 # -------------------- DataTable UI ______________________
 
 # include these attributes from lookup file when displaying table
-#CULookupAttribsToInclude <- c('CU_Name', 'DataStartYear', 'DataEndYear')
+#DataTable.CULookupAttribsToInclude <- c('CU_Name', 'DataStartYear', 'DataEndYear')
 DataTable.CULookupAttribsToInclude <- c('CU_Name')
 
-# drop these columns from the dataframe
-DataTable.Drop <-c("RelUBM.Status", "AbsUBM.Status")
+# show and download these columns from the metrics data frame when showing the metrics table, in this order
+DataTable.MetricCols <-c("CU_Name",  "Species",
+                         "RelLBM.Status", "RelLBM", "RelUBM", "AbsLBM.Status", "AbsLBM", "AbsUBM",
+                         "LongTrend.Status", "LongTrend",
+                         "PercChange.Status", "PercChange",
+                         "ProbDeclBelowLBM.Status", "ProbDeclBelowLBM",
+                         "FAZ", "Area", "RunTiming", "LifeHistory", "AvGen")
 
+# download these columns when downloading CU time series data
+DataTable.TScolsCU <- c('CU_ID', 'CU_Name', 'Species', 'Year', 
+                        'SpnForTrend_Wild', 'SpnForAbd_Wild', 'SpnForTrend_Total', 'SpnForAbd_Total')
 
+DataTable.ColsPop <- c("Pop_ID", "Pop_Name", "WSP_ts", "Species", "CU_ID", 
+                       "FAZ", "MAZ", "JAZ", 
+                       "Lat", "Lon", "FWA_WATERSHED_CODE",                                      
+                       "HasTimeSeriesData", "tsNames", "DataStartYear", "DataEndYear")  
 
+# download these columns when downloading Pop time series data
+DataTable.TScolsPop <- c('Pop_UID', 'DataSet', 'Year', 'Pop_ID', 'Pop_Name', 'CU_ID', 'CU_Name', 
+                         'SpnForTrend_Wild', 'SpnForAbd_Wild', 'SpnForTrend_Total', 'SpnForAbd_Total')
+
+# use these to round values for display
+DataTable.Round <- list( SpnForTrend_Wild = 0,
+                         SpnForTrend_Total = 0,
+                         SpnForAbd_Wild = 0,
+                         SpnForAbd_Total = 0,
+                        RelUBM = 2,
+                        AbsUBM = 2,
+                        RelLBM = 2,
+                        AbsLBM = 2,
+                        LongTrend = 2,
+                        PercChange = 0,
+                        ProbDeclBelowLBM = 2,
+                        # when 'status' actually shows change in status between years
+                        RelUBM.Status = 0,  
+                        AbsUBM.Status = 0,
+                        RelLBM.Status = 0,  
+                        AbsLBM.Status = 0,
+                        LongTrend.Status = 0,
+                        ProbDeclBelowLBM.Status = 0)
 
 
