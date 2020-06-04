@@ -129,6 +129,11 @@ data.currentPops <- reactive({
     NULL
 })
 
+data.getAvailablePopsForCUs <- function(CUs) {
+  pops <- getPopsForCUs(CUs)
+  pops[pops %in% data.currentPops()]
+}
+
 observeEvent({filterChanged()
   data.isFrozen()}, {
     if (!data.isFrozen())  {
@@ -169,7 +174,7 @@ data.setSelectionByCU <- function(sel, widget) {
   #cat(widget, ": Setting selectionByCU to :")
   #print(sel)
   data.currentSelection[['CUs']] <- sel
-  data.currentSelection[['Pops']] <- unlist(lapply(sel, getPopsForCUs))
+  data.currentSelection[['Pops']] <- unlist(lapply(sel, data.getAvailablePopsForCUs))
   data.selectedBy[['CUs']] <- widget
   data.selectedBy[['Pops']] <- widget
 }
@@ -209,6 +214,20 @@ observeEvent(input$sidebarMenu_additionalSpawnerTS, {data.additionalSpawnerTS(in
 
 data.WSPsitesOnly <- reactiveVal(TRUE)
 observeEvent(input$sidebarMenu_WSPSites, {data.WSPsitesOnly(input$sidebarMenu_WSPSites)})
+# if WSP Sites only got toggled on, remove any non-WSP sites from selection
+observeEvent(data.WSPsitesOnly(), {
+  if (data.WSPsitesOnly()) 
+    data.removeFromSelection(data.Pop.Lookup[data.Pop.Lookup$WSP_ts == 'no', 'CU_ID'], 'Pops', 'sidebarMenu_WSPSites')
+})
+
+# usually, the user will toggle this on to see all the sites in the time series plot, 
+# including all the ones for the selected CUs 
+observeEvent(data.WSPsitesOnly(), {
+  if (!data.WSPsitesOnly()) {
+    addPops <- data.getAvailablePopsForCUs(data.currentSelection[['CUs']])
+    data.addToSelection(addPops, 'Pops', 'sidebarMenu_WSPSites')
+  }                                     
+})
 
 observeEvent({data.currentSelection[['CUs']]
               data.currentSelection[['Pops']]}, {
