@@ -112,7 +112,7 @@ map.makeCUInfoPane <- function(CU) {
                 spark.makeSparklineChart(df, attribs=CUTableAttribs[['sidebar']]),
                 tags$table(lapply(MapLabelMetrics[MapLabelMetrics %in% filter$metrics], map.makeCUInfoMetricRow , CU)))
   if (data.showPops()) {
-    p <- tagList(p, spark.makePopSparklineTable(getPopsForCUs(CU), mode='sidebar', CUheader='none'))
+    p <- tagList(p, spark.makePopSparklineTable(data.getAvailablePopsForCUs(CU), mode='sidebar', CUheader='none'))
   }
   p
 }
@@ -840,7 +840,7 @@ map.showCUMouseoverHighlights <- function(sel, elementsToHighlight = mapCtrl.CUm
   if ('Marker' %in% elementsToHighlight) # highlight the marker associated with this CU
     map.showMouseoverHighlights(CUMarkers = c(sel))
   if ('Pops' %in% elementsToHighlight) # show populations associated with this CU in addition to CU marker
-    map.showMouseoverHighlights(PopMarkers = getPopsForCUs(sel))
+    map.showMouseoverHighlights(PopMarkers = data.getAvailablePopsForCUs(sel))
   if ('Polygon' %in% elementsToHighlight) # show the boundaries associated with this CU
     map.showMouseoverHighlights(CUPolys = c(sel))
 }
@@ -938,7 +938,7 @@ observeEvent(input$CUmap_marker_click,
                    map.addToSelection(sel, 'CUs') 
                    # don't toggle pops here; selection of pops follows selection of CU, i.e., all on if CU is on, all off if CU is off
                    if (sel %in% data.currentSelection[['CUs']])
-                     data.addToSelection(getPopsForCUs(sel), 'Pops', 'map')
+                     data.addToSelection(data.getAvailablePopsForCUs(sel), 'Pops', 'map')
                    else
                      data.removeFromSelection(getPopsForCUs(sel), 'Pops', 'map')
                  } else if (markerType == 'Pops') {
