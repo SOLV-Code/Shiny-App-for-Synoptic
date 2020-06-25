@@ -1,0 +1,1254 @@
+"","CU_ID","Species","Stock","Label","Year","Metric","Compare","LBM","UBM","Value","Status"
+"1","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2015,"RelUBM",58427.9691,49814.5351142624,92470.4478205704,0.631855587131724,"Amber"
+"2","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2016,"RelUBM",52886.1421,48755.6569522072,90249.6006784584,0.585998627167592,"Amber"
+"3","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2017,"RelUBM",48248.9078,48234.5705247219,88028.7535363465,0.548103953102986,"Amber"
+"4","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2018,"RelUBM",46477.8173,48002.7665110477,85807.9063942345,0.541649589799605,"Red"
+"5","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2015,"AbsUBM",58427.9691,1000,10000,5.84279691,"Green"
+"6","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2016,"AbsUBM",52886.1421,1000,10000,5.28861421,"Green"
+"7","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2017,"AbsUBM",48248.9078,1000,10000,4.82489078,"Green"
+"8","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2018,"AbsUBM",46477.8173,1000,10000,4.64778173,"Green"
+"9","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2015,"RelLBM",58427.9691,49814.5351142624,92470.4478205704,1.17291005458508,"Amber"
+"10","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2016,"RelLBM",52886.1421,48755.6569522072,90249.6006784584,1.08471806977889,"Amber"
+"11","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2017,"RelLBM",48248.9078,48234.5705247219,88028.7535363465,1.00029724065379,"Amber"
+"12","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2018,"RelLBM",46477.8173,48002.7665110477,85807.9063942345,0.968232055735856,"Red"
+"13","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2015,"AbsLBM",58427.9691,1000,10000,58.4279691,"Green"
+"14","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2016,"AbsLBM",52886.1421,1000,10000,52.8861421,"Green"
+"15","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2017,"AbsLBM",48248.9078,1000,10000,48.2489078,"Green"
+"16","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForAbd_Wild",2018,"AbsLBM",46477.8173,1000,10000,46.4778173,"Green"
+"17","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForTrend_Wild",2015,"LongTrend",1.06,0.5,0.75,1.06,"Green"
+"18","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForTrend_Wild",2016,"LongTrend",0.96,0.5,0.75,0.96,"Green"
+"19","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForTrend_Wild",2017,"LongTrend",0.88,0.5,0.75,0.88,"Green"
+"20","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForTrend_Wild",2018,"LongTrend",0.85,0.5,0.75,0.85,"Green"
+"21","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForTrend_Wild",2015,"PercChange",-58.3824,-25,-15,-58.3824,"Red"
+"22","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForTrend_Wild",2016,"PercChange",-53.7893,-25,-15,-53.7893,"Red"
+"23","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForTrend_Wild",2017,"PercChange",-46.8861,-25,-15,-46.8861,"Red"
+"24","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForTrend_Wild",2018,"PercChange",-36.3466,-25,-15,-36.3466,"Red"
+"25","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"26","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"27","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"28","CK-03","Chinook","Lower Fraser River_FA_0.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"29","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2015,"RelUBM",460.9248,232.365982093753,446.485483750345,1.03233994558651,"Green"
+"30","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2016,"RelUBM",388.6803,232.72370277942,442.132602875626,0.879103457813396,"Amber"
+"31","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2017,"RelUBM",334.1259,231.245146900449,437.779722000906,0.763228361681194,"Amber"
+"32","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2018,"RelUBM",282.6908,228.955803377539,433.426841126187,0.652222643308096,"Amber"
+"33","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2015,"AbsUBM",460.9248,1000,10000,0.04609248,"Red"
+"34","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2016,"AbsUBM",388.6803,1000,10000,0.03886803,"Red"
+"35","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2017,"AbsUBM",334.1259,1000,10000,0.03341259,"Red"
+"36","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2018,"AbsUBM",282.6908,1000,10000,0.02826908,"Red"
+"37","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2015,"RelLBM",460.9248,232.365982093753,446.485483750345,1.98361565598716,"Green"
+"38","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2016,"RelLBM",388.6803,232.72370277942,442.132602875626,1.6701362833179,"Amber"
+"39","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2017,"RelLBM",334.1259,231.245146900449,437.779722000906,1.44489907995276,"Amber"
+"40","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2018,"RelLBM",282.6908,228.955803377539,433.426841126187,1.23469593620151,"Amber"
+"41","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2015,"AbsLBM",460.9248,1000,10000,0.4609248,"Red"
+"42","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2016,"AbsLBM",388.6803,1000,10000,0.3886803,"Red"
+"43","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2017,"AbsLBM",334.1259,1000,10000,0.3341259,"Red"
+"44","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForAbd_Wild",2018,"AbsLBM",282.6908,1000,10000,0.2826908,"Red"
+"45","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForTrend_Wild",2015,"LongTrend",1.42,0.5,0.75,1.42,"Green"
+"46","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForTrend_Wild",2016,"LongTrend",1.21,0.5,0.75,1.21,"Green"
+"47","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForTrend_Wild",2017,"LongTrend",1.05,0.5,0.75,1.05,"Green"
+"48","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForTrend_Wild",2018,"LongTrend",0.9,0.5,0.75,0.9,"Green"
+"49","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForTrend_Wild",2015,"PercChange",50.4259,-25,-15,50.4259,"Green"
+"50","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForTrend_Wild",2016,"PercChange",13.3973,-25,-15,13.3973,"Green"
+"51","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForTrend_Wild",2017,"PercChange",-15.3867,-25,-15,-15.3867,"Amber"
+"52","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForTrend_Wild",2018,"PercChange",-39.2024,-25,-15,-39.2024,"Red"
+"53","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"54","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"55","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"56","CK-04","Chinook","Lower Fraser River_SP_1.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"57","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForAbd_Wild",2016,"RelUBM",NA,120.973886561944,157.814856660363,NA,NA
+"58","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForAbd_Wild",2017,"RelUBM",NA,104.220619834342,153.453583617862,NA,NA
+"59","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForAbd_Wild",2018,"RelUBM",NA,93.2090907178143,147.827378121599,NA,NA
+"60","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForAbd_Wild",2016,"AbsUBM",NA,1000,10000,NA,NA
+"61","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForAbd_Wild",2017,"AbsUBM",NA,1000,10000,NA,NA
+"62","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForAbd_Wild",2018,"AbsUBM",NA,1000,10000,NA,NA
+"63","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForAbd_Wild",2016,"RelLBM",NA,120.973886561944,157.814856660363,NA,NA
+"64","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForAbd_Wild",2017,"RelLBM",NA,104.220619834342,153.453583617862,NA,NA
+"65","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForAbd_Wild",2018,"RelLBM",NA,93.2090907178143,147.827378121599,NA,NA
+"66","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForAbd_Wild",2016,"AbsLBM",NA,1000,10000,NA,NA
+"67","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForAbd_Wild",2017,"AbsLBM",NA,1000,10000,NA,NA
+"68","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForAbd_Wild",2018,"AbsLBM",NA,1000,10000,NA,NA
+"69","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForTrend_Wild",2016,"LongTrend",NA,0.5,0.75,NA,NA
+"70","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForTrend_Wild",2017,"LongTrend",NA,0.5,0.75,NA,NA
+"71","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForTrend_Wild",2018,"LongTrend",NA,0.5,0.75,NA,NA
+"72","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForTrend_Wild",2016,"PercChange",-60.4097,-25,-15,-60.4097,"Red"
+"73","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForTrend_Wild",2017,"PercChange",-61.8834,-25,-15,-61.8834,"Red"
+"74","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForTrend_Wild",2018,"PercChange",-61.9941,-25,-15,-61.9941,"Red"
+"75","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"76","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"77","CK-05","Chinook","Lower Fraser River-Upper Pitt_SU_1.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"78","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2015,"RelUBM",63.1011,14.8717585031454,49.9744630130321,1.26266689416042,"Green"
+"79","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2016,"RelUBM",73.9319,15.0078970489784,52.3556853819031,1.41210834049276,"Green"
+"80","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2017,"RelUBM",87.6367,15.1440355948114,53.7092548929832,1.63168713054422,"Green"
+"81","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2018,"RelUBM",93.5681,15.2801741406443,56.2402080813646,1.66372250729641,"Green"
+"82","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2015,"AbsUBM",63.1011,1000,10000,0.00631011,"Red"
+"83","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2016,"AbsUBM",73.9319,1000,10000,0.00739319,"Red"
+"84","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2017,"AbsUBM",87.6367,1000,10000,0.00876367,"Red"
+"85","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2018,"AbsUBM",93.5681,1000,10000,0.00935681,"Red"
+"86","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2015,"RelLBM",63.1011,14.8717585031454,49.9744630130321,4.24301537620141,"Green"
+"87","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2016,"RelLBM",73.9319,15.0078970489784,52.3556853819031,4.92619983724053,"Green"
+"88","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2017,"RelLBM",87.6367,15.1440355948114,53.7092548929832,5.78687889706399,"Green"
+"89","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2018,"RelLBM",93.5681,15.2801741406443,56.2402080813646,6.1234969666422,"Green"
+"90","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2015,"AbsLBM",63.1011,1000,10000,0.0631011,"Red"
+"91","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2016,"AbsLBM",73.9319,1000,10000,0.0739319,"Red"
+"92","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2017,"AbsLBM",87.6367,1000,10000,0.0876367,"Red"
+"93","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForAbd_Wild",2018,"AbsLBM",93.5681,1000,10000,0.0935681,"Red"
+"94","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForTrend_Wild",2015,"LongTrend",2.34,0.5,0.75,2.34,"Green"
+"95","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForTrend_Wild",2016,"LongTrend",2.6,0.5,0.75,2.6,"Green"
+"96","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForTrend_Wild",2017,"LongTrend",2.91,0.5,0.75,2.91,"Green"
+"97","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForTrend_Wild",2018,"LongTrend",2.99,0.5,0.75,2.99,"Green"
+"98","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForTrend_Wild",2015,"PercChange",879.1913,-25,-15,879.1913,"Green"
+"99","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForTrend_Wild",2016,"PercChange",875.7187,-25,-15,875.7187,"Green"
+"100","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForTrend_Wild",2017,"PercChange",786.5127,-25,-15,786.5127,"Green"
+"101","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForTrend_Wild",2018,"PercChange",438.7898,-25,-15,438.7898,"Green"
+"102","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"103","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"104","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"105","CK-06","Chinook","Lower Fraser River_SU_1.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"106","CK-07","Chinook","Maria Slough_SU_0.3","SpnForAbd_Wild",2015,"RelUBM",NA,505.764307959326,666.342001546863,NA,NA
+"107","CK-07","Chinook","Maria Slough_SU_0.3","SpnForAbd_Wild",2016,"RelUBM",NA,475.969228891807,665.570306607125,NA,NA
+"108","CK-07","Chinook","Maria Slough_SU_0.3","SpnForAbd_Wild",2017,"RelUBM",NA,430.437439607784,664.798611667388,NA,NA
+"109","CK-07","Chinook","Maria Slough_SU_0.3","SpnForAbd_Wild",2015,"AbsUBM",NA,1000,10000,NA,NA
+"110","CK-07","Chinook","Maria Slough_SU_0.3","SpnForAbd_Wild",2016,"AbsUBM",NA,1000,10000,NA,NA
+"111","CK-07","Chinook","Maria Slough_SU_0.3","SpnForAbd_Wild",2017,"AbsUBM",NA,1000,10000,NA,NA
+"112","CK-07","Chinook","Maria Slough_SU_0.3","SpnForAbd_Wild",2015,"RelLBM",NA,505.764307959326,666.342001546863,NA,NA
+"113","CK-07","Chinook","Maria Slough_SU_0.3","SpnForAbd_Wild",2016,"RelLBM",NA,475.969228891807,665.570306607125,NA,NA
+"114","CK-07","Chinook","Maria Slough_SU_0.3","SpnForAbd_Wild",2017,"RelLBM",NA,430.437439607784,664.798611667388,NA,NA
+"115","CK-07","Chinook","Maria Slough_SU_0.3","SpnForAbd_Wild",2015,"AbsLBM",NA,1000,10000,NA,NA
+"116","CK-07","Chinook","Maria Slough_SU_0.3","SpnForAbd_Wild",2016,"AbsLBM",NA,1000,10000,NA,NA
+"117","CK-07","Chinook","Maria Slough_SU_0.3","SpnForAbd_Wild",2017,"AbsLBM",NA,1000,10000,NA,NA
+"118","CK-07","Chinook","Maria Slough_SU_0.3","SpnForTrend_Wild",2015,"LongTrend",NA,0.5,0.75,NA,NA
+"119","CK-07","Chinook","Maria Slough_SU_0.3","SpnForTrend_Wild",2016,"LongTrend",NA,0.5,0.75,NA,NA
+"120","CK-07","Chinook","Maria Slough_SU_0.3","SpnForTrend_Wild",2017,"LongTrend",NA,0.5,0.75,NA,NA
+"121","CK-07","Chinook","Maria Slough_SU_0.3","SpnForTrend_Wild",2015,"PercChange",-9.8543,-25,-15,-9.8543,"Green"
+"122","CK-07","Chinook","Maria Slough_SU_0.3","SpnForTrend_Wild",2016,"PercChange",-12.4735,-25,-15,-12.4735,"Green"
+"123","CK-07","Chinook","Maria Slough_SU_0.3","SpnForTrend_Wild",2017,"PercChange",-23.2226,-25,-15,-23.2226,"Amber"
+"124","CK-07","Chinook","Maria Slough_SU_0.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"125","CK-07","Chinook","Maria Slough_SU_0.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"126","CK-07","Chinook","Maria Slough_SU_0.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"127","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2015,"RelUBM",NA,16.5869212781708,52.4336672786902,NA,NA
+"128","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2016,"RelUBM",NA,15.3027031787212,49.8156364128227,NA,NA
+"129","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2017,"RelUBM",NA,14.1244748174993,47.1976055469553,NA,NA
+"130","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2018,"RelUBM",NA,13.2233698827052,44.5795746810879,NA,NA
+"131","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2015,"AbsUBM",NA,1000,10000,NA,NA
+"132","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2016,"AbsUBM",NA,1000,10000,NA,NA
+"133","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2017,"AbsUBM",NA,1000,10000,NA,NA
+"134","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2018,"AbsUBM",NA,1000,10000,NA,NA
+"135","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2015,"RelLBM",NA,16.5869212781708,52.4336672786902,NA,NA
+"136","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2016,"RelLBM",NA,15.3027031787212,49.8156364128227,NA,NA
+"137","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2017,"RelLBM",NA,14.1244748174993,47.1976055469553,NA,NA
+"138","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2018,"RelLBM",NA,13.2233698827052,44.5795746810879,NA,NA
+"139","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2015,"AbsLBM",NA,1000,10000,NA,NA
+"140","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2016,"AbsLBM",NA,1000,10000,NA,NA
+"141","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2017,"AbsLBM",NA,1000,10000,NA,NA
+"142","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForAbd_Wild",2018,"AbsLBM",NA,1000,10000,NA,NA
+"143","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForTrend_Wild",2015,"LongTrend",NA,0.5,0.75,NA,NA
+"144","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForTrend_Wild",2016,"LongTrend",NA,0.5,0.75,NA,NA
+"145","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForTrend_Wild",2017,"LongTrend",NA,0.5,0.75,NA,NA
+"146","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForTrend_Wild",2018,"LongTrend",NA,0.5,0.75,NA,NA
+"147","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForTrend_Wild",2015,"PercChange",-87.9237,-25,-15,-87.9237,"Red"
+"148","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForTrend_Wild",2016,"PercChange",-90.6123,-25,-15,-90.6123,"Red"
+"149","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForTrend_Wild",2017,"PercChange",-100.1334,-25,-15,-100.1334,"Red"
+"150","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForTrend_Wild",2018,"PercChange",-105.5841,-25,-15,-105.5841,"Red"
+"151","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"152","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"153","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"154","CK-08","Chinook","Middle Fraser-Fraser Canyon_SP_1.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"155","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2015,"RelUBM",NA,79.776963665811,128.220640492901,NA,NA
+"156","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2016,"RelUBM",NA,60.0635955507258,119.997271927499,NA,NA
+"157","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2017,"RelUBM",NA,59.7057571883534,119.621138547402,NA,NA
+"158","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2018,"RelUBM",NA,57.537088935396,119.245005167305,NA,NA
+"159","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2015,"AbsUBM",NA,1000,10000,NA,NA
+"160","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2016,"AbsUBM",NA,1000,10000,NA,NA
+"161","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2017,"AbsUBM",NA,1000,10000,NA,NA
+"162","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2018,"AbsUBM",NA,1000,10000,NA,NA
+"163","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2015,"RelLBM",NA,79.776963665811,128.220640492901,NA,NA
+"164","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2016,"RelLBM",NA,60.0635955507258,119.997271927499,NA,NA
+"165","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2017,"RelLBM",NA,59.7057571883534,119.621138547402,NA,NA
+"166","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2018,"RelLBM",NA,57.537088935396,119.245005167305,NA,NA
+"167","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2015,"AbsLBM",NA,1000,10000,NA,NA
+"168","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2016,"AbsLBM",NA,1000,10000,NA,NA
+"169","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2017,"AbsLBM",NA,1000,10000,NA,NA
+"170","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForAbd_Wild",2018,"AbsLBM",NA,1000,10000,NA,NA
+"171","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForTrend_Wild",2015,"LongTrend",NA,0.5,0.75,NA,NA
+"172","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForTrend_Wild",2016,"LongTrend",NA,0.5,0.75,NA,NA
+"173","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForTrend_Wild",2017,"LongTrend",NA,0.5,0.75,NA,NA
+"174","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForTrend_Wild",2018,"LongTrend",NA,0.5,0.75,NA,NA
+"175","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForTrend_Wild",2015,"PercChange",-74.3232,-25,-15,-74.3232,"Red"
+"176","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForTrend_Wild",2016,"PercChange",-78.6265,-25,-15,-78.6265,"Red"
+"177","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForTrend_Wild",2017,"PercChange",-82.2457,-25,-15,-82.2457,"Red"
+"178","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForTrend_Wild",2018,"PercChange",-85.2241,-25,-15,-85.2241,"Red"
+"179","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"180","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"181","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"182","CK-09","Chinook","Middle Fraser River-Portage_FA_1.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"183","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2015,"RelUBM",NA,3297.57765213466,5728.66171553497,NA,NA
+"184","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2016,"RelUBM",NA,3305.82367332467,5425.09433377324,NA,NA
+"185","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2017,"RelUBM",NA,3314.06969451469,5121.52695201151,NA,NA
+"186","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2018,"RelUBM",4126.0647,3322.3157157047,4817.95957024978,0.856392553702166,"Amber"
+"187","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2015,"AbsUBM",NA,1000,10000,NA,NA
+"188","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2016,"AbsUBM",NA,1000,10000,NA,NA
+"189","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2017,"AbsUBM",NA,1000,10000,NA,NA
+"190","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2018,"AbsUBM",4126.0647,1000,10000,0.41260647,"Amber"
+"191","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2015,"RelLBM",NA,3297.57765213466,5728.66171553497,NA,NA
+"192","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2016,"RelLBM",NA,3305.82367332467,5425.09433377324,NA,NA
+"193","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2017,"RelLBM",NA,3314.06969451469,5121.52695201151,NA,NA
+"194","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2018,"RelLBM",4126.0647,3322.3157157047,4817.95957024978,1.24192432419831,"Amber"
+"195","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2015,"AbsLBM",NA,1000,10000,NA,NA
+"196","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2016,"AbsLBM",NA,1000,10000,NA,NA
+"197","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2017,"AbsLBM",NA,1000,10000,NA,NA
+"198","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForAbd_Wild",2018,"AbsLBM",4126.0647,1000,10000,4.1260647,"Amber"
+"199","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForTrend_Wild",2015,"LongTrend",NA,0.5,0.75,NA,NA
+"200","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForTrend_Wild",2016,"LongTrend",NA,0.5,0.75,NA,NA
+"201","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForTrend_Wild",2017,"LongTrend",NA,0.5,0.75,NA,NA
+"202","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForTrend_Wild",2018,"LongTrend",1.02,0.5,0.75,1.02,"Green"
+"203","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForTrend_Wild",2015,"PercChange",-38.8727,-25,-15,-38.8727,"Red"
+"204","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForTrend_Wild",2016,"PercChange",-45.7971,-25,-15,-45.7971,"Red"
+"205","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForTrend_Wild",2017,"PercChange",-43.2368,-25,-15,-43.2368,"Red"
+"206","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForTrend_Wild",2018,"PercChange",-36.1385,-25,-15,-36.1385,"Red"
+"207","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"208","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"209","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"210","CK-10","Chinook","Middle Fraser River_SP_1.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"211","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2015,"RelUBM",11844.106,8601.70641889349,16081.1263670814,0.736522164532285,"Amber"
+"212","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2016,"RelUBM",11591.9344,8623.0507518917,15631.9847824615,0.741552308380297,"Amber"
+"213","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2017,"RelUBM",11274.2174,8644.39508488991,15182.8431978415,0.742562987254115,"Amber"
+"214","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2018,"RelUBM",10904.4531,8665.73941788812,14733.7016132215,0.740102751247163,"Amber"
+"215","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2015,"AbsUBM",11844.106,1000,10000,1.1844106,"Green"
+"216","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2016,"AbsUBM",11591.9344,1000,10000,1.15919344,"Green"
+"217","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2017,"AbsUBM",11274.2174,1000,10000,1.12742174,"Green"
+"218","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2018,"AbsUBM",10904.4531,1000,10000,1.09044531,"Green"
+"219","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2015,"RelLBM",11844.106,8601.70641889349,16081.1263670814,1.37694841269921,"Amber"
+"220","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2016,"RelLBM",11591.9344,8623.0507518917,15631.9847824615,1.34429620485035,"Amber"
+"221","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2017,"RelLBM",11274.2174,8644.39508488991,15182.8431978415,1.30422282754139,"Amber"
+"222","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2018,"RelLBM",10904.4531,8665.73941788812,14733.7016132215,1.25834075710731,"Amber"
+"223","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2015,"AbsLBM",11844.106,1000,10000,11.844106,"Green"
+"224","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2016,"AbsLBM",11591.9344,1000,10000,11.5919344,"Green"
+"225","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2017,"AbsLBM",11274.2174,1000,10000,11.2742174,"Green"
+"226","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForAbd_Wild",2018,"AbsLBM",10904.4531,1000,10000,10.9044531,"Green"
+"227","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForTrend_Wild",2015,"LongTrend",1.05,0.5,0.75,1.05,"Green"
+"228","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForTrend_Wild",2016,"LongTrend",1.03,0.5,0.75,1.03,"Green"
+"229","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForTrend_Wild",2017,"LongTrend",1,0.5,0.75,1,"Green"
+"230","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForTrend_Wild",2018,"LongTrend",0.97,0.5,0.75,0.97,"Green"
+"231","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForTrend_Wild",2015,"PercChange",-45.9529,-25,-15,-45.9529,"Red"
+"232","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForTrend_Wild",2016,"PercChange",-50.0779,-25,-15,-50.0779,"Red"
+"233","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForTrend_Wild",2017,"PercChange",-54.2963,-25,-15,-54.2963,"Red"
+"234","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForTrend_Wild",2018,"PercChange",-56.9178,-25,-15,-56.9178,"Red"
+"235","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"236","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"237","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"238","CK-11","Chinook","Middle Fraser River_SU_1.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"239","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2015,"RelUBM",11561.687,975.292243001468,13905.9737498026,0.831418727520906,"Amber"
+"240","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2016,"RelUBM",12023.1884,978.433621604832,13838.5085543036,0.868821112681319,"Amber"
+"241","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2017,"RelUBM",12451.7879,981.575000208195,13731.7752874438,0.906786459824011,"Amber"
+"242","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2018,"RelUBM",12544.6948,993.9733270423,13712.1412517634,0.914860383194108,"Amber"
+"243","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2015,"AbsUBM",11561.687,1000,10000,1.1561687,"Green"
+"244","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2016,"AbsUBM",12023.1884,1000,10000,1.20231884,"Green"
+"245","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2017,"AbsUBM",12451.7879,1000,10000,1.24517879,"Green"
+"246","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2018,"AbsUBM",12544.6948,1000,10000,1.25446948,"Green"
+"247","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2015,"RelLBM",11561.687,975.292243001468,13905.9737498026,11.8545872613719,"Amber"
+"248","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2016,"RelLBM",12023.1884,978.433621604832,13838.5085543036,12.2882003791729,"Amber"
+"249","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2017,"RelLBM",12451.7879,981.575000208195,13731.7752874438,12.6855185771428,"Amber"
+"250","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2018,"RelLBM",12544.6948,993.9733270423,13712.1412517634,12.6207559687023,"Amber"
+"251","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2015,"AbsLBM",11561.687,1000,10000,11.561687,"Green"
+"252","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2016,"AbsLBM",12023.1884,1000,10000,12.0231884,"Green"
+"253","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2017,"AbsLBM",12451.7879,1000,10000,12.4517879,"Green"
+"254","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForAbd_Wild",2018,"AbsLBM",12544.6948,1000,10000,12.5446948,"Green"
+"255","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForTrend_Wild",2015,"LongTrend",2.95,0.5,0.75,2.95,"Green"
+"256","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForTrend_Wild",2016,"LongTrend",2.95,0.5,0.75,2.95,"Green"
+"257","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForTrend_Wild",2017,"LongTrend",2.95,0.5,0.75,2.95,"Green"
+"258","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForTrend_Wild",2018,"LongTrend",2.88,0.5,0.75,2.88,"Green"
+"259","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForTrend_Wild",2015,"PercChange",-51.5563,-25,-15,-51.5563,"Red"
+"260","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForTrend_Wild",2016,"PercChange",-58.8025,-25,-15,-58.8025,"Red"
+"261","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForTrend_Wild",2017,"PercChange",-58.4449,-25,-15,-58.4449,"Red"
+"262","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForTrend_Wild",2018,"PercChange",-57.1673,-25,-15,-57.1673,"Red"
+"263","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"264","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"265","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"266","CK-12","Chinook","Upper Fraser River_SP_1.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"267","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2015,"RelUBM",NA,34539.1805287695,78291.5333597624,NA,NA
+"268","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2016,"RelUBM",NA,36715.6066700403,82200.9116022128,NA,NA
+"269","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2017,"RelUBM",79604.4916,38892.032811311,85238.6976385189,0.93390084322484,"Amber"
+"270","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2018,"RelUBM",82676.4828,41068.4589525817,84950.7096023059,0.973228866327867,"Amber"
+"271","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2015,"AbsUBM",NA,1000,10000,NA,NA
+"272","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2016,"AbsUBM",NA,1000,10000,NA,NA
+"273","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2017,"AbsUBM",79604.4916,1000,10000,7.96044916,"Green"
+"274","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2018,"AbsUBM",82676.4828,1000,10000,8.26764828,"Green"
+"275","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2015,"RelLBM",NA,34539.1805287695,78291.5333597624,NA,NA
+"276","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2016,"RelLBM",NA,36715.6066700403,82200.9116022128,NA,NA
+"277","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2017,"RelLBM",79604.4916,38892.032811311,85238.6976385189,2.04680716963832,"Amber"
+"278","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2018,"RelLBM",82676.4828,41068.4589525817,84950.7096023059,2.01313818216212,"Amber"
+"279","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2015,"AbsLBM",NA,1000,10000,NA,NA
+"280","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2016,"AbsLBM",NA,1000,10000,NA,NA
+"281","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2017,"AbsLBM",79604.4916,1000,10000,79.6044916,"Green"
+"282","CK-13","Chinook","South Thompson_SU_0.3","SpnForAbd_Wild",2018,"AbsLBM",82676.4828,1000,10000,82.6764828,"Green"
+"283","CK-13","Chinook","South Thompson_SU_0.3","SpnForTrend_Wild",2015,"LongTrend",NA,0.5,0.75,NA,NA
+"284","CK-13","Chinook","South Thompson_SU_0.3","SpnForTrend_Wild",2016,"LongTrend",NA,0.5,0.75,NA,NA
+"285","CK-13","Chinook","South Thompson_SU_0.3","SpnForTrend_Wild",2017,"LongTrend",1.8,0.5,0.75,1.8,"Green"
+"286","CK-13","Chinook","South Thompson_SU_0.3","SpnForTrend_Wild",2018,"LongTrend",1.81,0.5,0.75,1.81,"Green"
+"287","CK-13","Chinook","South Thompson_SU_0.3","SpnForTrend_Wild",2015,"PercChange",23.4356,-25,-15,23.4356,"Green"
+"288","CK-13","Chinook","South Thompson_SU_0.3","SpnForTrend_Wild",2016,"PercChange",12.9298,-25,-15,12.9298,"Green"
+"289","CK-13","Chinook","South Thompson_SU_0.3","SpnForTrend_Wild",2017,"PercChange",2.973,-25,-15,2.973,"Green"
+"290","CK-13","Chinook","South Thompson_SU_0.3","SpnForTrend_Wild",2018,"PercChange",-2.226,-25,-15,-2.226,"Green"
+"291","CK-13","Chinook","South Thompson_SU_0.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"292","CK-13","Chinook","South Thompson_SU_0.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"293","CK-13","Chinook","South Thompson_SU_0.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"294","CK-13","Chinook","South Thompson_SU_0.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"295","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2015,"RelUBM",502.5543,451.021762953327,580.323111497143,0.865990497437692,"Amber"
+"296","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2016,"RelUBM",498.4379,439.260903825696,573.258869469313,0.869481357456226,"Amber"
+"297","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2017,"RelUBM",491.5747,442.054556633306,566.194627441482,0.868207990989469,"Amber"
+"298","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2018,"RelUBM",465.9857,432.602452151581,559.130385413651,0.833411512156075,"Amber"
+"299","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2015,"AbsUBM",502.5543,1000,10000,0.05025543,"Red"
+"300","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2016,"AbsUBM",498.4379,1000,10000,0.04984379,"Red"
+"301","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2017,"AbsUBM",491.5747,1000,10000,0.04915747,"Red"
+"302","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2018,"AbsUBM",465.9857,1000,10000,0.04659857,"Red"
+"303","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2015,"RelLBM",502.5543,451.021762953327,580.323111497143,1.11425731811528,"Amber"
+"304","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2016,"RelLBM",498.4379,439.260903825696,573.258869469313,1.13471947004368,"Amber"
+"305","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2017,"RelLBM",491.5747,442.054556633306,566.194627441482,1.11202269634735,"Amber"
+"306","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2018,"RelLBM",465.9857,432.602452151581,559.130385413651,1.07716842029532,"Amber"
+"307","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2015,"AbsLBM",502.5543,1000,10000,0.5025543,"Red"
+"308","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2016,"AbsLBM",498.4379,1000,10000,0.4984379,"Red"
+"309","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2017,"AbsLBM",491.5747,1000,10000,0.4915747,"Red"
+"310","CK-14","Chinook","South Thompson_SU_1.3","SpnForAbd_Wild",2018,"AbsLBM",465.9857,1000,10000,0.4659857,"Red"
+"311","CK-14","Chinook","South Thompson_SU_1.3","SpnForTrend_Wild",2015,"LongTrend",0.96,0.5,0.75,0.96,"Green"
+"312","CK-14","Chinook","South Thompson_SU_1.3","SpnForTrend_Wild",2016,"LongTrend",0.96,0.5,0.75,0.96,"Green"
+"313","CK-14","Chinook","South Thompson_SU_1.3","SpnForTrend_Wild",2017,"LongTrend",0.95,0.5,0.75,0.95,"Green"
+"314","CK-14","Chinook","South Thompson_SU_1.3","SpnForTrend_Wild",2018,"LongTrend",0.91,0.5,0.75,0.91,"Green"
+"315","CK-14","Chinook","South Thompson_SU_1.3","SpnForTrend_Wild",2015,"PercChange",25.2653,-25,-15,25.2653,"Green"
+"316","CK-14","Chinook","South Thompson_SU_1.3","SpnForTrend_Wild",2016,"PercChange",3.5171,-25,-15,3.5171,"Green"
+"317","CK-14","Chinook","South Thompson_SU_1.3","SpnForTrend_Wild",2017,"PercChange",-8.5822,-25,-15,-8.5822,"Green"
+"318","CK-14","Chinook","South Thompson_SU_1.3","SpnForTrend_Wild",2018,"PercChange",-16.9634,-25,-15,-16.9634,"Amber"
+"319","CK-14","Chinook","South Thompson_SU_1.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"320","CK-14","Chinook","South Thompson_SU_1.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"321","CK-14","Chinook","South Thompson_SU_1.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"322","CK-14","Chinook","South Thompson_SU_1.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"323","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2015,"RelUBM",16872.9346,12092.3033615759,22731.6178394891,0.742267212089433,"Amber"
+"324","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2016,"RelUBM",17787.0912,13050.8478784688,22529.5536688794,0.789500380762967,"Amber"
+"325","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2017,"RelUBM",17742.0505,14009.3923953616,22327.4894982698,0.794628097412155,"Amber"
+"326","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2018,"RelUBM",17236.4088,13593.4099784496,22125.4253276601,0.779031749434977,"Amber"
+"327","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2015,"AbsUBM",16872.9346,1000,10000,1.68729346,"Green"
+"328","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2016,"AbsUBM",17787.0912,1000,10000,1.77870912,"Green"
+"329","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2017,"AbsUBM",17742.0505,1000,10000,1.77420505,"Green"
+"330","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2018,"AbsUBM",17236.4088,1000,10000,1.72364088,"Green"
+"331","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2015,"RelLBM",16872.9346,12092.3033615759,22731.6178394891,1.3953449641046,"Amber"
+"332","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2016,"RelLBM",17787.0912,13050.8478784688,22529.5536688794,1.36290694410323,"Amber"
+"333","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2017,"RelLBM",17742.0505,14009.3923953616,22327.4894982698,1.26643968555512,"Amber"
+"334","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2018,"RelLBM",17236.4088,13593.4099784496,22125.4253276601,1.26799742134798,"Amber"
+"335","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2015,"AbsLBM",16872.9346,1000,10000,16.8729346,"Green"
+"336","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2016,"AbsLBM",17787.0912,1000,10000,17.7870912,"Green"
+"337","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2017,"AbsLBM",17742.0505,1000,10000,17.7420505,"Green"
+"338","CK-15","Chinook","Shuswap River_SU_0.3","SpnForAbd_Wild",2018,"AbsLBM",17236.4088,1000,10000,17.2364088,"Green"
+"339","CK-15","Chinook","Shuswap River_SU_0.3","SpnForTrend_Wild",2015,"LongTrend",1.05,0.5,0.75,1.05,"Green"
+"340","CK-15","Chinook","Shuswap River_SU_0.3","SpnForTrend_Wild",2016,"LongTrend",1.1,0.5,0.75,1.1,"Green"
+"341","CK-15","Chinook","Shuswap River_SU_0.3","SpnForTrend_Wild",2017,"LongTrend",1.1,0.5,0.75,1.1,"Green"
+"342","CK-15","Chinook","Shuswap River_SU_0.3","SpnForTrend_Wild",2018,"LongTrend",1.07,0.5,0.75,1.07,"Green"
+"343","CK-15","Chinook","Shuswap River_SU_0.3","SpnForTrend_Wild",2015,"PercChange",-39.2472,-25,-15,-39.2472,"Red"
+"344","CK-15","Chinook","Shuswap River_SU_0.3","SpnForTrend_Wild",2016,"PercChange",-26.7955,-25,-15,-26.7955,"Red"
+"345","CK-15","Chinook","Shuswap River_SU_0.3","SpnForTrend_Wild",2017,"PercChange",-24.1375,-25,-15,-24.1375,"Amber"
+"346","CK-15","Chinook","Shuswap River_SU_0.3","SpnForTrend_Wild",2018,"PercChange",-24.0789,-25,-15,-24.0789,"Amber"
+"347","CK-15","Chinook","Shuswap River_SU_0.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"348","CK-15","Chinook","Shuswap River_SU_0.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"349","CK-15","Chinook","Shuswap River_SU_0.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"350","CK-15","Chinook","Shuswap River_SU_0.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"351","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2015,"RelUBM",NA,38.3041557031004,162.431326793666,NA,NA
+"352","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2016,"RelUBM",NA,39.1714854474503,147.412164770402,NA,NA
+"353","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2017,"RelUBM",49.2435,36.284378323581,132.393002747138,0.371949415589975,"Amber"
+"354","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2018,"RelUBM",39.7537,32.8270354180724,117.373840723874,0.338693015026423,"Amber"
+"355","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2015,"AbsUBM",NA,1000,10000,NA,NA
+"356","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2016,"AbsUBM",NA,1000,10000,NA,NA
+"357","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2017,"AbsUBM",49.2435,1000,10000,0.00492435,"Red"
+"358","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2018,"AbsUBM",39.7537,1000,10000,0.00397537,"Red"
+"359","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2015,"RelLBM",NA,38.3041557031004,162.431326793666,NA,NA
+"360","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2016,"RelLBM",NA,39.1714854474503,147.412164770402,NA,NA
+"361","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2017,"RelLBM",49.2435,36.284378323581,132.393002747138,1.35715429821756,"Amber"
+"362","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2018,"RelLBM",39.7537,32.8270354180724,117.373840723874,1.21100487734309,"Amber"
+"363","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2015,"AbsLBM",NA,1000,10000,NA,NA
+"364","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2016,"AbsLBM",NA,1000,10000,NA,NA
+"365","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2017,"AbsLBM",49.2435,1000,10000,0.0492435,"Red"
+"366","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForAbd_Wild",2018,"AbsLBM",39.7537,1000,10000,0.0397537,"Red"
+"367","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForTrend_Wild",2015,"LongTrend",NA,0.5,0.75,NA,NA
+"368","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForTrend_Wild",2016,"LongTrend",NA,0.5,0.75,NA,NA
+"369","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForTrend_Wild",2017,"LongTrend",0.78,0.5,0.75,0.78,"Green"
+"370","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForTrend_Wild",2018,"LongTrend",0.68,0.5,0.75,0.68,"Amber"
+"371","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForTrend_Wild",2015,"PercChange",-93.4788,-25,-15,-93.4788,"Red"
+"372","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForTrend_Wild",2016,"PercChange",-74.5536,-25,-15,-74.5536,"Red"
+"373","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForTrend_Wild",2017,"PercChange",-53.1856,-25,-15,-53.1856,"Red"
+"374","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForTrend_Wild",2018,"PercChange",10.7338,-25,-15,10.7338,"Green"
+"375","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"376","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"377","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"378","CK-16","Chinook","South Thompson-Bessette Creek_SU_1.2","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"379","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2015,"RelUBM",4695.5181,2919.5364658847,6973.27429071875,0.673359157297113,"Amber"
+"380","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2016,"RelUBM",5450.7016,3041.63693421901,6846.92436904078,0.796080299155344,"Amber"
+"381","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2017,"RelUBM",5815.8187,3163.73740255332,6720.57444736281,0.865375236231801,"Amber"
+"382","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2018,"RelUBM",5194.6365,3285.83787088763,6594.22452568483,0.787755479020563,"Amber"
+"383","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2015,"AbsUBM",4695.5181,1000,10000,0.46955181,"Amber"
+"384","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2016,"AbsUBM",5450.7016,1000,10000,0.54507016,"Amber"
+"385","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2017,"AbsUBM",5815.8187,1000,10000,0.58158187,"Amber"
+"386","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2018,"AbsUBM",5194.6365,1000,10000,0.51946365,"Amber"
+"387","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2015,"RelLBM",4695.5181,2919.5364658847,6973.27429071875,1.60830945421232,"Amber"
+"388","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2016,"RelLBM",5450.7016,3041.63693421901,6846.92436904078,1.79202900210691,"Amber"
+"389","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2017,"RelLBM",5815.8187,3163.73740255332,6720.57444736281,1.83827478706238,"Amber"
+"390","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2018,"RelLBM",5194.6365,3285.83787088763,6594.22452568483,1.58091686325252,"Amber"
+"391","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2015,"AbsLBM",4695.5181,1000,10000,4.6955181,"Amber"
+"392","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2016,"AbsLBM",5450.7016,1000,10000,5.4507016,"Amber"
+"393","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2017,"AbsLBM",5815.8187,1000,10000,5.8158187,"Amber"
+"394","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForAbd_Wild",2018,"AbsLBM",5194.6365,1000,10000,5.1946365,"Amber"
+"395","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForTrend_Wild",2015,"LongTrend",1.05,0.5,0.75,1.05,"Green"
+"396","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForTrend_Wild",2016,"LongTrend",1.21,0.5,0.75,1.21,"Green"
+"397","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForTrend_Wild",2017,"LongTrend",1.29,0.5,0.75,1.29,"Green"
+"398","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForTrend_Wild",2018,"LongTrend",1.16,0.5,0.75,1.16,"Green"
+"399","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForTrend_Wild",2015,"PercChange",-61.8273,-25,-15,-61.8273,"Red"
+"400","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForTrend_Wild",2016,"PercChange",-28.6698,-25,-15,-28.6698,"Red"
+"401","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForTrend_Wild",2017,"PercChange",19.4718,-25,-15,19.4718,"Green"
+"402","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForTrend_Wild",2018,"PercChange",57.0895,-25,-15,57.0895,"Green"
+"403","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"404","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"405","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"406","CK-17","Chinook","Lower Thompson_SP_1.2","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"407","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2015,"RelUBM",NA,212.301439922833,589.848137760369,NA,NA
+"408","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2016,"RelUBM",NA,206.302696955463,559.693870021506,NA,NA
+"409","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2017,"RelUBM",NA,202.006920893564,529.539602282642,NA,NA
+"410","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2018,"RelUBM",NA,199.563060688477,499.385334543778,NA,NA
+"411","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2015,"AbsUBM",NA,1000,10000,NA,NA
+"412","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2016,"AbsUBM",NA,1000,10000,NA,NA
+"413","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2017,"AbsUBM",NA,1000,10000,NA,NA
+"414","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2018,"AbsUBM",NA,1000,10000,NA,NA
+"415","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2015,"RelLBM",NA,212.301439922833,589.848137760369,NA,NA
+"416","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2016,"RelLBM",NA,206.302696955463,559.693870021506,NA,NA
+"417","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2017,"RelLBM",NA,202.006920893564,529.539602282642,NA,NA
+"418","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2018,"RelLBM",NA,199.563060688477,499.385334543778,NA,NA
+"419","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2015,"AbsLBM",NA,1000,10000,NA,NA
+"420","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2016,"AbsLBM",NA,1000,10000,NA,NA
+"421","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2017,"AbsLBM",NA,1000,10000,NA,NA
+"422","CK-18","Chinook","North Thompson_SP_1.3","SpnForAbd_Wild",2018,"AbsLBM",NA,1000,10000,NA,NA
+"423","CK-18","Chinook","North Thompson_SP_1.3","SpnForTrend_Wild",2015,"LongTrend",NA,0.5,0.75,NA,NA
+"424","CK-18","Chinook","North Thompson_SP_1.3","SpnForTrend_Wild",2016,"LongTrend",NA,0.5,0.75,NA,NA
+"425","CK-18","Chinook","North Thompson_SP_1.3","SpnForTrend_Wild",2017,"LongTrend",NA,0.5,0.75,NA,NA
+"426","CK-18","Chinook","North Thompson_SP_1.3","SpnForTrend_Wild",2018,"LongTrend",NA,0.5,0.75,NA,NA
+"427","CK-18","Chinook","North Thompson_SP_1.3","SpnForTrend_Wild",2015,"PercChange",-95.8198,-25,-15,-95.8198,"Red"
+"428","CK-18","Chinook","North Thompson_SP_1.3","SpnForTrend_Wild",2016,"PercChange",-97.1477,-25,-15,-97.1477,"Red"
+"429","CK-18","Chinook","North Thompson_SP_1.3","SpnForTrend_Wild",2017,"PercChange",-96.8803,-25,-15,-96.8803,"Red"
+"430","CK-18","Chinook","North Thompson_SP_1.3","SpnForTrend_Wild",2018,"PercChange",-96.7158,-25,-15,-96.7158,"Red"
+"431","CK-18","Chinook","North Thompson_SP_1.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"432","CK-18","Chinook","North Thompson_SP_1.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"433","CK-18","Chinook","North Thompson_SP_1.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"434","CK-18","Chinook","North Thompson_SP_1.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"435","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2015,"RelUBM",NA,4104.89868738472,11258.7077262795,NA,NA
+"436","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2016,"RelUBM",NA,3876.65059100877,11049.0389761503,NA,NA
+"437","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2017,"RelUBM",NA,3757.56195693302,10901.2737321553,NA,NA
+"438","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2018,"RelUBM",NA,3522.25517371651,10753.5084881604,NA,NA
+"439","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2015,"AbsUBM",NA,1000,10000,NA,NA
+"440","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2016,"AbsUBM",NA,1000,10000,NA,NA
+"441","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2017,"AbsUBM",NA,1000,10000,NA,NA
+"442","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2018,"AbsUBM",NA,1000,10000,NA,NA
+"443","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2015,"RelLBM",NA,4104.89868738472,11258.7077262795,NA,NA
+"444","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2016,"RelLBM",NA,3876.65059100877,11049.0389761503,NA,NA
+"445","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2017,"RelLBM",NA,3757.56195693302,10901.2737321553,NA,NA
+"446","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2018,"RelLBM",NA,3522.25517371651,10753.5084881604,NA,NA
+"447","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2015,"AbsLBM",NA,1000,10000,NA,NA
+"448","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2016,"AbsLBM",NA,1000,10000,NA,NA
+"449","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2017,"AbsLBM",NA,1000,10000,NA,NA
+"450","CK-19","Chinook","North Thompson_SU_1.3","SpnForAbd_Wild",2018,"AbsLBM",NA,1000,10000,NA,NA
+"451","CK-19","Chinook","North Thompson_SU_1.3","SpnForTrend_Wild",2015,"LongTrend",NA,0.5,0.75,NA,NA
+"452","CK-19","Chinook","North Thompson_SU_1.3","SpnForTrend_Wild",2016,"LongTrend",NA,0.5,0.75,NA,NA
+"453","CK-19","Chinook","North Thompson_SU_1.3","SpnForTrend_Wild",2017,"LongTrend",NA,0.5,0.75,NA,NA
+"454","CK-19","Chinook","North Thompson_SU_1.3","SpnForTrend_Wild",2018,"LongTrend",NA,0.5,0.75,NA,NA
+"455","CK-19","Chinook","North Thompson_SU_1.3","SpnForTrend_Wild",2015,"PercChange",-84.2235,-25,-15,-84.2235,"Red"
+"456","CK-19","Chinook","North Thompson_SU_1.3","SpnForTrend_Wild",2016,"PercChange",-88.3528,-25,-15,-88.3528,"Red"
+"457","CK-19","Chinook","North Thompson_SU_1.3","SpnForTrend_Wild",2017,"PercChange",-89.969,-25,-15,-89.969,"Red"
+"458","CK-19","Chinook","North Thompson_SU_1.3","SpnForTrend_Wild",2018,"PercChange",-90.7306,-25,-15,-90.7306,"Red"
+"459","CK-19","Chinook","North Thompson_SU_1.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"460","CK-19","Chinook","North Thompson_SU_1.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"461","CK-19","Chinook","North Thompson_SU_1.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"462","CK-19","Chinook","North Thompson_SU_1.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"463","CK-82","Chinook","Upper Adams River_SU_x.x","SpnForAbd_Wild",2018,"RelUBM",NA,0.0566528565213385,0.0792472999609414,NA,NA
+"464","CK-82","Chinook","Upper Adams River_SU_x.x","SpnForAbd_Wild",2018,"AbsUBM",NA,1000,10000,NA,NA
+"465","CK-82","Chinook","Upper Adams River_SU_x.x","SpnForAbd_Wild",2018,"RelLBM",NA,0.0566528565213385,0.0792472999609414,NA,NA
+"466","CK-82","Chinook","Upper Adams River_SU_x.x","SpnForAbd_Wild",2018,"AbsLBM",NA,1000,10000,NA,NA
+"467","CK-82","Chinook","Upper Adams River_SU_x.x","SpnForTrend_Wild",2018,"LongTrend",NA,0.5,0.75,NA,NA
+"468","CK-82","Chinook","Upper Adams River_SU_x.x","SpnForTrend_Wild",2018,"PercChange",-40.3267,-25,-15,-40.3267,"Red"
+"469","CK-82","Chinook","Upper Adams River_SU_x.x","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"470","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2015,"RelUBM",5427.8246,2858.54409942959,4467.65909996996,1.21491467422761,"Green"
+"471","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2016,"RelUBM",4481.5375,2954.20672684433,4466.95600885895,1.00326430148677,"Green"
+"472","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2017,"RelUBM",3911.9789,3049.86935425907,4466.25291774794,0.875897306320165,"Amber"
+"473","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2018,"RelUBM",4729.8945,3063.64637830467,4468.36219108097,1.05852979184209,"Green"
+"474","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2015,"AbsUBM",5427.8246,1000,10000,0.54278246,"Amber"
+"475","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2016,"AbsUBM",4481.5375,1000,10000,0.44815375,"Amber"
+"476","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2017,"AbsUBM",3911.9789,1000,10000,0.39119789,"Amber"
+"477","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2018,"AbsUBM",4729.8945,1000,10000,0.47298945,"Amber"
+"478","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2015,"RelLBM",5427.8246,2858.54409942959,4467.65909996996,1.89880736878717,"Green"
+"479","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2016,"RelLBM",4481.5375,2954.20672684433,4466.95600885895,1.51700199558721,"Green"
+"480","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2017,"RelLBM",3911.9789,3049.86935425907,4466.25291774794,1.28267097557376,"Amber"
+"481","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2018,"RelLBM",4729.8945,3063.64637830467,4468.36219108097,1.54387743099038,"Green"
+"482","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2015,"AbsLBM",5427.8246,1000,10000,5.4278246,"Amber"
+"483","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2016,"AbsLBM",4481.5375,1000,10000,4.4815375,"Amber"
+"484","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2017,"AbsLBM",3911.9789,1000,10000,3.9119789,"Amber"
+"485","CO-01","Coho","Middle Fraser","SpnForAbd_Wild",2018,"AbsLBM",4729.8945,1000,10000,4.7298945,"Amber"
+"486","CO-01","Coho","Middle Fraser","SpnForTrend_Wild",2015,"LongTrend",1.68,0.5,0.75,1.68,"Green"
+"487","CO-01","Coho","Middle Fraser","SpnForTrend_Wild",2016,"LongTrend",1.38,0.5,0.75,1.38,"Green"
+"488","CO-01","Coho","Middle Fraser","SpnForTrend_Wild",2017,"LongTrend",1.2,0.5,0.75,1.2,"Green"
+"489","CO-01","Coho","Middle Fraser","SpnForTrend_Wild",2018,"LongTrend",1.42,0.5,0.75,1.42,"Green"
+"490","CO-01","Coho","Middle Fraser","SpnForTrend_Wild",2015,"PercChange",110.9356,-25,-15,110.9356,"Green"
+"491","CO-01","Coho","Middle Fraser","SpnForTrend_Wild",2016,"PercChange",66.7817,-25,-15,66.7817,"Green"
+"492","CO-01","Coho","Middle Fraser","SpnForTrend_Wild",2017,"PercChange",33.8438,-25,-15,33.8438,"Green"
+"493","CO-01","Coho","Middle Fraser","SpnForTrend_Wild",2018,"PercChange",40.0463,-25,-15,40.0463,"Green"
+"494","CO-01","Coho","Middle Fraser","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"495","CO-01","Coho","Middle Fraser","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"496","CO-01","Coho","Middle Fraser","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"497","CO-01","Coho","Middle Fraser","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"498","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2015,"RelUBM",NA,2097.11348517334,3980.83540046125,NA,NA
+"499","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2016,"RelUBM",NA,1930.52087696544,3957.29546747846,NA,NA
+"500","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2017,"RelUBM",NA,1834.00117758449,3951.07364158844,NA,NA
+"501","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2018,"RelUBM",NA,1866.17441071147,3944.85181569842,NA,NA
+"502","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2015,"AbsUBM",NA,1000,10000,NA,NA
+"503","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2016,"AbsUBM",NA,1000,10000,NA,NA
+"504","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2017,"AbsUBM",NA,1000,10000,NA,NA
+"505","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2018,"AbsUBM",NA,1000,10000,NA,NA
+"506","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2015,"RelLBM",NA,2097.11348517334,3980.83540046125,NA,NA
+"507","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2016,"RelLBM",NA,1930.52087696544,3957.29546747846,NA,NA
+"508","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2017,"RelLBM",NA,1834.00117758449,3951.07364158844,NA,NA
+"509","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2018,"RelLBM",NA,1866.17441071147,3944.85181569842,NA,NA
+"510","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2015,"AbsLBM",NA,1000,10000,NA,NA
+"511","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2016,"AbsLBM",NA,1000,10000,NA,NA
+"512","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2017,"AbsLBM",NA,1000,10000,NA,NA
+"513","CO-02","Coho","Fraser Canyon","SpnForAbd_Wild",2018,"AbsLBM",NA,1000,10000,NA,NA
+"514","CO-02","Coho","Fraser Canyon","SpnForTrend_Wild",2015,"LongTrend",NA,0.5,0.75,NA,NA
+"515","CO-02","Coho","Fraser Canyon","SpnForTrend_Wild",2016,"LongTrend",NA,0.5,0.75,NA,NA
+"516","CO-02","Coho","Fraser Canyon","SpnForTrend_Wild",2017,"LongTrend",NA,0.5,0.75,NA,NA
+"517","CO-02","Coho","Fraser Canyon","SpnForTrend_Wild",2018,"LongTrend",NA,0.5,0.75,NA,NA
+"518","CO-02","Coho","Fraser Canyon","SpnForTrend_Wild",2015,"PercChange",43.782,-25,-15,43.782,"Green"
+"519","CO-02","Coho","Fraser Canyon","SpnForTrend_Wild",2016,"PercChange",-7.2566,-25,-15,-7.2566,"Green"
+"520","CO-02","Coho","Fraser Canyon","SpnForTrend_Wild",2017,"PercChange",-41.8256,-25,-15,-41.8256,"Red"
+"521","CO-02","Coho","Fraser Canyon","SpnForTrend_Wild",2018,"PercChange",-48.7736,-25,-15,-48.7736,"Red"
+"522","CO-02","Coho","Fraser Canyon","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"523","CO-02","Coho","Fraser Canyon","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"524","CO-02","Coho","Fraser Canyon","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"525","CO-02","Coho","Fraser Canyon","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"526","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2015,"RelUBM",8149.22,2708.74037180479,6250.43631172409,1.30378418298804,"Green"
+"527","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2016,"RelUBM",7443.1052,2819.2102397879,6492.88269152242,1.14634832533141,"Green"
+"528","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2017,"RelUBM",6439.7639,2929.68010777101,6398.28287385858,1.0064831497699,"Green"
+"529","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2018,"RelUBM",6513.721,3040.14997575411,6682.08232685012,0.974804062773425,"Amber"
+"530","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2015,"AbsUBM",8149.22,1000,10000,0.814922,"Amber"
+"531","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2016,"AbsUBM",7443.1052,1000,10000,0.74431052,"Amber"
+"532","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2017,"AbsUBM",6439.7639,1000,10000,0.64397639,"Amber"
+"533","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2018,"AbsUBM",6513.721,1000,10000,0.6513721,"Amber"
+"534","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2015,"RelLBM",8149.22,2708.74037180479,6250.43631172409,3.00849061978218,"Green"
+"535","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2016,"RelLBM",7443.1052,2819.2102397879,6492.88269152242,2.64013839583669,"Green"
+"536","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2017,"RelLBM",6439.7639,2929.68010777101,6398.28287385858,2.19811162417305,"Green"
+"537","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2018,"RelLBM",6513.721,3040.14997575411,6682.08232685012,2.14256567996593,"Amber"
+"538","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2015,"AbsLBM",8149.22,1000,10000,8.14922,"Amber"
+"539","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2016,"AbsLBM",7443.1052,1000,10000,7.4431052,"Amber"
+"540","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2017,"AbsLBM",6439.7639,1000,10000,6.4397639,"Amber"
+"541","CO-03","Coho","Lower Thompson","SpnForAbd_Wild",2018,"AbsLBM",6513.721,1000,10000,6.513721,"Amber"
+"542","CO-03","Coho","Lower Thompson","SpnForTrend_Wild",2015,"LongTrend",2.03,0.5,0.75,2.03,"Green"
+"543","CO-03","Coho","Lower Thompson","SpnForTrend_Wild",2016,"LongTrend",1.82,0.5,0.75,1.82,"Green"
+"544","CO-03","Coho","Lower Thompson","SpnForTrend_Wild",2017,"LongTrend",1.56,0.5,0.75,1.56,"Green"
+"545","CO-03","Coho","Lower Thompson","SpnForTrend_Wild",2018,"LongTrend",1.55,0.5,0.75,1.55,"Green"
+"546","CO-03","Coho","Lower Thompson","SpnForTrend_Wild",2015,"PercChange",196.4767,-25,-15,196.4767,"Green"
+"547","CO-03","Coho","Lower Thompson","SpnForTrend_Wild",2016,"PercChange",88.9375,-25,-15,88.9375,"Green"
+"548","CO-03","Coho","Lower Thompson","SpnForTrend_Wild",2017,"PercChange",22.1956,-25,-15,22.1956,"Green"
+"549","CO-03","Coho","Lower Thompson","SpnForTrend_Wild",2018,"PercChange",-0.4721,-25,-15,-0.4721,"Green"
+"550","CO-03","Coho","Lower Thompson","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"551","CO-03","Coho","Lower Thompson","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"552","CO-03","Coho","Lower Thompson","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"553","CO-03","Coho","Lower Thompson","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"554","CO-04","Coho","North Thompson","SpnForAbd_Wild",2015,"RelUBM",10026.4187,9146.22986166328,22723.9091925702,0.441227722529284,"Amber"
+"555","CO-04","Coho","North Thompson","SpnForAbd_Wild",2016,"RelUBM",7828.1572,8889.47266294077,22369.3143365232,0.349950699526748,"Red"
+"556","CO-04","Coho","North Thompson","SpnForAbd_Wild",2017,"RelUBM",7113.5697,8738.87168169647,22014.7194804761,0.323127882974331,"Red"
+"557","CO-04","Coho","North Thompson","SpnForAbd_Wild",2018,"RelUBM",9163.5412,8829.19254039346,21410.1930959469,0.427998998371235,"Amber"
+"558","CO-04","Coho","North Thompson","SpnForAbd_Wild",2015,"AbsUBM",10026.4187,1000,10000,1.00264187,"Green"
+"559","CO-04","Coho","North Thompson","SpnForAbd_Wild",2016,"AbsUBM",7828.1572,1000,10000,0.78281572,"Amber"
+"560","CO-04","Coho","North Thompson","SpnForAbd_Wild",2017,"AbsUBM",7113.5697,1000,10000,0.71135697,"Amber"
+"561","CO-04","Coho","North Thompson","SpnForAbd_Wild",2018,"AbsUBM",9163.5412,1000,10000,0.91635412,"Amber"
+"562","CO-04","Coho","North Thompson","SpnForAbd_Wild",2015,"RelLBM",10026.4187,9146.22986166328,22723.9091925702,1.09623515389943,"Amber"
+"563","CO-04","Coho","North Thompson","SpnForAbd_Wild",2016,"RelLBM",7828.1572,8889.47266294077,22369.3143365232,0.880609851317134,"Red"
+"564","CO-04","Coho","North Thompson","SpnForAbd_Wild",2017,"RelLBM",7113.5697,8738.87168169647,22014.7194804761,0.814014664490307,"Red"
+"565","CO-04","Coho","North Thompson","SpnForAbd_Wild",2018,"RelLBM",9163.5412,8829.19254039346,21410.1930959469,1.03786854325318,"Amber"
+"566","CO-04","Coho","North Thompson","SpnForAbd_Wild",2015,"AbsLBM",10026.4187,1000,10000,10.0264187,"Green"
+"567","CO-04","Coho","North Thompson","SpnForAbd_Wild",2016,"AbsLBM",7828.1572,1000,10000,7.8281572,"Amber"
+"568","CO-04","Coho","North Thompson","SpnForAbd_Wild",2017,"AbsLBM",7113.5697,1000,10000,7.1135697,"Amber"
+"569","CO-04","Coho","North Thompson","SpnForAbd_Wild",2018,"AbsLBM",9163.5412,1000,10000,9.1635412,"Amber"
+"570","CO-04","Coho","North Thompson","SpnForTrend_Wild",2015,"LongTrend",0.75,0.5,0.75,0.75,"Amber"
+"571","CO-04","Coho","North Thompson","SpnForTrend_Wild",2016,"LongTrend",0.6,0.5,0.75,0.6,"Amber"
+"572","CO-04","Coho","North Thompson","SpnForTrend_Wild",2017,"LongTrend",0.55,0.5,0.75,0.55,"Amber"
+"573","CO-04","Coho","North Thompson","SpnForTrend_Wild",2018,"LongTrend",0.7,0.5,0.75,0.7,"Amber"
+"574","CO-04","Coho","North Thompson","SpnForTrend_Wild",2015,"PercChange",48.4806,-25,-15,48.4806,"Green"
+"575","CO-04","Coho","North Thompson","SpnForTrend_Wild",2016,"PercChange",6.451,-25,-15,6.451,"Green"
+"576","CO-04","Coho","North Thompson","SpnForTrend_Wild",2017,"PercChange",-12.8493,-25,-15,-12.8493,"Green"
+"577","CO-04","Coho","North Thompson","SpnForTrend_Wild",2018,"PercChange",5.341,-25,-15,5.341,"Green"
+"578","CO-04","Coho","North Thompson","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"579","CO-04","Coho","North Thompson","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"580","CO-04","Coho","North Thompson","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"581","CO-04","Coho","North Thompson","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"582","CO-05","Coho","South Thompson","SpnForAbd_Wild",2015,"RelUBM",5501.0365,4618.09950030905,9291.28991229062,0.59206380943115,"Amber"
+"583","CO-05","Coho","South Thompson","SpnForAbd_Wild",2016,"RelUBM",4150.3718,4394.15976144496,9221.9533340174,0.450053437669257,"Red"
+"584","CO-05","Coho","South Thompson","SpnForAbd_Wild",2017,"RelUBM",3636.7,4132.54570034132,9152.61675574418,0.397339918960073,"Red"
+"585","CO-05","Coho","South Thompson","SpnForAbd_Wild",2018,"RelUBM",4432.7662,4236.26989701251,8973.44490497654,0.49398711943299,"Amber"
+"586","CO-05","Coho","South Thompson","SpnForAbd_Wild",2015,"AbsUBM",5501.0365,1000,10000,0.55010365,"Amber"
+"587","CO-05","Coho","South Thompson","SpnForAbd_Wild",2016,"AbsUBM",4150.3718,1000,10000,0.41503718,"Amber"
+"588","CO-05","Coho","South Thompson","SpnForAbd_Wild",2017,"AbsUBM",3636.7,1000,10000,0.36367,"Amber"
+"589","CO-05","Coho","South Thompson","SpnForAbd_Wild",2018,"AbsUBM",4432.7662,1000,10000,0.44327662,"Amber"
+"590","CO-05","Coho","South Thompson","SpnForAbd_Wild",2015,"RelLBM",5501.0365,4618.09950030905,9291.28991229062,1.19119055352356,"Amber"
+"591","CO-05","Coho","South Thompson","SpnForAbd_Wild",2016,"RelLBM",4150.3718,4394.15976144496,9221.9533340174,0.944520005033956,"Red"
+"592","CO-05","Coho","South Thompson","SpnForAbd_Wild",2017,"RelLBM",3636.7,4132.54570034132,9152.61675574418,0.880014466554994,"Red"
+"593","CO-05","Coho","South Thompson","SpnForAbd_Wild",2018,"RelLBM",4432.7662,4236.26989701251,8973.44490497654,1.04638427384574,"Amber"
+"594","CO-05","Coho","South Thompson","SpnForAbd_Wild",2015,"AbsLBM",5501.0365,1000,10000,5.5010365,"Amber"
+"595","CO-05","Coho","South Thompson","SpnForAbd_Wild",2016,"AbsLBM",4150.3718,1000,10000,4.1503718,"Amber"
+"596","CO-05","Coho","South Thompson","SpnForAbd_Wild",2017,"AbsLBM",3636.7,1000,10000,3.6367,"Amber"
+"597","CO-05","Coho","South Thompson","SpnForAbd_Wild",2018,"AbsLBM",4432.7662,1000,10000,4.4327662,"Amber"
+"598","CO-05","Coho","South Thompson","SpnForTrend_Wild",2015,"LongTrend",0.84,0.5,0.75,0.84,"Green"
+"599","CO-05","Coho","South Thompson","SpnForTrend_Wild",2016,"LongTrend",0.65,0.5,0.75,0.65,"Amber"
+"600","CO-05","Coho","South Thompson","SpnForTrend_Wild",2017,"LongTrend",0.57,0.5,0.75,0.57,"Amber"
+"601","CO-05","Coho","South Thompson","SpnForTrend_Wild",2018,"LongTrend",0.7,0.5,0.75,0.7,"Amber"
+"602","CO-05","Coho","South Thompson","SpnForTrend_Wild",2015,"PercChange",15.9913,-25,-15,15.9913,"Green"
+"603","CO-05","Coho","South Thompson","SpnForTrend_Wild",2016,"PercChange",-21.8399,-25,-15,-21.8399,"Amber"
+"604","CO-05","Coho","South Thompson","SpnForTrend_Wild",2017,"PercChange",-37.9072,-25,-15,-37.9072,"Red"
+"605","CO-05","Coho","South Thompson","SpnForTrend_Wild",2018,"PercChange",-27.8662,-25,-15,-27.8662,"Red"
+"606","CO-05","Coho","South Thompson","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"607","CO-05","Coho","South Thompson","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"608","CO-05","Coho","South Thompson","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"609","CO-05","Coho","South Thompson","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"610","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2015,"RelUBM",1572.6436,5100,19000,0.0827707157894737,"Red"
+"611","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2016,"RelUBM",1750.377,5100,19000,0.0921251052631579,"Red"
+"612","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2017,"RelUBM",1592.3287,5100,19000,0.0838067736842105,"Red"
+"613","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2018,"RelUBM",1390.7284,5100,19000,0.0731962315789474,"Red"
+"614","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2015,"AbsUBM",1572.6436,1000,10000,0.15726436,"Amber"
+"615","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2016,"AbsUBM",1750.377,1000,10000,0.1750377,"Amber"
+"616","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2017,"AbsUBM",1592.3287,1000,10000,0.15923287,"Amber"
+"617","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2018,"AbsUBM",1390.7284,1000,10000,0.13907284,"Amber"
+"618","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2015,"RelLBM",1572.6436,5100,19000,0.308361490196078,"Red"
+"619","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2016,"RelLBM",1750.377,5100,19000,0.343211176470588,"Red"
+"620","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2017,"RelLBM",1592.3287,5100,19000,0.31222131372549,"Red"
+"621","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2018,"RelLBM",1390.7284,5100,19000,0.272691843137255,"Red"
+"622","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2015,"AbsLBM",1572.6436,1000,10000,1.5726436,"Amber"
+"623","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2016,"AbsLBM",1750.377,1000,10000,1.750377,"Amber"
+"624","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2017,"AbsLBM",1592.3287,1000,10000,1.5923287,"Amber"
+"625","CU-1","Sockeye","Bowron_ES","SpnForAbd_Wild",2018,"AbsLBM",1390.7284,1000,10000,1.3907284,"Amber"
+"626","CU-1","Sockeye","Bowron_ES","SpnForTrend_Wild",2015,"LongTrend",0.35,0.5,0.75,0.35,"Red"
+"627","CU-1","Sockeye","Bowron_ES","SpnForTrend_Wild",2016,"LongTrend",0.4,0.5,0.75,0.4,"Red"
+"628","CU-1","Sockeye","Bowron_ES","SpnForTrend_Wild",2017,"LongTrend",0.38,0.5,0.75,0.38,"Red"
+"629","CU-1","Sockeye","Bowron_ES","SpnForTrend_Wild",2018,"LongTrend",0.34,0.5,0.75,0.34,"Red"
+"630","CU-1","Sockeye","Bowron_ES","SpnForTrend_Wild",2015,"PercChange",-45.3416,-25,-15,-45.3416,"Red"
+"631","CU-1","Sockeye","Bowron_ES","SpnForTrend_Wild",2016,"PercChange",-3.7928,-25,-15,-3.7928,"Green"
+"632","CU-1","Sockeye","Bowron_ES","SpnForTrend_Wild",2017,"PercChange",14.279,-25,-15,14.279,"Green"
+"633","CU-1","Sockeye","Bowron_ES","SpnForTrend_Wild",2018,"PercChange",3.6608,-25,-15,3.6608,"Green"
+"634","CU-1","Sockeye","Bowron_ES","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"635","CU-1","Sockeye","Bowron_ES","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"636","CU-1","Sockeye","Bowron_ES","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"637","CU-1","Sockeye","Bowron_ES","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"638","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2015,"RelUBM",1118.5404,772.626440119117,5315.61762728554,0.210425293621278,"Amber"
+"639","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2016,"RelUBM",985.5502,685.621213641153,5285.32286505391,0.186469251768207,"Amber"
+"640","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2017,"RelUBM",701.491,683.375471449492,5255.02810282228,0.133489485931247,"Amber"
+"641","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2018,"RelUBM",541.2239,668.63894300736,5128.67209809962,0.105529051116476,"Red"
+"642","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2015,"AbsUBM",1118.5404,1000,10000,0.11185404,"Amber"
+"643","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2016,"AbsUBM",985.5502,1000,10000,0.09855502,"Red"
+"644","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2017,"AbsUBM",701.491,1000,10000,0.0701491,"Red"
+"645","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2018,"AbsUBM",541.2239,1000,10000,0.05412239,"Red"
+"646","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2015,"RelLBM",1118.5404,772.626440119117,5315.61762728554,1.44771178142383,"Amber"
+"647","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2016,"RelLBM",985.5502,685.621213641153,5285.32286505391,1.43745581436432,"Amber"
+"648","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2017,"RelLBM",701.491,683.375471449492,5255.02810282228,1.0265088949009,"Amber"
+"649","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2018,"RelLBM",541.2239,668.63894300736,5128.67209809962,0.809441187445229,"Red"
+"650","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2015,"AbsLBM",1118.5404,1000,10000,1.1185404,"Amber"
+"651","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2016,"AbsLBM",985.5502,1000,10000,0.9855502,"Red"
+"652","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2017,"AbsLBM",701.491,1000,10000,0.701491,"Red"
+"653","CU-10","Sockeye","Seton_L","SpnForAbd_Wild",2018,"AbsLBM",541.2239,1000,10000,0.5412239,"Red"
+"654","CU-10","Sockeye","Seton_L","SpnForTrend_Wild",2015,"LongTrend",0.69,0.5,0.75,0.69,"Amber"
+"655","CU-10","Sockeye","Seton_L","SpnForTrend_Wild",2016,"LongTrend",0.64,0.5,0.75,0.64,"Amber"
+"656","CU-10","Sockeye","Seton_L","SpnForTrend_Wild",2017,"LongTrend",0.46,0.5,0.75,0.46,"Red"
+"657","CU-10","Sockeye","Seton_L","SpnForTrend_Wild",2018,"LongTrend",0.36,0.5,0.75,0.36,"Red"
+"658","CU-10","Sockeye","Seton_L","SpnForTrend_Wild",2015,"PercChange",-98.0149,-25,-15,-98.0149,"Red"
+"659","CU-10","Sockeye","Seton_L","SpnForTrend_Wild",2016,"PercChange",-105.9053,-25,-15,-105.9053,"Red"
+"660","CU-10","Sockeye","Seton_L","SpnForTrend_Wild",2017,"PercChange",-106.8011,-25,-15,-106.8011,"Red"
+"661","CU-10","Sockeye","Seton_L","SpnForTrend_Wild",2018,"PercChange",-100.427,-25,-15,-100.427,"Red"
+"662","CU-10","Sockeye","Seton_L","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"663","CU-10","Sockeye","Seton_L","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"664","CU-10","Sockeye","Seton_L","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"665","CU-10","Sockeye","Seton_L","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"666","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2015,"RelUBM",10994.6794,14396.3542763009,42295.8934471591,0.259946734870037,"Red"
+"667","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2016,"RelUBM",7996.3519,14320.458907755,42028.2462675891,0.190261374435853,"Red"
+"668","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2017,"RelUBM",5756.9199,14189.7423154695,41760.5990880191,0.137855299629828,"Red"
+"669","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2018,"RelUBM",4259.6246,14083.8923559926,41741.1603157399,0.102048543159299,"Red"
+"670","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2015,"AbsUBM",10994.6794,1000,10000,1.09946794,"Green"
+"671","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2016,"AbsUBM",7996.3519,1000,10000,0.79963519,"Amber"
+"672","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2017,"AbsUBM",5756.9199,1000,10000,0.57569199,"Amber"
+"673","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2018,"AbsUBM",4259.6246,1000,10000,0.42596246,"Amber"
+"674","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2015,"RelLBM",10994.6794,14396.3542763009,42295.8934471591,0.76371275595095,"Red"
+"675","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2016,"RelLBM",7996.3519,14320.458907755,42028.2462675891,0.558386567882242,"Red"
+"676","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2017,"RelLBM",5756.9199,14189.7423154695,41760.5990880191,0.405709967948034,"Red"
+"677","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2018,"RelLBM",4259.6246,14083.8923559926,41741.1603157399,0.302446546191299,"Red"
+"678","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2015,"AbsLBM",10994.6794,1000,10000,10.9946794,"Green"
+"679","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2016,"AbsLBM",7996.3519,1000,10000,7.9963519,"Amber"
+"680","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2017,"AbsLBM",5756.9199,1000,10000,5.7569199,"Amber"
+"681","CU-11","Sockeye","Harrison_US_L","SpnForAbd_Wild",2018,"AbsLBM",4259.6246,1000,10000,4.2596246,"Amber"
+"682","CU-11","Sockeye","Harrison_US_L","SpnForTrend_Wild",2015,"LongTrend",0.45,0.5,0.75,0.45,"Red"
+"683","CU-11","Sockeye","Harrison_US_L","SpnForTrend_Wild",2016,"LongTrend",0.34,0.5,0.75,0.34,"Red"
+"684","CU-11","Sockeye","Harrison_US_L","SpnForTrend_Wild",2017,"LongTrend",0.24,0.5,0.75,0.24,"Red"
+"685","CU-11","Sockeye","Harrison_US_L","SpnForTrend_Wild",2018,"LongTrend",0.19,0.5,0.75,0.19,"Red"
+"686","CU-11","Sockeye","Harrison_US_L","SpnForTrend_Wild",2015,"PercChange",-85.1198,-25,-15,-85.1198,"Red"
+"687","CU-11","Sockeye","Harrison_US_L","SpnForTrend_Wild",2016,"PercChange",-92.3767,-25,-15,-92.3767,"Red"
+"688","CU-11","Sockeye","Harrison_US_L","SpnForTrend_Wild",2017,"PercChange",-90.0768,-25,-15,-90.0768,"Red"
+"689","CU-11","Sockeye","Harrison_US_L","SpnForTrend_Wild",2018,"PercChange",-88.1045,-25,-15,-88.1045,"Red"
+"690","CU-11","Sockeye","Harrison_US_L","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"691","CU-11","Sockeye","Harrison_US_L","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"692","CU-11","Sockeye","Harrison_US_L","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"693","CU-11","Sockeye","Harrison_US_L","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"694","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2015,"RelUBM",42789.3699,26153.4885340048,63540.9496275233,0.673414076289874,"Amber"
+"695","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2016,"RelUBM",40688.6269,26444.2444805646,63501.1511140796,0.640754162501764,"Amber"
+"696","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2017,"RelUBM",34500.2179,26735.0004271243,63461.3526006359,0.543641389384037,"Amber"
+"697","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2018,"RelUBM",30093.6165,25862.7325874451,63170.7098274326,0.476385599943528,"Amber"
+"698","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2015,"AbsUBM",42789.3699,1000,10000,4.27893699,"Green"
+"699","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2016,"AbsUBM",40688.6269,1000,10000,4.06886269,"Green"
+"700","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2017,"AbsUBM",34500.2179,1000,10000,3.45002179,"Green"
+"701","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2018,"AbsUBM",30093.6165,1000,10000,3.00936165,"Green"
+"702","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2015,"RelLBM",42789.3699,26153.4885340048,63540.9496275233,1.63608651459117,"Amber"
+"703","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2016,"RelLBM",40688.6269,26444.2444805646,63501.1511140796,1.5386571898435,"Amber"
+"704","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2017,"RelLBM",34500.2179,26735.0004271243,63461.3526006359,1.2904513689477,"Amber"
+"705","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2018,"RelLBM",30093.6165,25862.7325874451,63170.7098274326,1.1635899802254,"Amber"
+"706","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2015,"AbsLBM",42789.3699,1000,10000,42.7893699,"Green"
+"707","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2016,"AbsLBM",40688.6269,1000,10000,40.6886269,"Green"
+"708","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2017,"AbsLBM",34500.2179,1000,10000,34.5002179,"Green"
+"709","CU-12","Sockeye","Lillooet_Harr_L","SpnForAbd_Wild",2018,"AbsLBM",30093.6165,1000,10000,30.0936165,"Green"
+"710","CU-12","Sockeye","Lillooet_Harr_L","SpnForTrend_Wild",2015,"LongTrend",0.81,0.5,0.75,0.81,"Green"
+"711","CU-12","Sockeye","Lillooet_Harr_L","SpnForTrend_Wild",2016,"LongTrend",0.79,0.5,0.75,0.79,"Green"
+"712","CU-12","Sockeye","Lillooet_Harr_L","SpnForTrend_Wild",2017,"LongTrend",0.69,0.5,0.75,0.69,"Amber"
+"713","CU-12","Sockeye","Lillooet_Harr_L","SpnForTrend_Wild",2018,"LongTrend",0.61,0.5,0.75,0.61,"Amber"
+"714","CU-12","Sockeye","Lillooet_Harr_L","SpnForTrend_Wild",2015,"PercChange",-71.2429,-25,-15,-71.2429,"Red"
+"715","CU-12","Sockeye","Lillooet_Harr_L","SpnForTrend_Wild",2016,"PercChange",-68.7885,-25,-15,-68.7885,"Red"
+"716","CU-12","Sockeye","Lillooet_Harr_L","SpnForTrend_Wild",2017,"PercChange",-68.2339,-25,-15,-68.2339,"Red"
+"717","CU-12","Sockeye","Lillooet_Harr_L","SpnForTrend_Wild",2018,"PercChange",-65.8911,-25,-15,-65.8911,"Red"
+"718","CU-12","Sockeye","Lillooet_Harr_L","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"719","CU-12","Sockeye","Lillooet_Harr_L","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"720","CU-12","Sockeye","Lillooet_Harr_L","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"721","CU-12","Sockeye","Lillooet_Harr_L","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"722","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2015,"RelUBM",4459.7723,251.114067337221,2562.74776742085,1.74023068391483,"Green"
+"723","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2016,"RelUBM",4440.2877,258.282450291897,2989.36420800129,1.48536190007065,"Green"
+"724","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2017,"RelUBM",4415.1225,265.450833246573,4040.73904245967,1.0926522236666,"Green"
+"725","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2018,"RelUBM",4143.2037,270.986887392512,3813.92912782549,1.08633473804539,"Green"
+"726","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2015,"AbsUBM",4459.7723,1000,10000,0.44597723,"Amber"
+"727","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2016,"AbsUBM",4440.2877,1000,10000,0.44402877,"Amber"
+"728","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2017,"AbsUBM",4415.1225,1000,10000,0.44151225,"Amber"
+"729","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2018,"AbsUBM",4143.2037,1000,10000,0.41432037,"Amber"
+"730","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2015,"RelLBM",4459.7723,251.114067337221,2562.74776742085,17.759946096572,"Green"
+"731","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2016,"RelLBM",4440.2877,258.282450291897,2989.36420800129,17.1915966221546,"Green"
+"732","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2017,"RelLBM",4415.1225,265.450833246573,4040.73904245967,16.6325433828978,"Green"
+"733","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2018,"RelLBM",4143.2037,270.986887392512,3813.92912782549,15.2893143275924,"Green"
+"734","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2015,"AbsLBM",4459.7723,1000,10000,4.4597723,"Amber"
+"735","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2016,"AbsLBM",4440.2877,1000,10000,4.4402877,"Amber"
+"736","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2017,"AbsLBM",4415.1225,1000,10000,4.4151225,"Amber"
+"737","CU-13","Sockeye","Harrison_DS_L","SpnForAbd_Wild",2018,"AbsLBM",4143.2037,1000,10000,4.1432037,"Amber"
+"738","CU-13","Sockeye","Harrison_DS_L","SpnForTrend_Wild",2015,"LongTrend",6.88,0.5,0.75,6.88,"Green"
+"739","CU-13","Sockeye","Harrison_DS_L","SpnForTrend_Wild",2016,"LongTrend",6.75,0.5,0.75,6.75,"Green"
+"740","CU-13","Sockeye","Harrison_DS_L","SpnForTrend_Wild",2017,"LongTrend",6.52,0.5,0.75,6.52,"Green"
+"741","CU-13","Sockeye","Harrison_DS_L","SpnForTrend_Wild",2018,"LongTrend",5.9,0.5,0.75,5.9,"Green"
+"742","CU-13","Sockeye","Harrison_DS_L","SpnForTrend_Wild",2015,"PercChange",-81.1376,-25,-15,-81.1376,"Red"
+"743","CU-13","Sockeye","Harrison_DS_L","SpnForTrend_Wild",2016,"PercChange",-69.7915,-25,-15,-69.7915,"Red"
+"744","CU-13","Sockeye","Harrison_DS_L","SpnForTrend_Wild",2017,"PercChange",-55.9014,-25,-15,-55.9014,"Red"
+"745","CU-13","Sockeye","Harrison_DS_L","SpnForTrend_Wild",2018,"PercChange",-43.2883,-25,-15,-43.2883,"Red"
+"746","CU-13","Sockeye","Harrison_DS_L","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"747","CU-13","Sockeye","Harrison_DS_L","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"748","CU-13","Sockeye","Harrison_DS_L","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"749","CU-13","Sockeye","Harrison_DS_L","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"750","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2015,"RelUBM",2758.3647,0,3346.09297520081,0.824353871946568,"Amber"
+"751","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2016,"RelUBM",2589.7318,0,3301.97340375682,0.784298200904203,"Amber"
+"752","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2017,"RelUBM",2416.9547,0,3257.85383231283,0.741885555462181,"Amber"
+"753","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2018,"RelUBM",2222.7701,0,3230.76823584489,0.688000480919274,"Amber"
+"754","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2015,"AbsUBM",2758.3647,1000,10000,0.27583647,"Amber"
+"755","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2016,"AbsUBM",2589.7318,1000,10000,0.25897318,"Amber"
+"756","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2017,"AbsUBM",2416.9547,1000,10000,0.24169547,"Amber"
+"757","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2018,"AbsUBM",2222.7701,1000,10000,0.22227701,"Amber"
+"758","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2015,"RelLBM",2758.3647,0,3346.09297520081,Inf,"Amber"
+"759","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2016,"RelLBM",2589.7318,0,3301.97340375682,Inf,"Amber"
+"760","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2017,"RelLBM",2416.9547,0,3257.85383231283,Inf,"Amber"
+"761","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2018,"RelLBM",2222.7701,0,3230.76823584489,Inf,"Amber"
+"762","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2015,"AbsLBM",2758.3647,1000,10000,2.7583647,"Amber"
+"763","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2016,"AbsLBM",2589.7318,1000,10000,2.5897318,"Amber"
+"764","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2017,"AbsLBM",2416.9547,1000,10000,2.4169547,"Amber"
+"765","CU-14","Sockeye","Nahatlatch_ES","SpnForAbd_Wild",2018,"AbsLBM",2222.7701,1000,10000,2.2227701,"Amber"
+"766","CU-14","Sockeye","Nahatlatch_ES","SpnForTrend_Wild",2015,"LongTrend",8.91,0.5,0.75,8.91,"Green"
+"767","CU-14","Sockeye","Nahatlatch_ES","SpnForTrend_Wild",2016,"LongTrend",7.83,0.5,0.75,7.83,"Green"
+"768","CU-14","Sockeye","Nahatlatch_ES","SpnForTrend_Wild",2017,"LongTrend",7.06,0.5,0.75,7.06,"Green"
+"769","CU-14","Sockeye","Nahatlatch_ES","SpnForTrend_Wild",2018,"LongTrend",6.25,0.5,0.75,6.25,"Green"
+"770","CU-14","Sockeye","Nahatlatch_ES","SpnForTrend_Wild",2015,"PercChange",12.4864,-25,-15,12.4864,"Green"
+"771","CU-14","Sockeye","Nahatlatch_ES","SpnForTrend_Wild",2016,"PercChange",32.3138,-25,-15,32.3138,"Green"
+"772","CU-14","Sockeye","Nahatlatch_ES","SpnForTrend_Wild",2017,"PercChange",57.8074,-25,-15,57.8074,"Green"
+"773","CU-14","Sockeye","Nahatlatch_ES","SpnForTrend_Wild",2018,"PercChange",44.2895,-25,-15,44.2895,"Green"
+"774","CU-14","Sockeye","Nahatlatch_ES","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"775","CU-14","Sockeye","Nahatlatch_ES","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"776","CU-14","Sockeye","Nahatlatch_ES","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"777","CU-14","Sockeye","Nahatlatch_ES","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"778","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2015,"RelUBM",216.686,151.202238404432,1233.84340179728,0.175618720888213,"Amber"
+"779","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2016,"RelUBM",213.9705,157.884877126927,1188.2519725791,0.180071655623325,"Amber"
+"780","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2017,"RelUBM",176.6267,140.849192572299,1167.10204498854,0.151337837816688,"Amber"
+"781","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2018,"RelUBM",159.3078,133.162476645518,1145.95211739799,0.139017850380805,"Amber"
+"782","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2015,"AbsUBM",216.686,1000,10000,0.0216686,"Red"
+"783","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2016,"AbsUBM",213.9705,1000,10000,0.02139705,"Red"
+"784","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2017,"AbsUBM",176.6267,1000,10000,0.01766267,"Red"
+"785","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2018,"AbsUBM",159.3078,1000,10000,0.01593078,"Red"
+"786","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2015,"RelLBM",216.686,151.202238404432,1233.84340179728,1.43308724980918,"Amber"
+"787","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2016,"RelLBM",213.9705,157.884877126927,1188.2519725791,1.3552311272218,"Amber"
+"788","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2017,"RelLBM",176.6267,140.849192572299,1167.10204498854,1.25401286847517,"Amber"
+"789","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2018,"RelLBM",159.3078,133.162476645518,1145.95211739799,1.19634152212475,"Amber"
+"790","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2015,"AbsLBM",216.686,1000,10000,0.216686,"Red"
+"791","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2016,"AbsLBM",213.9705,1000,10000,0.2139705,"Red"
+"792","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2017,"AbsLBM",176.6267,1000,10000,0.1766267,"Red"
+"793","CU-15","Sockeye","Taseko_ES","SpnForAbd_Wild",2018,"AbsLBM",159.3078,1000,10000,0.1593078,"Red"
+"794","CU-15","Sockeye","Taseko_ES","SpnForTrend_Wild",2015,"LongTrend",0.27,0.5,0.75,0.27,"Red"
+"795","CU-15","Sockeye","Taseko_ES","SpnForTrend_Wild",2016,"LongTrend",0.28,0.5,0.75,0.28,"Red"
+"796","CU-15","Sockeye","Taseko_ES","SpnForTrend_Wild",2017,"LongTrend",0.24,0.5,0.75,0.24,"Red"
+"797","CU-15","Sockeye","Taseko_ES","SpnForTrend_Wild",2018,"LongTrend",0.23,0.5,0.75,0.23,"Red"
+"798","CU-15","Sockeye","Taseko_ES","SpnForTrend_Wild",2015,"PercChange",-87.5983,-25,-15,-87.5983,"Red"
+"799","CU-15","Sockeye","Taseko_ES","SpnForTrend_Wild",2016,"PercChange",-80.2051,-25,-15,-80.2051,"Red"
+"800","CU-15","Sockeye","Taseko_ES","SpnForTrend_Wild",2017,"PercChange",-77.946,-25,-15,-77.946,"Red"
+"801","CU-15","Sockeye","Taseko_ES","SpnForTrend_Wild",2018,"PercChange",-64.3942,-25,-15,-64.3942,"Red"
+"802","CU-15","Sockeye","Taseko_ES","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"803","CU-15","Sockeye","Taseko_ES","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"804","CU-15","Sockeye","Taseko_ES","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"805","CU-15","Sockeye","Taseko_ES","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"806","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2015,"RelUBM",772.0323,208.19124555193,757.256092243138,1.01951282783753,"Green"
+"807","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2016,"RelUBM",600.4731,218.554393330713,750.654807313268,0.799932397887658,"Amber"
+"808","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2017,"RelUBM",397.098,195.84114863613,744.053522383399,0.53369547761563,"Amber"
+"809","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2018,"RelUBM",267.8602,189.558999654805,727.912479663626,0.3679840742994,"Amber"
+"810","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2015,"AbsUBM",772.0323,1000,10000,0.07720323,"Red"
+"811","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2016,"AbsUBM",600.4731,1000,10000,0.06004731,"Red"
+"812","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2017,"AbsUBM",397.098,1000,10000,0.0397098,"Red"
+"813","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2018,"AbsUBM",267.8602,1000,10000,0.02678602,"Red"
+"814","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2015,"RelLBM",772.0323,208.19124555193,757.256092243138,3.70828416897784,"Green"
+"815","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2016,"RelLBM",600.4731,218.554393330713,750.654807313268,2.74747668463188,"Amber"
+"816","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2017,"RelLBM",397.098,195.84114863613,744.053522383399,2.0276535486309,"Amber"
+"817","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2018,"RelLBM",267.8602,189.558999654805,727.912479663626,1.41307033951321,"Amber"
+"818","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2015,"AbsLBM",772.0323,1000,10000,0.7720323,"Red"
+"819","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2016,"AbsLBM",600.4731,1000,10000,0.6004731,"Red"
+"820","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2017,"AbsLBM",397.098,1000,10000,0.397098,"Red"
+"821","CU-16","Sockeye","Widgeon_RT","SpnForAbd_Wild",2018,"AbsLBM",267.8602,1000,10000,0.2678602,"Red"
+"822","CU-16","Sockeye","Widgeon_RT","SpnForTrend_Wild",2015,"LongTrend",1.78,0.5,0.75,1.78,"Green"
+"823","CU-16","Sockeye","Widgeon_RT","SpnForTrend_Wild",2016,"LongTrend",1.33,0.5,0.75,1.33,"Green"
+"824","CU-16","Sockeye","Widgeon_RT","SpnForTrend_Wild",2017,"LongTrend",0.89,0.5,0.75,0.89,"Green"
+"825","CU-16","Sockeye","Widgeon_RT","SpnForTrend_Wild",2018,"LongTrend",0.61,0.5,0.75,0.61,"Amber"
+"826","CU-16","Sockeye","Widgeon_RT","SpnForTrend_Wild",2015,"PercChange",824.6391,-25,-15,824.6391,"Green"
+"827","CU-16","Sockeye","Widgeon_RT","SpnForTrend_Wild",2016,"PercChange",379.8074,-25,-15,379.8074,"Green"
+"828","CU-16","Sockeye","Widgeon_RT","SpnForTrend_Wild",2017,"PercChange",119.5609,-25,-15,119.5609,"Green"
+"829","CU-16","Sockeye","Widgeon_RT","SpnForTrend_Wild",2018,"PercChange",23.3861,-25,-15,23.3861,"Green"
+"830","CU-16","Sockeye","Widgeon_RT","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"831","CU-16","Sockeye","Widgeon_RT","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"832","CU-16","Sockeye","Widgeon_RT","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"833","CU-16","Sockeye","Widgeon_RT","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"834","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2015,"RelUBM",11321.3677,1.67234511778379,2071.27298004773,5.4658984156396,"Green"
+"835","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2016,"RelUBM",11534.9618,1.67234511778379,2319.20033143538,4.97368064485437,"Green"
+"836","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2017,"RelUBM",10834.9075,1.67234511778379,2846.04707125718,3.80700221349955,"Green"
+"837","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2018,"RelUBM",9731.5281,1.67234511778379,3761.65286125041,2.58703513028715,"Green"
+"838","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2015,"AbsUBM",11321.3677,1000,10000,1.13213677,"Green"
+"839","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2016,"AbsUBM",11534.9618,1000,10000,1.15349618,"Green"
+"840","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2017,"AbsUBM",10834.9075,1000,10000,1.08349075,"Green"
+"841","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2018,"AbsUBM",9731.5281,1000,10000,0.97315281,"Amber"
+"842","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2015,"RelLBM",11321.3677,1.67234511778379,2071.27298004773,6769.7555843038,"Green"
+"843","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2016,"RelLBM",11534.9618,1.67234511778379,2319.20033143538,6897.4768887933,"Green"
+"844","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2017,"RelLBM",10834.9075,1.67234511778379,2846.04707125718,6478.87053023992,"Green"
+"845","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2018,"RelLBM",9731.5281,1.67234511778379,3761.65286125041,5819.0908063859,"Green"
+"846","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2015,"AbsLBM",11321.3677,1000,10000,11.3213677,"Green"
+"847","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2016,"AbsLBM",11534.9618,1000,10000,11.5349618,"Green"
+"848","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2017,"AbsLBM",10834.9075,1000,10000,10.8349075,"Green"
+"849","CU-17","Sockeye","Chilliwack_ES","SpnForAbd_Wild",2018,"AbsLBM",9731.5281,1000,10000,9.7315281,"Amber"
+"850","CU-17","Sockeye","Chilliwack_ES","SpnForTrend_Wild",2015,"LongTrend",95.08,0.5,0.75,95.08,"Green"
+"851","CU-17","Sockeye","Chilliwack_ES","SpnForTrend_Wild",2016,"LongTrend",89.83,0.5,0.75,89.83,"Green"
+"852","CU-17","Sockeye","Chilliwack_ES","SpnForTrend_Wild",2017,"LongTrend",77.21,0.5,0.75,77.21,"Green"
+"853","CU-17","Sockeye","Chilliwack_ES","SpnForTrend_Wild",2018,"LongTrend",63.66,0.5,0.75,63.66,"Green"
+"854","CU-17","Sockeye","Chilliwack_ES","SpnForTrend_Wild",2015,"PercChange",86.8956,-25,-15,86.8956,"Green"
+"855","CU-17","Sockeye","Chilliwack_ES","SpnForTrend_Wild",2016,"PercChange",199.0524,-25,-15,199.0524,"Green"
+"856","CU-17","Sockeye","Chilliwack_ES","SpnForTrend_Wild",2017,"PercChange",193.937,-25,-15,193.937,"Green"
+"857","CU-17","Sockeye","Chilliwack_ES","SpnForTrend_Wild",2018,"PercChange",123.0789,-25,-15,123.0789,"Green"
+"858","CU-17","Sockeye","Chilliwack_ES","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"859","CU-17","Sockeye","Chilliwack_ES","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"860","CU-17","Sockeye","Chilliwack_ES","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"861","CU-17","Sockeye","Chilliwack_ES","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"862","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2015,"RelUBM",16352.6368,107900,348000,0.0469903356321839,"Red"
+"863","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2016,"RelUBM",18291.6056,107900,348000,0.0525620850574713,"Red"
+"864","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2017,"RelUBM",17716.5436,107900,348000,0.050909608045977,"Red"
+"865","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2018,"RelUBM",17532.4908,107900,348000,0.0503807206896552,"Red"
+"866","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2015,"AbsUBM",16352.6368,1000,10000,1.63526368,"Green"
+"867","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2016,"AbsUBM",18291.6056,1000,10000,1.82916056,"Green"
+"868","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2017,"AbsUBM",17716.5436,1000,10000,1.77165436,"Green"
+"869","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2018,"AbsUBM",17532.4908,1000,10000,1.75324908,"Green"
+"870","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2015,"RelLBM",16352.6368,107900,348000,0.151553631139944,"Red"
+"871","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2016,"RelLBM",18291.6056,107900,348000,0.16952368489342,"Red"
+"872","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2017,"RelLBM",17716.5436,107900,348000,0.164194101946247,"Red"
+"873","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2018,"RelLBM",17532.4908,107900,348000,0.162488329935125,"Red"
+"874","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2015,"AbsLBM",16352.6368,1000,10000,16.3526368,"Green"
+"875","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2016,"AbsLBM",18291.6056,1000,10000,18.2916056,"Green"
+"876","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2017,"AbsLBM",17716.5436,1000,10000,17.7165436,"Green"
+"877","CU-18","Sockeye","Takla_Trem_EStu","SpnForAbd_Wild",2018,"AbsLBM",17532.4908,1000,10000,17.5324908,"Green"
+"878","CU-18","Sockeye","Takla_Trem_EStu","SpnForTrend_Wild",2015,"LongTrend",0.42,0.5,0.75,0.42,"Red"
+"879","CU-18","Sockeye","Takla_Trem_EStu","SpnForTrend_Wild",2016,"LongTrend",0.49,0.5,0.75,0.49,"Red"
+"880","CU-18","Sockeye","Takla_Trem_EStu","SpnForTrend_Wild",2017,"LongTrend",0.5,0.5,0.75,0.5,"Red"
+"881","CU-18","Sockeye","Takla_Trem_EStu","SpnForTrend_Wild",2018,"LongTrend",0.52,0.5,0.75,0.52,"Amber"
+"882","CU-18","Sockeye","Takla_Trem_EStu","SpnForTrend_Wild",2015,"PercChange",-39.2034,-25,-15,-39.2034,"Red"
+"883","CU-18","Sockeye","Takla_Trem_EStu","SpnForTrend_Wild",2016,"PercChange",-26.7318,-25,-15,-26.7318,"Red"
+"884","CU-18","Sockeye","Takla_Trem_EStu","SpnForTrend_Wild",2017,"PercChange",-30.2639,-25,-15,-30.2639,"Red"
+"885","CU-18","Sockeye","Takla_Trem_EStu","SpnForTrend_Wild",2018,"PercChange",-28.2327,-25,-15,-28.2327,"Red"
+"886","CU-18","Sockeye","Takla_Trem_EStu","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"887","CU-18","Sockeye","Takla_Trem_EStu","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"888","CU-18","Sockeye","Takla_Trem_EStu","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"889","CU-18","Sockeye","Takla_Trem_EStu","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"890","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2015,"RelUBM",18712.279,701.266927736251,7119.7576937067,2.62821851599531,"Green"
+"891","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2016,"RelUBM",19226.1695,706.344714546337,7228.11726277026,2.65991388919877,"Green"
+"892","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2017,"RelUBM",15767.3352,711.422501356424,7354.72546873552,2.14383735559212,"Green"
+"893","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2018,"RelUBM",11509.082,724.44270205595,7312.52273341377,1.57388666258917,"Green"
+"894","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2015,"AbsUBM",18712.279,1000,10000,1.8712279,"Green"
+"895","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2016,"AbsUBM",19226.1695,1000,10000,1.92261695,"Green"
+"896","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2017,"AbsUBM",15767.3352,1000,10000,1.57673352,"Green"
+"897","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2018,"AbsUBM",11509.082,1000,10000,1.1509082,"Green"
+"898","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2015,"RelLBM",18712.279,701.266927736251,7119.7576937067,26.68353270331,"Green"
+"899","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2016,"RelLBM",19226.1695,706.344714546337,7228.11726277026,27.2192445190849,"Green"
+"900","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2017,"RelLBM",15767.3352,711.422501356424,7354.72546873552,22.1631100646064,"Green"
+"901","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2018,"RelLBM",11509.082,724.44270205595,7312.52273341377,15.886807841859,"Green"
+"902","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2015,"AbsLBM",18712.279,1000,10000,18.712279,"Green"
+"903","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2016,"AbsLBM",19226.1695,1000,10000,19.2261695,"Green"
+"904","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2017,"AbsLBM",15767.3352,1000,10000,15.7673352,"Green"
+"905","CU-19","Sockeye","Anderson_Seton_ES","SpnForAbd_Wild",2018,"AbsLBM",11509.082,1000,10000,11.509082,"Green"
+"906","CU-19","Sockeye","Anderson_Seton_ES","SpnForTrend_Wild",2015,"LongTrend",8.5,0.5,0.75,8.5,"Green"
+"907","CU-19","Sockeye","Anderson_Seton_ES","SpnForTrend_Wild",2016,"LongTrend",8.33,0.5,0.75,8.33,"Green"
+"908","CU-19","Sockeye","Anderson_Seton_ES","SpnForTrend_Wild",2017,"LongTrend",6.64,0.5,0.75,6.64,"Green"
+"909","CU-19","Sockeye","Anderson_Seton_ES","SpnForTrend_Wild",2018,"LongTrend",4.69,0.5,0.75,4.69,"Green"
+"910","CU-19","Sockeye","Anderson_Seton_ES","SpnForTrend_Wild",2015,"PercChange",714.9272,-25,-15,714.9272,"Green"
+"911","CU-19","Sockeye","Anderson_Seton_ES","SpnForTrend_Wild",2016,"PercChange",553.67,-25,-15,553.67,"Green"
+"912","CU-19","Sockeye","Anderson_Seton_ES","SpnForTrend_Wild",2017,"PercChange",288.9631,-25,-15,288.9631,"Green"
+"913","CU-19","Sockeye","Anderson_Seton_ES","SpnForTrend_Wild",2018,"PercChange",136.0771,-25,-15,136.0771,"Green"
+"914","CU-19","Sockeye","Anderson_Seton_ES","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"915","CU-19","Sockeye","Anderson_Seton_ES","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"916","CU-19","Sockeye","Anderson_Seton_ES","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"917","CU-19","Sockeye","Anderson_Seton_ES","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"918","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2015,"RelUBM",7892.6939,5000,17800,0.443409769662921,"Amber"
+"919","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2016,"RelUBM",9537.5543,5000,17800,0.535817657303371,"Amber"
+"920","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2017,"RelUBM",10332.378,5000,17800,0.580470674157303,"Amber"
+"921","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2018,"RelUBM",9346.3456,5000,17800,0.525075595505618,"Amber"
+"922","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2015,"AbsUBM",7892.6939,1000,10000,0.78926939,"Amber"
+"923","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2016,"AbsUBM",9537.5543,1000,10000,0.95375543,"Amber"
+"924","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2017,"AbsUBM",10332.378,1000,10000,1.0332378,"Green"
+"925","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2018,"AbsUBM",9346.3456,1000,10000,0.93463456,"Amber"
+"926","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2015,"RelLBM",7892.6939,5000,17800,1.57853878,"Amber"
+"927","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2016,"RelLBM",9537.5543,5000,17800,1.90751086,"Amber"
+"928","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2017,"RelLBM",10332.378,5000,17800,2.0664756,"Amber"
+"929","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2018,"RelLBM",9346.3456,5000,17800,1.86926912,"Amber"
+"930","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2015,"AbsLBM",7892.6939,1000,10000,7.8926939,"Amber"
+"931","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2016,"AbsLBM",9537.5543,1000,10000,9.5375543,"Amber"
+"932","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2017,"AbsLBM",10332.378,1000,10000,10.332378,"Green"
+"933","CU-2","Sockeye","Kamloops_ES","SpnForAbd_Wild",2018,"AbsLBM",9346.3456,1000,10000,9.3463456,"Amber"
+"934","CU-2","Sockeye","Kamloops_ES","SpnForTrend_Wild",2015,"LongTrend",1.69,0.5,0.75,1.69,"Green"
+"935","CU-2","Sockeye","Kamloops_ES","SpnForTrend_Wild",2016,"LongTrend",2.03,0.5,0.75,2.03,"Green"
+"936","CU-2","Sockeye","Kamloops_ES","SpnForTrend_Wild",2017,"LongTrend",2.21,0.5,0.75,2.21,"Green"
+"937","CU-2","Sockeye","Kamloops_ES","SpnForTrend_Wild",2018,"LongTrend",1.99,0.5,0.75,1.99,"Green"
+"938","CU-2","Sockeye","Kamloops_ES","SpnForTrend_Wild",2015,"PercChange",-36.0344,-25,-15,-36.0344,"Red"
+"939","CU-2","Sockeye","Kamloops_ES","SpnForTrend_Wild",2016,"PercChange",-12.2154,-25,-15,-12.2154,"Green"
+"940","CU-2","Sockeye","Kamloops_ES","SpnForTrend_Wild",2017,"PercChange",-0.1412,-25,-15,-0.1412,"Green"
+"941","CU-2","Sockeye","Kamloops_ES","SpnForTrend_Wild",2018,"PercChange",-10.1968,-25,-15,-10.1968,"Green"
+"942","CU-2","Sockeye","Kamloops_ES","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"943","CU-2","Sockeye","Kamloops_ES","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"944","CU-2","Sockeye","Kamloops_ES","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"945","CU-2","Sockeye","Kamloops_ES","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"946","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2015,"RelUBM",28726.7926,12834.6141993196,29251.2813791277,0.98206954518232,"Amber"
+"947","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2016,"RelUBM",26659.7052,12872.7206858876,29172.4292143463,0.913866480028663,"Amber"
+"948","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2017,"RelUBM",20233.3785,12910.8271724556,29093.5770495648,0.695458604678611,"Amber"
+"949","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2018,"RelUBM",16547.6735,12796.5077127516,29059.2781818847,0.569445441708035,"Amber"
+"950","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2015,"AbsUBM",28726.7926,1000,10000,2.87267926,"Green"
+"951","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2016,"AbsUBM",26659.7052,1000,10000,2.66597052,"Green"
+"952","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2017,"AbsUBM",20233.3785,1000,10000,2.02333785,"Green"
+"953","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2018,"AbsUBM",16547.6735,1000,10000,1.65476735,"Green"
+"954","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2015,"RelLBM",28726.7926,12834.6141993196,29251.2813791277,2.2382279789542,"Amber"
+"955","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2016,"RelLBM",26659.7052,12872.7206858876,29172.4292143463,2.07102335633112,"Amber"
+"956","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2017,"RelLBM",20233.3785,12910.8271724556,29093.5770495648,1.56716360847635,"Amber"
+"957","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2018,"RelLBM",16547.6735,12796.5077127516,29059.2781818847,1.29313980591051,"Amber"
+"958","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2015,"AbsLBM",28726.7926,1000,10000,28.7267926,"Green"
+"959","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2016,"AbsLBM",26659.7052,1000,10000,26.6597052,"Green"
+"960","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2017,"AbsLBM",20233.3785,1000,10000,20.2333785,"Green"
+"961","CU-20","Sockeye","Shuswap_ES","SpnForAbd_Wild",2018,"AbsLBM",16547.6735,1000,10000,16.5476735,"Green"
+"962","CU-20","Sockeye","Shuswap_ES","SpnForTrend_Wild",2015,"LongTrend",1.56,0.5,0.75,1.56,"Green"
+"963","CU-20","Sockeye","Shuswap_ES","SpnForTrend_Wild",2016,"LongTrend",1.43,0.5,0.75,1.43,"Green"
+"964","CU-20","Sockeye","Shuswap_ES","SpnForTrend_Wild",2017,"LongTrend",1.07,0.5,0.75,1.07,"Green"
+"965","CU-20","Sockeye","Shuswap_ES","SpnForTrend_Wild",2018,"LongTrend",0.87,0.5,0.75,0.87,"Green"
+"966","CU-20","Sockeye","Shuswap_ES","SpnForTrend_Wild",2015,"PercChange",80.3413,-25,-15,80.3413,"Green"
+"967","CU-20","Sockeye","Shuswap_ES","SpnForTrend_Wild",2016,"PercChange",62.1748,-25,-15,62.1748,"Green"
+"968","CU-20","Sockeye","Shuswap_ES","SpnForTrend_Wild",2017,"PercChange",25.863,-25,-15,25.863,"Green"
+"969","CU-20","Sockeye","Shuswap_ES","SpnForTrend_Wild",2018,"PercChange",0.8053,-25,-15,0.8053,"Green"
+"970","CU-20","Sockeye","Shuswap_ES","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"971","CU-20","Sockeye","Shuswap_ES","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"972","CU-20","Sockeye","Shuswap_ES","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"973","CU-20","Sockeye","Shuswap_ES","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"974","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2015,"RelUBM",31823.8253,126400,505000,0.0630174758415842,"Red"
+"975","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2016,"RelUBM",31648.8709,126400,505000,0.0626710314851485,"Red"
+"976","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2017,"RelUBM",30785.2584,126400,505000,0.0609609077227723,"Red"
+"977","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2018,"RelUBM",32490.3297,126400,505000,0.0643372865346535,"Red"
+"978","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2015,"AbsUBM",31823.8253,1000,10000,3.18238253,"Green"
+"979","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2016,"AbsUBM",31648.8709,1000,10000,3.16488709,"Green"
+"980","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2017,"AbsUBM",30785.2584,1000,10000,3.07852584,"Green"
+"981","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2018,"AbsUBM",32490.3297,1000,10000,3.24903297,"Green"
+"982","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2015,"RelLBM",31823.8253,126400,505000,0.251770769778481,"Red"
+"983","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2016,"RelLBM",31648.8709,126400,505000,0.250386636867089,"Red"
+"984","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2017,"RelLBM",30785.2584,126400,505000,0.243554259493671,"Red"
+"985","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2018,"RelLBM",32490.3297,126400,505000,0.257043747626582,"Red"
+"986","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2015,"AbsLBM",31823.8253,1000,10000,31.8238253,"Green"
+"987","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2016,"AbsLBM",31648.8709,1000,10000,31.6488709,"Green"
+"988","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2017,"AbsLBM",30785.2584,1000,10000,30.7852584,"Green"
+"989","CU-21","Sockeye","Takla_Trem_S_S","SpnForAbd_Wild",2018,"AbsLBM",32490.3297,1000,10000,32.4903297,"Green"
+"990","CU-21","Sockeye","Takla_Trem_S_S","SpnForTrend_Wild",2015,"LongTrend",1.25,0.5,0.75,1.25,"Green"
+"991","CU-21","Sockeye","Takla_Trem_S_S","SpnForTrend_Wild",2016,"LongTrend",1.24,0.5,0.75,1.24,"Green"
+"992","CU-21","Sockeye","Takla_Trem_S_S","SpnForTrend_Wild",2017,"LongTrend",1.21,0.5,0.75,1.21,"Green"
+"993","CU-21","Sockeye","Takla_Trem_S_S","SpnForTrend_Wild",2018,"LongTrend",1.27,0.5,0.75,1.27,"Green"
+"994","CU-21","Sockeye","Takla_Trem_S_S","SpnForTrend_Wild",2015,"PercChange",-63.5776,-25,-15,-63.5776,"Red"
+"995","CU-21","Sockeye","Takla_Trem_S_S","SpnForTrend_Wild",2016,"PercChange",-60.7746,-25,-15,-60.7746,"Red"
+"996","CU-21","Sockeye","Takla_Trem_S_S","SpnForTrend_Wild",2017,"PercChange",-53.2404,-25,-15,-53.2404,"Red"
+"997","CU-21","Sockeye","Takla_Trem_S_S","SpnForTrend_Wild",2018,"PercChange",-33.8872,-25,-15,-33.8872,"Red"
+"998","CU-21","Sockeye","Takla_Trem_S_S","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"999","CU-21","Sockeye","Takla_Trem_S_S","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1000","CU-21","Sockeye","Takla_Trem_S_S","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1001","CU-21","Sockeye","Takla_Trem_S_S","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1002","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2015,"RelUBM",25913.154,1400.14810819791,110886.767235575,0.233690228744323,"Amber"
+"1003","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2016,"RelUBM",29955.413,1445.67656806164,104652.979976443,0.286235642852624,"Amber"
+"1004","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2017,"RelUBM",33258.43,1491.20502792538,98419.1927173121,0.337926262975227,"Amber"
+"1005","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2018,"RelUBM",33717.7768,1497.74953614188,98212.2455797502,0.343315404316059,"Amber"
+"1006","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2015,"AbsUBM",25913.154,1000,10000,2.5913154,"Green"
+"1007","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2016,"AbsUBM",29955.413,1000,10000,2.9955413,"Green"
+"1008","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2017,"AbsUBM",33258.43,1000,10000,3.325843,"Green"
+"1009","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2018,"AbsUBM",33717.7768,1000,10000,3.37177768,"Green"
+"1010","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2015,"RelLBM",25913.154,1400.14810819791,110886.767235575,18.5074377833871,"Amber"
+"1011","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2016,"RelLBM",29955.413,1445.67656806164,104652.979976443,20.7206879199572,"Amber"
+"1012","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2017,"RelLBM",33258.43,1491.20502792538,98419.1927173121,22.3030565060999,"Amber"
+"1013","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2018,"RelLBM",33717.7768,1497.74953614188,98212.2455797502,22.5122932682424,"Amber"
+"1014","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2015,"AbsLBM",25913.154,1000,10000,25.913154,"Green"
+"1015","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2016,"AbsLBM",29955.413,1000,10000,29.955413,"Green"
+"1016","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2017,"AbsLBM",33258.43,1000,10000,33.25843,"Green"
+"1017","CU-22","Sockeye","Quesnel_S","SpnForAbd_Wild",2018,"AbsLBM",33717.7768,1000,10000,33.7177768,"Green"
+"1018","CU-22","Sockeye","Quesnel_S","SpnForTrend_Wild",2015,"LongTrend",1.85,0.5,0.75,1.85,"Green"
+"1019","CU-22","Sockeye","Quesnel_S","SpnForTrend_Wild",2016,"LongTrend",2.13,0.5,0.75,2.13,"Green"
+"1020","CU-22","Sockeye","Quesnel_S","SpnForTrend_Wild",2017,"LongTrend",2.36,0.5,0.75,2.36,"Green"
+"1021","CU-22","Sockeye","Quesnel_S","SpnForTrend_Wild",2018,"LongTrend",2.4,0.5,0.75,2.4,"Green"
+"1022","CU-22","Sockeye","Quesnel_S","SpnForTrend_Wild",2015,"PercChange",-116.4318,-25,-15,-116.4318,"Red"
+"1023","CU-22","Sockeye","Quesnel_S","SpnForTrend_Wild",2016,"PercChange",-110.5559,-25,-15,-110.5559,"Red"
+"1024","CU-22","Sockeye","Quesnel_S","SpnForTrend_Wild",2017,"PercChange",-93.6585,-25,-15,-93.6585,"Red"
+"1025","CU-22","Sockeye","Quesnel_S","SpnForTrend_Wild",2018,"PercChange",-78.6114,-25,-15,-78.6114,"Red"
+"1026","CU-22","Sockeye","Quesnel_S","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1027","CU-22","Sockeye","Quesnel_S","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1028","CU-22","Sockeye","Quesnel_S","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1029","CU-22","Sockeye","Quesnel_S","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1030","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2015,"RelUBM",20884.2558,32590.3587218221,58346.9396503436,0.357932325588168,"Red"
+"1031","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2016,"RelUBM",20035.869,32050.6499289681,57630.9671684329,0.347658038454273,"Red"
+"1032","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2017,"RelUBM",15044.4497,31178.7627750363,56914.9946865223,0.264331917851564,"Red"
+"1033","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2018,"RelUBM",11749.4947,30791.046685181,56815.6462083852,0.206800335543239,"Red"
+"1034","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2015,"AbsUBM",20884.2558,1000,10000,2.08842558,"Green"
+"1035","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2016,"AbsUBM",20035.869,1000,10000,2.0035869,"Green"
+"1036","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2017,"AbsUBM",15044.4497,1000,10000,1.50444497,"Green"
+"1037","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2018,"AbsUBM",11749.4947,1000,10000,1.17494947,"Green"
+"1038","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2015,"RelLBM",20884.2558,32590.3587218221,58346.9396503436,0.640810859992657,"Red"
+"1039","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2016,"RelLBM",20035.869,32050.6499289681,57630.9671684329,0.625131441777445,"Red"
+"1040","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2017,"RelLBM",15044.4497,31178.7627750363,56914.9946865223,0.482522344088828,"Red"
+"1041","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2018,"RelLBM",11749.4947,30791.046685181,56815.6462083852,0.381588025250689,"Red"
+"1042","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2015,"AbsLBM",20884.2558,1000,10000,20.8842558,"Green"
+"1043","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2016,"AbsLBM",20035.869,1000,10000,20.035869,"Green"
+"1044","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2017,"AbsLBM",15044.4497,1000,10000,15.0444497,"Green"
+"1045","CU-23","Sockeye","Shuswap_L","SpnForAbd_Wild",2018,"AbsLBM",11749.4947,1000,10000,11.7494947,"Green"
+"1046","CU-23","Sockeye","Shuswap_L","SpnForTrend_Wild",2015,"LongTrend",0.47,0.5,0.75,0.47,"Red"
+"1047","CU-23","Sockeye","Shuswap_L","SpnForTrend_Wild",2016,"LongTrend",0.45,0.5,0.75,0.45,"Red"
+"1048","CU-23","Sockeye","Shuswap_L","SpnForTrend_Wild",2017,"LongTrend",0.34,0.5,0.75,0.34,"Red"
+"1049","CU-23","Sockeye","Shuswap_L","SpnForTrend_Wild",2018,"LongTrend",0.27,0.5,0.75,0.27,"Red"
+"1050","CU-23","Sockeye","Shuswap_L","SpnForTrend_Wild",2015,"PercChange",-89.6273,-25,-15,-89.6273,"Red"
+"1051","CU-23","Sockeye","Shuswap_L","SpnForTrend_Wild",2016,"PercChange",-94.7618,-25,-15,-94.7618,"Red"
+"1052","CU-23","Sockeye","Shuswap_L","SpnForTrend_Wild",2017,"PercChange",-88.266,-25,-15,-88.266,"Red"
+"1053","CU-23","Sockeye","Shuswap_L","SpnForTrend_Wild",2018,"PercChange",-79.824,-25,-15,-79.824,"Red"
+"1054","CU-23","Sockeye","Shuswap_L","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1055","CU-23","Sockeye","Shuswap_L","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1056","CU-23","Sockeye","Shuswap_L","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1057","CU-23","Sockeye","Shuswap_L","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1058","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2015,"RelUBM",16496.4265,5005.25431881863,10096.7260363072,1.63383917129967,"Green"
+"1059","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2016,"RelUBM",19603.5866,5256.65526703792,10235.6105728972,1.91523372840192,"Green"
+"1060","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2017,"RelUBM",21383.5283,5508.05621525721,10456.6142165468,2.04497630467826,"Green"
+"1061","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2018,"RelUBM",23002.1247,5559.00004939238,10502.0882244795,2.19024295057662,"Green"
+"1062","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2015,"AbsUBM",16496.4265,1000,10000,1.64964265,"Green"
+"1063","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2016,"AbsUBM",19603.5866,1000,10000,1.96035866,"Green"
+"1064","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2017,"AbsUBM",21383.5283,1000,10000,2.13835283,"Green"
+"1065","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2018,"AbsUBM",23002.1247,1000,10000,2.30021247,"Green"
+"1066","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2015,"RelLBM",16496.4265,5005.25431881863,10096.7260363072,3.29582184025638,"Green"
+"1067","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2016,"RelLBM",19603.5866,5256.65526703792,10235.6105728972,3.72928898779517,"Green"
+"1068","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2017,"RelLBM",21383.5283,5508.05621525721,10456.6142165468,3.88222767966094,"Green"
+"1069","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2018,"RelLBM",23002.1247,5559.00004939238,10502.0882244795,4.13781696269534,"Green"
+"1070","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2015,"AbsLBM",16496.4265,1000,10000,16.4964265,"Green"
+"1071","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2016,"AbsLBM",19603.5866,1000,10000,19.6035866,"Green"
+"1072","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2017,"AbsLBM",21383.5283,1000,10000,21.3835283,"Green"
+"1073","CU-3","Sockeye","Nadina_Francois_ES","SpnForAbd_Wild",2018,"AbsLBM",23002.1247,1000,10000,23.0021247,"Green"
+"1074","CU-3","Sockeye","Nadina_Francois_ES","SpnForTrend_Wild",2015,"LongTrend",2.08,0.5,0.75,2.08,"Green"
+"1075","CU-3","Sockeye","Nadina_Francois_ES","SpnForTrend_Wild",2016,"LongTrend",2.56,0.5,0.75,2.56,"Green"
+"1076","CU-3","Sockeye","Nadina_Francois_ES","SpnForTrend_Wild",2017,"LongTrend",2.83,0.5,0.75,2.83,"Green"
+"1077","CU-3","Sockeye","Nadina_Francois_ES","SpnForTrend_Wild",2018,"LongTrend",3.07,0.5,0.75,3.07,"Green"
+"1078","CU-3","Sockeye","Nadina_Francois_ES","SpnForTrend_Wild",2015,"PercChange",162.267,-25,-15,162.267,"Green"
+"1079","CU-3","Sockeye","Nadina_Francois_ES","SpnForTrend_Wild",2016,"PercChange",263.7979,-25,-15,263.7979,"Green"
+"1080","CU-3","Sockeye","Nadina_Francois_ES","SpnForTrend_Wild",2017,"PercChange",237.9895,-25,-15,237.9895,"Green"
+"1081","CU-3","Sockeye","Nadina_Francois_ES","SpnForTrend_Wild",2018,"PercChange",303.328,-25,-15,303.328,"Green"
+"1082","CU-3","Sockeye","Nadina_Francois_ES","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1083","CU-3","Sockeye","Nadina_Francois_ES","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1084","CU-3","Sockeye","Nadina_Francois_ES","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1085","CU-3","Sockeye","Nadina_Francois_ES","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1086","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2015,"RelUBM",3665.3124,45.395013333655,6387.70489196716,0.573807410015028,"Amber"
+"1087","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2016,"RelUBM",3456.7357,55.6628405845461,6229.13237157681,0.554930525440894,"Amber"
+"1088","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2017,"RelUBM",2749.4531,65.9306678354372,6070.55985118646,0.452915903541027,"Amber"
+"1089","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2018,"RelUBM",1961.5916,78.953358004556,6058.49683362263,0.323775295072174,"Amber"
+"1090","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2015,"AbsUBM",3665.3124,1000,10000,0.36653124,"Amber"
+"1091","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2016,"AbsUBM",3456.7357,1000,10000,0.34567357,"Amber"
+"1092","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2017,"AbsUBM",2749.4531,1000,10000,0.27494531,"Amber"
+"1093","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2018,"AbsUBM",1961.5916,1000,10000,0.19615916,"Amber"
+"1094","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2015,"RelLBM",3665.3124,45.395013333655,6387.70489196716,80.7426219496802,"Amber"
+"1095","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2016,"RelLBM",3456.7357,55.6628405845461,6229.13237157681,62.1013168515821,"Amber"
+"1096","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2017,"RelLBM",2749.4531,65.9306678354372,6070.55985118646,41.7021879235719,"Amber"
+"1097","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2018,"RelLBM",1961.5916,78.953358004556,6058.49683362263,24.8449419958402,"Amber"
+"1098","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2015,"AbsLBM",3665.3124,1000,10000,3.6653124,"Amber"
+"1099","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2016,"AbsLBM",3456.7357,1000,10000,3.4567357,"Amber"
+"1100","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2017,"AbsLBM",2749.4531,1000,10000,2.7494531,"Amber"
+"1101","CU-4","Sockeye","North_Barriere_ES","SpnForAbd_Wild",2018,"AbsLBM",1961.5916,1000,10000,1.9615916,"Amber"
+"1102","CU-4","Sockeye","North_Barriere_ES","SpnForTrend_Wild",2015,"LongTrend",6.38,0.5,0.75,6.38,"Green"
+"1103","CU-4","Sockeye","North_Barriere_ES","SpnForTrend_Wild",2016,"LongTrend",5.99,0.5,0.75,5.99,"Green"
+"1104","CU-4","Sockeye","North_Barriere_ES","SpnForTrend_Wild",2017,"LongTrend",4.78,0.5,0.75,4.78,"Green"
+"1105","CU-4","Sockeye","North_Barriere_ES","SpnForTrend_Wild",2018,"LongTrend",3.44,0.5,0.75,3.44,"Green"
+"1106","CU-4","Sockeye","North_Barriere_ES","SpnForTrend_Wild",2015,"PercChange",-51.235,-25,-15,-51.235,"Red"
+"1107","CU-4","Sockeye","North_Barriere_ES","SpnForTrend_Wild",2016,"PercChange",-51.6459,-25,-15,-51.6459,"Red"
+"1108","CU-4","Sockeye","North_Barriere_ES","SpnForTrend_Wild",2017,"PercChange",-56.7946,-25,-15,-56.7946,"Red"
+"1109","CU-4","Sockeye","North_Barriere_ES","SpnForTrend_Wild",2018,"PercChange",-58.8515,-25,-15,-58.8515,"Red"
+"1110","CU-4","Sockeye","North_Barriere_ES","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1111","CU-4","Sockeye","North_Barriere_ES","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1112","CU-4","Sockeye","North_Barriere_ES","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1113","CU-4","Sockeye","North_Barriere_ES","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1114","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2015,"RelUBM",44333.1721,14313.4935551847,27612.9945675634,1.60551844500334,"Green"
+"1115","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2016,"RelUBM",45838.6185,14324.5417443423,28303.8730746466,1.6195175260682,"Green"
+"1116","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2017,"RelUBM",44346.3861,14335.5899335,30218.4401110204,1.46752730905614,"Green"
+"1117","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2018,"RelUBM",39286.2831,14349.8246987778,31122.381281997,1.26231610441472,"Green"
+"1118","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2015,"AbsUBM",44333.1721,1000,10000,4.43331721,"Green"
+"1119","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2016,"AbsUBM",45838.6185,1000,10000,4.58386185,"Green"
+"1120","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2017,"AbsUBM",44346.3861,1000,10000,4.43463861,"Green"
+"1121","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2018,"AbsUBM",39286.2831,1000,10000,3.92862831,"Green"
+"1122","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2015,"RelLBM",44333.1721,14313.4935551847,27612.9945675634,3.09729919736761,"Green"
+"1123","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2016,"RelLBM",45838.6185,14324.5417443423,28303.8730746466,3.20000592815506,"Green"
+"1124","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2017,"RelLBM",44346.3861,14335.5899335,30218.4401110204,3.09344689027199,"Green"
+"1125","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2018,"RelLBM",39286.2831,14349.8246987778,31122.381281997,2.73775352136156,"Green"
+"1126","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2015,"AbsLBM",44333.1721,1000,10000,44.3331721,"Green"
+"1127","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2016,"AbsLBM",45838.6185,1000,10000,45.8386185,"Green"
+"1128","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2017,"AbsLBM",44346.3861,1000,10000,44.3463861,"Green"
+"1129","CU-5","Sockeye","Pitt_ES","SpnForAbd_Wild",2018,"AbsLBM",39286.2831,1000,10000,39.2862831,"Green"
+"1130","CU-5","Sockeye","Pitt_ES","SpnForTrend_Wild",2015,"LongTrend",2.31,0.5,0.75,2.31,"Green"
+"1131","CU-5","Sockeye","Pitt_ES","SpnForTrend_Wild",2016,"LongTrend",2.31,0.5,0.75,2.31,"Green"
+"1132","CU-5","Sockeye","Pitt_ES","SpnForTrend_Wild",2017,"LongTrend",2.19,0.5,0.75,2.19,"Green"
+"1133","CU-5","Sockeye","Pitt_ES","SpnForTrend_Wild",2018,"LongTrend",1.93,0.5,0.75,1.93,"Green"
+"1134","CU-5","Sockeye","Pitt_ES","SpnForTrend_Wild",2015,"PercChange",-46.9772,-25,-15,-46.9772,"Red"
+"1135","CU-5","Sockeye","Pitt_ES","SpnForTrend_Wild",2016,"PercChange",-23.5139,-25,-15,-23.5139,"Amber"
+"1136","CU-5","Sockeye","Pitt_ES","SpnForTrend_Wild",2017,"PercChange",0.7179,-25,-15,0.7179,"Green"
+"1137","CU-5","Sockeye","Pitt_ES","SpnForTrend_Wild",2018,"PercChange",18.2221,-25,-15,18.2221,"Green"
+"1138","CU-5","Sockeye","Pitt_ES","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1139","CU-5","Sockeye","Pitt_ES","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1140","CU-5","Sockeye","Pitt_ES","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1141","CU-5","Sockeye","Pitt_ES","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1142","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2015,"RelUBM",605787.9492,141905.544723796,429909.454806591,1.40910589992149,"Green"
+"1143","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2016,"RelUBM",630939.1184,141977.949514044,465603.971592745,1.35509823131808,"Green"
+"1144","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2017,"RelUBM",547559.1425,142050.354304292,459081.188418139,1.19272833719615,"Green"
+"1145","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2018,"RelUBM",481695.5125,142274.538973087,450020.249648925,1.07038630567355,"Green"
+"1146","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2015,"AbsUBM",605787.9492,1000,10000,60.57879492,"Green"
+"1147","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2016,"AbsUBM",630939.1184,1000,10000,63.09391184,"Green"
+"1148","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2017,"AbsUBM",547559.1425,1000,10000,54.75591425,"Green"
+"1149","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2018,"AbsUBM",481695.5125,1000,10000,48.16955125,"Green"
+"1150","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2015,"RelLBM",605787.9492,141905.544723796,429909.454806591,4.2689519312237,"Green"
+"1151","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2016,"RelLBM",630939.1184,141977.949514044,465603.971592745,4.44392330329851,"Green"
+"1152","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2017,"RelLBM",547559.1425,142050.354304292,459081.188418139,3.8546833985859,"Green"
+"1153","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2018,"RelLBM",481695.5125,142274.538973087,450020.249648925,3.38567614400155,"Green"
+"1154","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2015,"AbsLBM",605787.9492,1000,10000,605.7879492,"Green"
+"1155","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2016,"AbsLBM",630939.1184,1000,10000,630.9391184,"Green"
+"1156","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2017,"AbsLBM",547559.1425,1000,10000,547.5591425,"Green"
+"1157","CU-6","Sockeye","Chilko_S_ES","SpnForAbd_Wild",2018,"AbsLBM",481695.5125,1000,10000,481.6955125,"Green"
+"1158","CU-6","Sockeye","Chilko_S_ES","SpnForTrend_Wild",2015,"LongTrend",2.46,0.5,0.75,2.46,"Green"
+"1159","CU-6","Sockeye","Chilko_S_ES","SpnForTrend_Wild",2016,"LongTrend",2.52,0.5,0.75,2.52,"Green"
+"1160","CU-6","Sockeye","Chilko_S_ES","SpnForTrend_Wild",2017,"LongTrend",2.2,0.5,0.75,2.2,"Green"
+"1161","CU-6","Sockeye","Chilko_S_ES","SpnForTrend_Wild",2018,"LongTrend",1.93,0.5,0.75,1.93,"Green"
+"1162","CU-6","Sockeye","Chilko_S_ES","SpnForTrend_Wild",2015,"PercChange",185.6641,-25,-15,185.6641,"Green"
+"1163","CU-6","Sockeye","Chilko_S_ES","SpnForTrend_Wild",2016,"PercChange",180.6624,-25,-15,180.6624,"Green"
+"1164","CU-6","Sockeye","Chilko_S_ES","SpnForTrend_Wild",2017,"PercChange",127.7849,-25,-15,127.7849,"Green"
+"1165","CU-6","Sockeye","Chilko_S_ES","SpnForTrend_Wild",2018,"PercChange",78.8906,-25,-15,78.8906,"Green"
+"1166","CU-6","Sockeye","Chilko_S_ES","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1167","CU-6","Sockeye","Chilko_S_ES","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1168","CU-6","Sockeye","Chilko_S_ES","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1169","CU-6","Sockeye","Chilko_S_ES","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1170","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2015,"RelUBM",100014.5077,24300,122600,0.815779018760196,"Amber"
+"1171","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2016,"RelUBM",111607.2592,24300,122600,0.91033653507341,"Amber"
+"1172","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2017,"RelUBM",114426.3954,24300,122600,0.933331120717781,"Amber"
+"1173","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2018,"RelUBM",104820.4327,24300,122600,0.85497905954323,"Amber"
+"1174","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2015,"AbsUBM",100014.5077,1000,10000,10.00145077,"Green"
+"1175","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2016,"AbsUBM",111607.2592,1000,10000,11.16072592,"Green"
+"1176","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2017,"AbsUBM",114426.3954,1000,10000,11.44263954,"Green"
+"1177","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2018,"AbsUBM",104820.4327,1000,10000,10.48204327,"Green"
+"1178","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2015,"RelLBM",100014.5077,24300,122600,4.11582336213992,"Amber"
+"1179","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2016,"RelLBM",111607.2592,24300,122600,4.59289132510288,"Amber"
+"1180","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2017,"RelLBM",114426.3954,24300,122600,4.70890516049383,"Amber"
+"1181","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2018,"RelLBM",104820.4327,24300,122600,4.31359805349794,"Amber"
+"1182","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2015,"AbsLBM",100014.5077,1000,10000,100.0145077,"Green"
+"1183","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2016,"AbsLBM",111607.2592,1000,10000,111.6072592,"Green"
+"1184","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2017,"AbsLBM",114426.3954,1000,10000,114.4263954,"Green"
+"1185","CU-7","Sockeye","Fran_Fras_S","SpnForAbd_Wild",2018,"AbsLBM",104820.4327,1000,10000,104.8204327,"Green"
+"1186","CU-7","Sockeye","Fran_Fras_S","SpnForTrend_Wild",2015,"LongTrend",1.36,0.5,0.75,1.36,"Green"
+"1187","CU-7","Sockeye","Fran_Fras_S","SpnForTrend_Wild",2016,"LongTrend",1.49,0.5,0.75,1.49,"Green"
+"1188","CU-7","Sockeye","Fran_Fras_S","SpnForTrend_Wild",2017,"LongTrend",1.49,0.5,0.75,1.49,"Green"
+"1189","CU-7","Sockeye","Fran_Fras_S","SpnForTrend_Wild",2018,"LongTrend",1.35,0.5,0.75,1.35,"Green"
+"1190","CU-7","Sockeye","Fran_Fras_S","SpnForTrend_Wild",2015,"PercChange",-20.0809,-25,-15,-20.0809,"Amber"
+"1191","CU-7","Sockeye","Fran_Fras_S","SpnForTrend_Wild",2016,"PercChange",-8.6902,-25,-15,-8.6902,"Green"
+"1192","CU-7","Sockeye","Fran_Fras_S","SpnForTrend_Wild",2017,"PercChange",13.8057,-25,-15,13.8057,"Green"
+"1193","CU-7","Sockeye","Fran_Fras_S","SpnForTrend_Wild",2018,"PercChange",19.7891,-25,-15,19.7891,"Green"
+"1194","CU-7","Sockeye","Fran_Fras_S","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1195","CU-7","Sockeye","Fran_Fras_S","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1196","CU-7","Sockeye","Fran_Fras_S","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1197","CU-7","Sockeye","Fran_Fras_S","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1198","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2015,"RelUBM",255269.0074,4742.36452270711,17937.3963350035,14.2311070476746,"Green"
+"1199","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2016,"RelUBM",215367.6405,4867.83318411279,19240.8436332891,11.1932535082498,"Green"
+"1200","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2017,"RelUBM",166468.2655,4993.30184551848,20053.0843636414,8.30137960232325,"Green"
+"1201","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2018,"RelUBM",109120.5694,5073.47331308837,21769.1193636973,5.01263131396909,"Green"
+"1202","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2015,"AbsUBM",255269.0074,1000,10000,25.52690074,"Green"
+"1203","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2016,"AbsUBM",215367.6405,1000,10000,21.53676405,"Green"
+"1204","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2017,"AbsUBM",166468.2655,1000,10000,16.64682655,"Green"
+"1205","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2018,"AbsUBM",109120.5694,1000,10000,10.91205694,"Green"
+"1206","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2015,"RelLBM",255269.0074,4742.36452270711,17937.3963350035,53.8273694857778,"Green"
+"1207","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2016,"RelLBM",215367.6405,4867.83318411279,19240.8436332891,44.2430199134387,"Green"
+"1208","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2017,"RelLBM",166468.2655,4993.30184551848,20053.0843636414,33.3383141356468,"Green"
+"1209","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2018,"RelLBM",109120.5694,5073.47331308837,21769.1193636973,21.5080601919191,"Green"
+"1210","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2015,"AbsLBM",255269.0074,1000,10000,255.2690074,"Green"
+"1211","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2016,"AbsLBM",215367.6405,1000,10000,215.3676405,"Green"
+"1212","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2017,"AbsLBM",166468.2655,1000,10000,166.4682655,"Green"
+"1213","CU-9","Sockeye","Harrison_R","SpnForAbd_Wild",2018,"AbsLBM",109120.5694,1000,10000,109.1205694,"Green"
+"1214","CU-9","Sockeye","Harrison_R","SpnForTrend_Wild",2015,"LongTrend",19.23,0.5,0.75,19.23,"Green"
+"1215","CU-9","Sockeye","Harrison_R","SpnForTrend_Wild",2016,"LongTrend",15.7,0.5,0.75,15.7,"Green"
+"1216","CU-9","Sockeye","Harrison_R","SpnForTrend_Wild",2017,"LongTrend",12.31,0.5,0.75,12.31,"Green"
+"1217","CU-9","Sockeye","Harrison_R","SpnForTrend_Wild",2018,"LongTrend",8.18,0.5,0.75,8.18,"Green"
+"1218","CU-9","Sockeye","Harrison_R","SpnForTrend_Wild",2015,"PercChange",1118.1778,-25,-15,1118.1778,"Green"
+"1219","CU-9","Sockeye","Harrison_R","SpnForTrend_Wild",2016,"PercChange",420.1289,-25,-15,420.1289,"Green"
+"1220","CU-9","Sockeye","Harrison_R","SpnForTrend_Wild",2017,"PercChange",148.0537,-25,-15,148.0537,"Green"
+"1221","CU-9","Sockeye","Harrison_R","SpnForTrend_Wild",2018,"PercChange",27.9816,-25,-15,27.9816,"Green"
+"1222","CU-9","Sockeye","Harrison_R","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1223","CU-9","Sockeye","Harrison_R","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1224","CU-9","Sockeye","Harrison_R","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1225","CU-9","Sockeye","Harrison_R","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0,NA,NA,0,NA
+"1226","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2015,"RelUBM",8434.3349,3550.78323504187,11289.2351299915,0.747113050873833,"Amber"
+"1227","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2016,"RelUBM",8286.4192,3986.47030956197,11169.0529689491,0.741908846080052,"Amber"
+"1228","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2017,"RelUBM",8236.29,4195.82771358786,10917.7134713526,0.754396973469904,"Amber"
+"1229","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2018,"RelUBM",7865.4235,4405.18511761375,10666.373973756,0.737403687452964,"Amber"
+"1230","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2015,"AbsUBM",8434.3349,1000,10000,0.84343349,"Amber"
+"1231","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2016,"AbsUBM",8286.4192,1000,10000,0.82864192,"Amber"
+"1232","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2017,"AbsUBM",8236.29,1000,10000,0.823629,"Amber"
+"1233","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2018,"AbsUBM",7865.4235,1000,10000,0.78654235,"Amber"
+"1234","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2015,"RelLBM",8434.3349,3550.78323504187,11289.2351299915,2.37534491454265,"Amber"
+"1235","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2016,"RelLBM",8286.4192,3986.47030956197,11169.0529689491,2.07863562413199,"Amber"
+"1236","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2017,"RelLBM",8236.29,4195.82771358786,10917.7134713526,1.96297144740415,"Amber"
+"1237","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2018,"RelLBM",7865.4235,4405.18511761375,10666.373973756,1.78549216207755,"Amber"
+"1238","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2015,"AbsLBM",8434.3349,1000,10000,8.4343349,"Amber"
+"1239","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2016,"AbsLBM",8286.4192,1000,10000,8.2864192,"Amber"
+"1240","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2017,"AbsLBM",8236.29,1000,10000,8.23629,"Amber"
+"1241","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForAbd_Wild",2018,"AbsLBM",7865.4235,1000,10000,7.8654235,"Amber"
+"1242","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForTrend_Wild",2015,"LongTrend",1.45,0.5,0.75,1.45,"Green"
+"1243","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForTrend_Wild",2016,"LongTrend",1.41,0.5,0.75,1.41,"Green"
+"1244","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForTrend_Wild",2017,"LongTrend",1.39,0.5,0.75,1.39,"Green"
+"1245","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForTrend_Wild",2018,"LongTrend",1.33,0.5,0.75,1.33,"Green"
+"1246","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForTrend_Wild",2015,"PercChange",-58.0323,-25,-15,-58.0323,"Red"
+"1247","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForTrend_Wild",2016,"PercChange",-53.5592,-25,-15,-53.5592,"Red"
+"1248","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForTrend_Wild",2017,"PercChange",-47.2535,-25,-15,-47.2535,"Red"
+"1249","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForTrend_Wild",2018,"PercChange",-42.3533,-25,-15,-42.3533,"Red"
+"1250","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForTrend_Wild",2015,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1251","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForTrend_Wild",2016,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1252","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForTrend_Wild",2017,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA
+"1253","CK-9008","Chinook","Fraser-Harrison fall transplant_FA_0.3","SpnForTrend_Wild",2018,"ProbDeclBelowLBM",0.0333,NA,NA,0.0333,NA

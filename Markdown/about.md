@@ -16,13 +16,13 @@ This prototype version is not citable.
 ### Project Overview
 
 #### Contributors
-* Sue Grant (Project Lead; Sue.Grant@dfo-mpo.gc.ca)
-* Bronwyn MacDonald (Science Lead)
-* Michael Barrus (Cognitive Evalution , Vis Design, Shiny Programming)
-* Gottfried Pestal (Vis Design, Shiny Programming)
+* Sue Grant (Project Lead)
+* Bronwyn MacDonald (Science Lead, Programming)
+* Michael Barrus (Cognitive Evalution, Vis Design, Programming)
+* Gottfried Pestal (Vis Design, Programming)
 * Brigitte Dorner (Vis Design, Shiny Programming)
 * Randall Peterman (Design guidance)
-
+* Carrie Holt (Design guidance)
 
 
 

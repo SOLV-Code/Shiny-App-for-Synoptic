@@ -6,8 +6,14 @@
 .RData
 .RDataTmp
 .Rhistory
+.DS_Store
+.~lock*
+/data/.~lock*
+/documentation/.~lock*
 /rsconnect
-
-
+/data/old
+/data/full_stream_network
+/aux
 .Rproj.user
 Shiny-App-for-Synoptic.Rproj
+gmail_credentials

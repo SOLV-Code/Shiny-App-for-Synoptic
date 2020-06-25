@@ -1,224 +1,223 @@
+# A note on UI and backend terminology: 
+# The synoptic app implements what is essentially a two-stage selection process. 
+# Users have the option to 'filter' the data, which has the effect of removing 
+# any elements from the dataset that aren't included in the filter.
+# Users also have the option to 'highlight' specific CUs and/or populations 
+# for the purpose of comparing/contrasting these with the CUs/populations not
+# highlighted.  
+# In line with terminology used in Shiny widgets and software development more generally,
+# in the code, the term 'selection' is used in conjunction with the data structures and
+# algorithms used to implement the 'highlighting' process,
+# (e.g., data.currentSelection() holds the currently highlighted CUs and populations etc)
+# whereas the term 'highlighting' is used to refer to styling of graphical elements
+# to emphasize them visually. Often, visual highlighting signals that the element is
+# part of data.currentSelection(), but visual highlighting can be expressed through
+# multiple styles, and also serves purposes other than communicating the contents of the
+# data.currentSelection() to the user, such as showing the user which UI element they 
+# are currently hovering over.
+# Note on managing selection/highlighting:
+# The set of currently selected CUs and populations is managed through a set of shiny reactive
+# variables. However, DT:dataTables have their own mechanism of keeping track of highlighted rows,
+# and to make brushing in parcoords work properly, it needs to keep track of its brushing
+# and communicate through a SharedData object. Having these three mechanisms going at the same
+# time can lead to situations where the mechanisms 'fight' to set/reset the selection to their
+# stored version. Because of this, the event handlers that manage the update process need
+# to be managed so updates to and from data table selection and parcoords selection are 
+# only propagated when the respective widgets are in focus. 
 
-# ----- explanatory information for the different metrics ---------
+library(xfun)
+library(rgdal)
+library(sp)
+library(sf)
 
-MetricInfo <- list(
-  Base.Unit.CU.ShortName = "Conservation Unit",
-  Base.Unit.Species = "Species Code (Sk = Sockeye, Ck = Chinook, ...)",
-  FAZ = "Freshwater Adaptive Zone",
-  BaseUnit.Watershed = "Watershed",
-  Recent.Total = "Recent Generation Total: average total spawner abundance across the last generation (log space)",
-  Lower.Ratio = "Lower Abundance BM Ratio: ratio of the most recent generation of total spawners to the lower WSP benchmark for abundance. 
-                  Values <1 indicates that the recent abundance falls below this biological benchmark.",
-  Upper.Ratio = "Upper Abundance BM Ratio: ratio of the most recent generation of total spawners to the upper WSP benchmark for abundance.
-                  Values <1 indicates that the recent abundance falls below this biological benchmark.)",
-  LongTerm.Ratio = "Ratio of Historic Average: ratio of the most recent generation of spawners to the long-term average (geometric)
-                    Values <1 indicate that the recent abundance is below average.",
-  ShortTerm.Trend = "Short Term Trend: % change over the most recent three generations of spawners (using a geometric generational running average)",
-  WSP.status = "Wild Salmon Policy status: the integrated Wild Salmon Policy Status derived by integrating metrics through an expert-driven workshop 
-                  (UD = Undetermined, R = Red, RA = Red/Amber, A = Amber, AG = Amber/Green, G = Green)",
-  Recent.ER = "Recent Exploitation Rate: the average exploitation rate over the most recent generation",
-  Management.Timing = "Stock management unit: aggregation of CUs used for fisheries management purposes")
+# various customization options
+source('Settings.R', local=TRUE)
 
-# add labels here for any names or categories that should be shown with pretty labels
-Labels <- list(Base.Unit.CU.ShortName = "CU",
-               Base.Unit.Species = "Species",
-               Sk = "Sockeye",
-               Ck = "Chinook",
-               FAZ="Freshwater Adaptive Zone",
-               BaseUnit.Watershed = "Watershed",
-               Management.Timing = "Stock Management Unit",
-               WSP.status = "Wild Salmon Policy Status",
-               Recent.Total = "Recent Generation Total (log)", 
-               Recent.ER = "Recent Exploitation Rate (%)",
-               Lower.Ratio = "Lower Abundance BM Ratio",
-               Upper.Ratio = "Upper Abundance BM Ratio",
-               LongTerm.Ratio = "Ratio of Historic Average",
-               ShortTerm.Trend = "Short-term Trend (% change)",
-               Estu="Early Stuart", 
-               Early_Summer="Early Summer", 
-               Summer="Summer", 
-               Late="Late")
-  
-# get the label for pretty printing, given the name of a metric, attribute, or attribute category
-GetLabel <- function(m) {
-  if (m %in% names(Labels)) {
-    Labels[[m]]
-  } else
-  {
-    m
-  }
-}
-
-# get named choices for a metric or attribute, given the name of the metric 
-# and a data frame with a column of values for that metric
-GetNamedChoices  <- function(m, df) {
-  if (!(m %in% names(df))) {
-    NULL
-  } else {
-    if (all(is.na(df[, m]))) {
-      list('NA' = 'NA')
-    } else {
-      if (is.factor(df[, m])) {
-        choices <- levels(df[, m]) 
-        choices <- choices[choices %in% df[, m]]
-      } else {
-        choices <- unique(as.character(df[, m]))
-      }
-      names(choices) <- sapply(choices, GetLabel)
-      choices
-    }
-  }
-}
+# helper functions
+source('helpers.R')
 
 # ------------------- put together initial data set -------------------
-# Hack alert!! Get the data from two different files. The first one covers
-# only Fraser sockeye and has a complete list of metrics, but no lat-long information.
-# The second one covers a much wider range of species/CUs and provides the lat-long information.
-# Cross-referencing these by Base.Unit.CU.ShortName is tricky, since there is overlap in CU names 
-# for Chinook and sockeye.
-# For now, make this problem go away by removing duplicates in the lat-long data. 
-# Ultimately, lat-long info should be attached in a pre-processing script, though.
-data.start <- read.csv("data/FR SK metrics.csv")
-data.start$WSP.status <- factor(data.start$WSP.status, levels =c("UD", "R", "RA", "A", "AG", "G"), ordered=T)
-data.start$Management.Timing <- factor(data.start$Management.Timing, levels =c("Estu", "Early_Summer", "Summer", "Late"), ordered=T)
-data.start$ShortTerm.Trend <- data.start$ShortTerm.Trend*100
-data.start$Recent.ER <- data.start$Recent.ER*100
 
-data.years <- as.character(sort(unique(as.numeric(data.start$Year))))
-data.by.year <- lapply(data.years, function(yr) {
-  ds <- data.start[data.start$Year == yr, ]
-  row.names(ds) <- ds[, "Base.Unit.CU.ShortName"]
-  ds
-})
-names(data.by.year) <- data.years
+# Get the metrics and time series data for CUs and populations
+data.CU.MetricsSeries <- read.csv(metricsFile, stringsAsFactors = F)
+data.CU.Metrics.Years <- sort(unique(data.CU.MetricsSeries$Year))
+data.CU.TimeSeries <- read.csv(CUTimeSeriesFile, stringsAsFactors = F)
+data.Pop.TimeSeries <- read.csv(PopTimeSeriesFile, stringsAsFactors = F)
 
-# Lookup table for joining metrics and spatial information
-data.spatialLookup <- read.csv("data/SpatialLookup.csv", stringsAsFactors = F)
-row.names(data.spatialLookup) <- data.spatialLookup$CU_INDEX
+# CU boundary polygons
+data.CU.Spatial <- convertToLeafletProjection(st_read(CUBoundariesFile, stringsAsFactors=F, quiet=TRUE))
 
-# CU polygon data
-require(rgdal)
-data.CUpolygons <- readOGR(dsn="data/CUpolygons.gpkg", layer="CUpolygons", stringsAsFactors=F, verbose=F)
-#data.CUpolygons <- spTransform(data.CUpolygons, CRS("+proj=longlat +datum=WGS84"))
+# stream selector network data
+# Don't use ESRI shp for this! The lists of CUs and populations associated with the various stream segments will end up truncated.
+data.Streams <- convertToLeafletProjection(st_read(StreamNetworkFile, stringsAsFactors=F, quiet=TRUE))
+data.StreamsExtended <- convertToLeafletProjection(st_read(ExtendedStreamNetworkFile, stringsAsFactors=F, quiet=TRUE))
+row.names(data.Streams) <- data.Streams$code
+row.names(data.StreamsExtended) <- data.StreamsExtended$code
 
-# stream data
-data.streams <- readOGR(dsn="data/Streams.gpkg", stringsAsFactors=F, verbose=F)
-data.getSelectableCUs <- function(CUs) {
-  CUs <- strsplit(CUs, ':')[[1]]
-  CUs <- CUs[CUs %in% row.names(data.spatialLookup)]
-  out <- data.spatialLookup[CUs, "Base.Unit.CU.ShortName"]
-  out <- out[out != ""]
-  if (length(out) > 0) {
-    paste(out, collapse=",")
-  } else {
-    ""
-  } 
-}
+# Lookup table for joining metrics and spatial information for CUs
+data.CU.Lookup <- read.csv(CULookupFile, stringsAsFactors = F)
 
-# prune the stream network to remove any streams that don't potentially select CUs in the current CU database
-data.streams$CUsSelectable <- unlist(lapply(data.streams$CUs, data.getSelectableCUs))
-data.streams <- data.streams[data.streams$CUsSelectable != "", ]
-data.streams <- data.streams[order(data.streams$Shape_Length, decreasing=T), ]
+# Lookup table for joining metrics and spatial information for Populations
+data.Pop.Lookup <- read.csv(PopLookupFile, stringsAsFactors = F)
 
-# --------------------- Helper functions for data restructuring ---------
+# ** Fix the CU_ID field in the metrics and data files to make CU IDs consistent across files
+data.CU.MetricsSeries$CU_ID <- SubstituteValues('CU_MetricsData_CU_ID', 'CU_ID', data.CU.Lookup, data.CU.MetricsSeries$CU_ID)
+data.CU.TimeSeries$CU_ID <- SubstituteValues('CU_TimeSeriesData_CU_ID', 'CU_ID', data.CU.Lookup, data.CU.TimeSeries$CU_ID)
+data.Pop.TimeSeries$CU_ID <- SubstituteValues('Pop_TimeSeriesData_CU_ID', 'CU_ID', data.CU.Lookup, data.Pop.TimeSeries$CU_ID)
+#data.CU.Spatial$CU_ID <- SubstituteValues('MapData_CU_ID', 'CU_ID', data.CU.Lookup, data.CU.Spatial$CU_INDEX)
+data.Pop.Lookup$CU_ID <- SubstituteValues('MapData_CU_ID', 'CU_ID', data.CU.Lookup, data.Pop.Lookup$MapData_CU_ID)
 
-# pass through a CU metrics table and add a 'labels' column
-# CUlabels should be a named vector that specified the label for each CU
-# if CUlabels is given, uses the labels from CUlabels
-# otherwise assumes that the ds row names are to be used as the labels 
-WithLabels <- function(ds, CUnames = NULL) {
-  if (is.null(CUnames)) {
-    ds$labels <- row.names(ds)
-  } else {
-    ds$labels <- CUlabels[row.names(ds)]
+#** Create a unique population ID, 'Pop_UID', consisting of CU_ID and Pop_ID, to be used across files.
+# add the unique pop ID to the various files containing population data
+# Pop Lookup file
+data.Pop.Lookup$Pop_UID <- paste(data.Pop.Lookup$CU_ID, data.Pop.Lookup$Pop_ID, sep='.')
+row.names(data.Pop.Lookup) <- data.Pop.Lookup$Pop_UID
+
+# Population time series data
+# right now, pop ID is missing for Coho, so we need to do a somewhat complicated lookup here, by either pop ID or by pop name 
+# hopefully this is temporary and will be fixed as part of the data assembly process evantually
+# Identify first data year for each time series. This is only done to avoid printing out warnings about id or name mismatches more than once.
+# Should be removed in production version since it takes some time to run.
+# data.Pop.TimeSeries$FirstYear <- apply(data.Pop.TimeSeries, 1, function(data.row, popData){
+#   popID  <- as.numeric(data.row[['Pop_ID']])
+#   if (!is.na(popID)) 
+#     popDataRows <- !is.na(popData$Pop_ID) & popData$Pop_ID == popID & popData$DataSet == data.row[['DataSet']]
+#   else
+#     popDataRows <- popData$Pop_Name == data.row[['Pop_Name']] & popData$DataSet == data.row[['DataSet']]
+#   all(as.numeric(popData[popDataRows, 'Year']) >= as.numeric(data.row[['Year']]))
+#   
+# }, data.Pop.TimeSeries)
+
+data.Pop.TimeSeries$Pop_UID <- apply(data.Pop.TimeSeries, 1, function(data.row) {
+  matches <- c(F)
+  popID  <- as.character(data.row[['Pop_ID']])
+  if (!is.na(popID)) { # lookup with Pop ID and species - this is the preferred way to match 
+    matches <- data.Pop.Lookup$TimeSeriesData_Species == data.row[["DataSet"]] & as.character(data.Pop.Lookup$Pop_ID) == popID
+    # check for potential name mismatch
+    # if (data.row[["FirstYear"]]) {
+    #   if(any(matches) && data.Pop.Lookup[matches, 'TimeSeriesData_Pop_Name'][1] != data.row[['Pop_Name']]) 
+    #     cat("Warning: name mismatch for site ", data.row[["DataSet"]], ' - ', data.row[["Pop_Name"]], ' ( Pop ID: ', popID,
+    #       '). Expected ', data.Pop.Lookup[matches, 'TimeSeriesData_Pop_Name'][1], '!\n')
+    # }
   }
-  return(ds)
+  else if (data.row[["Pop_Name"]] != "") {  # if no Pop ID available, try lookup with Pop Name and Species - temporary fix until Coho pop IDs integrated into data
+    matches <- data.Pop.Lookup$TimeSeriesData_Species == data.row[["DataSet"]] & data.Pop.Lookup$TimeSeriesData_Pop_Name == data.row[["Pop_Name"]]
+  }
+  if (any(matches)) return(data.Pop.Lookup[matches, 'Pop_UID'][1])
+  else {
+    # if(data.row[["FirstYear"]])  # show warning only for first occurence
+    #   cat("Warning: no match found in lookup file for site ",
+    #       data.row[["DataSet"]], ' - ', data.row[["Pop_Name"]], ' ( Pop ID: ', popID, '). This site will not be selectable.\n')
+    return("")
+  }
+})
+
+data.Pop.TimeSeries <- data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID != '', ]
+data.Pop.TimeSeries$TS_Name <- data.Pop.TimeSeries$Pop_Name
+
+# there are sometimes multiple time series for one pop UID
+# get the names for those and add to pop lookup table
+data.Pop.Lookup$tsNames <- rep('', nrow(data.Pop.Lookup))
+for (p in unique(data.Pop.TimeSeries$Pop_UID)) {
+  data.Pop.Lookup[p, 'tsNames'] <- paste(unique(data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID == p, 'TS_Name']), collapse = ':')
+  for (name in strsplit(data.Pop.Lookup[p, 'tsNames'], ':')[[1]]) {
+    ds <- data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID == p & data.Pop.TimeSeries$TS_Name == name, ]
+    if(any(duplicated(ds[, 'Year'])))  {
+        cat("Warning: site ", p, ' (', name, ' ) has duplicate enries in time series data\n')
+        yr <- ds$Year[duplicated(ds$Year)][1]
+        print(ds[ds$Year == yr, ])
+    }
+  }
+  rm(ds)
 }
 
-# ------------------------ UI customization -----------------
+#** Eliminate data not selectable (out of bounds or not properly identified etc)
+data.CU.TimeSeries <- data.CU.TimeSeries[!is.na(data.CU.TimeSeries$CU_ID), ]
+data.CU.MetricsSeries <- data.CU.MetricsSeries[!is.na(data.CU.MetricsSeries$CU_ID), ]
+data.Pop.TimeSeries$Pop_Name <- data.Pop.Lookup[data.Pop.TimeSeries$Pop_UID, 'Pop_Name']
+data.CU.Spatial <- data.CU.Spatial[!is.na(data.CU.Spatial$CU_ID), ]
 
-# ------------------ Common Styles ---------
-BoxHeaderStatus = 'primary'
-WellPanelStyle <- "background: white"
-PickerOptsSingleSelect <- list(`show-tick`=TRUE)
-PickerOptsMultiSelect <- list(`show-tick`=TRUE, `actions-box`=TRUE, `selected-text-format`='count')
-ButtonStyle <- "color: #fff; background-color: #337ab7; border-color: #2e6da4, height:70px; font-size: 100%"
+# For the stream data: create a new field that only contains CUs in the current database
+data.Streams$CUsSelectable <- unlist(lapply(data.Streams$AllCUsAbove, function(CUs) {
+  CUs <- strsplit(CUs, ':')[[1]]
+  CUs <- CUs[CUs %in% data.CU.Lookup$CU_ID]
+  if (length(CUs) > 0) paste(sort(CUs), collapse=",")
+  else ""
+}))
+# ditto for populations
+data.Streams$PopsSelectable <- unlist(lapply(data.Streams$AllSitesAbove, function(sites) {
+  sites <- strsplit(sites, ':')[[1]]
+  sites <- sites[sites %in% data.Pop.Lookup$Pop_UID]
+  if (length(sites) > 0) paste(sort(sites), collapse=",")
+  else ""
+}))
 
-# ------------ Data Filtering UI --------------
-# attribute filter customization
-# the names of the attributes users may filter by, shown in this order
-FilterAttributes <- c("Base.Unit.Species", "FAZ", "BaseUnit.Watershed", "Management.Timing")
-# allow only a single choice for these attributes:
-FilterSingleChoiceAttributes <- c("Base.Unit.Species")
+# Now prune the stream network to remove any streams that don't potentially select CUs in the current CU database
+data.Streams <- data.Streams[data.Streams$CUsSelectable != "", ]
 
-# metric selector customization
-# the names of the metrics users may choose from
-FilterMFMetrics <- c("WSP.status", "WSP.numeric", "Recent.Total", "Recent.ER",
-                     "Lower.Ratio","Upper.Ratio","LongTerm.Ratio",
-                     "ShortTerm.Trend")
+# add stream order to stream network - use new code analogous to FWA watershed code,
+# but composed of unique segment keys
+data.Streams$StreamOrder <- unlist(lapply(data.Streams$code, function(code) {
+  length(strsplit(code, '-')[[1]])
+}))
 
-# the names of the attributes users may choose from
-FilterMFAttributes <- c("FAZ", "BaseUnit.Watershed", "Management.Timing")
+data.Streams <- data.Streams[order(data.Streams$StreamOrder, decreasing=F), ]
+data.StreamsExtended <- data.StreamsExtended[row.names(data.Streams), ]
 
-# attributes for which it doesn't make sense to let the user select whether they should be shown
-FilterMFhiddenAttributes <- c("Base.Unit.CU.ShortName", "Base.Unit.Species")
+#** Rearrange the metrics data so all metrics are in columns and create an associated 'Status' metric for each main metric (labeled <metric>.Status)
+data.CU.MetricsSeries.MetricNames <- unique(data.CU.MetricsSeries$Metric)
+data.CU.MetricsSeries.StatusMetricNames <- paste0(data.CU.MetricsSeries.MetricNames, '.Status')
+data.CU.Metrics <- unique(data.CU.MetricsSeries[, c("CU_ID", "Year")])
+row.names(data.CU.Metrics) <- paste(data.CU.Metrics$CU_ID, data.CU.Metrics$Year, sep=".")
+for (m in data.CU.MetricsSeries.MetricNames) {
+  data.CU.Metrics[, m] <- data.CU.MetricsSeries[data.CU.MetricsSeries$Metric == m, 'Value']
+  data.CU.Metrics[, paste(m, "Status", sep=".")] <- factor(data.CU.MetricsSeries[data.CU.MetricsSeries$Metric == m, 'Status'], 
+                                                           levels=c('Red', 'Amber', 'Green'), ordered=T)
+}
+rm(m)
 
-# ---------------- Data Selector UI ------------------
+# Identify data years present in CU metrics data
+data.CU.Metrics.Years <- as.character(sort(unique(as.numeric(data.CU.Metrics$Year))))
 
-SelectAttributes <- c('Base.Unit.CU.ShortName',
-                   'BaseUnit.Watershed',
-                   'FAZ',
-                   'Management.Timing',
-                   'WSP.status')
+#** Attach attributes from CU lookup to metrics file 
+data.CU.Metrics <- merge(data.CU.Metrics, unique(data.CU.Lookup[ , c("CU_ID", "Species", "FAZ", "Area", "RunTiming", "LifeHistory", "AvGen")]), by=c("CU_ID"), all.x=T, all.y=F)
+for (attrib in names(data.CU.Metrics)) {
+  if (attrib %in% names(AttribLevels)) { 
+    # turn this attribute into a factor with the specified ordering
+    data.CU.Metrics[is.na(data.CU.Metrics[, attrib]), attrib] <- 'NA'
+    data.CU.Metrics[, attrib] <- factor(as.character(data.CU.Metrics[, attrib]), levels = AttribLevels[[attrib]])
+  }
+}
+row.names(data.CU.Metrics) <- paste(data.CU.Metrics$CU_ID, data.CU.Metrics$Year, sep=".")
 
-# ---------------- Parcoords UI ------------------
-# show the following axes in parcoords, in the order specified here
-ParcoordsMetricOrder <- c("Recent.Total", "Recent.ER",
-                          "Lower.Ratio","Upper.Ratio","LongTerm.Ratio",
-                          "ShortTerm.Trend",
-                          "WSP.status", "WSP.numeric", "Management.Timing", "FAZ") 
+# Attach attributes to CU polygon data
+#data.CU.Spatial <- sp::merge(data.CU.Spatial, unique(data.CU.Lookup[ , c('CU_Name' , 'CU_ID', MapAttribs)]), by=c("CU_ID"), all.x=T, all.y=F)
 
-# rotation of axis labels for metric axes (in degrees from horizontal)
-ParcoordsLabelRotation <- -15 
+# Eliminate unnecessary columns from map data
+attribsToKeep <- c('CU_NAME', 'CU_ID', 'geom')
+data.CU.Spatial[, names(data.CU.Spatial)[!(names(data.CU.Spatial) %in% attribsToKeep)]] <- NULL
+rm(attribsToKeep)
 
-# ---------------- Historgram Summaries UI ------------------
-# histogram summaries will be generated for these metrics/attributes in the order specified
-HistoSummaryAttribs <- c("Management.Timing", "FAZ", "WSP.status", "Recent.ER")
+# identify CUs and populations in dataset
+data.CUs <- unique(data.CU.Lookup$CU_ID)
+data.Pops <- unique(data.Pop.Lookup$Pop_UID)
+data.Watersheds <- unique(data.Streams$code)
 
-# the number of CUs afte which display switches to bars by default
-HistoMaxDots <- 40
+# add information about availability of associated metrics and time-series data to lookup tables
+getMinYr <- function(df) {if (nrow(df) > 0) min(df$Year) else NA}
+getMaxYr <- function(df) {if (nrow(df) > 0) max(df$Year) else NA}
+data.Pop.Lookup$HasTimeSeriesData <- unlist(lapply(data.Pop.Lookup$Pop_UID, function(uid) {if(uid %in% data.Pop.TimeSeries$Pop_UID) 'Yes' else 'No'}))
 
-# this list specifies the information necessary to construct a histogram from a numeric metric 
-HistoCustomInfo <- list(
-  Annual = list( 
-    Recent.ER = list(
-      breaks = c( 0,10,20,30,40,50,60,70,80,90,100),
-      names = c("Below 10%","10-20%","20-30%","30%-40%","40-50%", "50%-60%","60-70%","70%-80%","80-90%","Above 90%")
-      )
-    ),
-  Change = list(
-    Recent.ER = list(
-      breaks = c(-100, -10, -5, -1, 1, 5, 10, 100),
-      names = c(">10% decr", "5%-10% decr", "0-5% decr","No Change", "0-5% incr", "5-10% incr",">10% incr")
-    )
-  ))
+data.CU.Lookup$HasMetricsData <- unlist(lapply(data.CU.Lookup$CU_ID, function(cu_id) {if(cu_id %in% data.CU.MetricsSeries$CU_ID) 'Yes' else 'No'}))  
+data.CU.Lookup$HasTimeSeriesData <- unlist(lapply(data.CU.Lookup$CU_ID, function(cu_id) {if(cu_id %in% data.CU.TimeSeries$CU_ID) 'Yes' else 'No'})) 
+data.Pop.Lookup$DataStartYear <- unlist(lapply(data.Pop.Lookup$Pop_UID, function(p) {getMinYr(data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID == p, ])}))
+data.Pop.Lookup$DataEndYear <- unlist(lapply(data.Pop.Lookup$Pop_UID, function(p) {getMaxYr(data.Pop.TimeSeries[data.Pop.TimeSeries$Pop_UID == p, ])}))
+data.CU.Lookup$DataStartYear <- unlist(lapply(data.CU.Lookup$CU_ID, function(CU) {getMinYr(data.CU.TimeSeries[data.CU.TimeSeries$CU_ID == CU, ])}))
+data.CU.Lookup$DataEndYear <- unlist(lapply(data.CU.Lookup$CU_ID, function(CU) {getMaxYr(data.CU.TimeSeries[data.CU.TimeSeries$CU_ID == CU, ])}))
 
-# --------------- Radar Plot UI ----------------
-
-# the metrics offered as choices for the radar plot
-RadarMetricOpts <- c("ShortTerm.Trend", "Recent.Total", "Lower.Ratio", "Upper.Ratio", "LongTerm.Ratio")
+# add CU names to Labels structure
+for (cu in data.CUs) Labels[[cu]] <- getCUname(cu)
 
 
-# -------------------- Map UI ______________________
 
-# labels for levels of individual data columns
-MapLevelLabels <- list(
-  Management.Timing = list(Estu="Fraser Sockeye Early Stuart", 
-                           Early_Summer="Fraser Sockeye Early Summer", 
-                           Summer="Fraser Sockeye Summer", 
-                           Late="Fraser Sockeye Late"),
-  Base.Unit.Species = list(SK = "Sockeye", CK = "Chinook")
-)
 
-# the metrics to include in the map labels (i.e., the popups shown on hover)
-MapLabelMetrics <-  c("ShortTerm.Trend", "Recent.Total", "Lower.Ratio", "Upper.Ratio", "LongTerm.Ratio")
