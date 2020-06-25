@@ -13,40 +13,74 @@
 # ====================== Define UI Components =========================
 
 library(shinydashboard)
+library(shinydashboardPlus)
 library(shinyWidgets)
 library(markdown)
-library(plotly)
-library(parcoords)
-library(leaflet)
-library(DT)
+library(shinyBS)
+
 
 sidebar <- shinydashboard::dashboardSidebar(
+  
   shinydashboard::sidebarMenu(
-    #   id = "tabs",
+    id = "tabs",
     menuItem("DISCLAIMER", tabName="DISCLAIM"),
-    menuItem("CU Status Summary", tabName="Flow"),
-    menuItem("Full Data", tabName="AllData"),
-#    menuItem("Radar Plots", tabName="Radar"),
-#    menuItem("Areas", tabName="Areas"),
-    br(),br(), br(),br(), br(),br(),
-    br(),br(), br(),br(), br(),br(),
-    br(),br(), br(),br(), br(),br(),
-    hr(),# Two line breaks for visual separation
-    h5("Built with",
-       img(src = "https://www.rstudio.com/wp-content/uploads/2014/04/shiny.png", height = "30px"),
-       "by",
-       img(src="https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray.png", height="30px"),
-       ".")
+    menuItem("CU Status Summary", tabName="CUSelection"),
+    menuItem("View Full Data", tabName="AllData"),
+    
+    conditionalPanel("input.tabs == 'CUSelection'",
+                     tags$hr(),
+                     actionButton("sidebarMenu_clearSelection", label = "Clear Selection", style=ButtonStyle)),
+    tags$div(
+      `style` = "position: absolute; bottom: 0;",
+      hr(),
+      h5("Built with",
+        img(src = "https://www.rstudio.com/wp-content/uploads/2014/04/shiny.png", height = "30px"),
+        "by",
+        img(src="https://www.rstudio.com/wp-content/uploads/2014/07/RStudio-Logo-Blue-Gray.png", height="30px"),
+        ".")
+    )
   )
 )
 
-body <- shinydashboard::dashboardBody(
+body <- shinydashboard::dashboardBody(`style` = "min-height: 400px",
+  shinyjs::useShinyjs(),
+  tags$head(HTML("<script type='text/javascript' src='sbs/shinyBS.js'></script>")),
+
+  tags$head(tags$style(
+    HTML('.skin-blue {min-height: 400px !important;}')
+  )),
+  tags$head(tags$style(HTML('
+        .skin-blue .main-header .logo {
+                            background-color: #3c8dbc;
+                            }
+                            .skin-blue .main-header .logo:hover {
+                            background-color: #3c8dbc;
+                            }
+                            '))),
+tags$head(tags$style(
+  HTML('.content-wrapper {height: auto !important; position:relative; overflow-x:hidden; overflow-y:hidden}')
+)),
+tags$head(tags$style(
+  HTML('.content-wrapper {color: #000000 !important;}')
+)),
+tags$head(tags$style(
+  HTML('.tooltip-inner {width: 400px !important;}')
+)),
+
+tags$head(tags$style(
+  HTML('.scroll-container {
+          width: 1200px;   
+          overflow: auto;    
+          scrollbar-base-color:#ffeaff
+       }'))),
+
   tabItems(
     tabItem(
       tabName = "DISCLAIM",
       h2("DISCLAIMER"),
       fluidRow(
         column(width=8,
+             
                includeMarkdown("Markdown/about.md")
         )
       )
@@ -54,115 +88,66 @@ body <- shinydashboard::dashboardBody(
     tabItem(
       tabName = "AllData",
       h2("Data"),
-      tags$div('style' = "text-align:right;", 
-               downloadButton("downloadAllData", "Download")
-      ),
-      DT::dataTableOutput("AllData", width="50%")
+      tags$div('style' = "text-align:right;", downloadButton("allData_Download", "Download")),
+      tags$div(style = 'overflow-x: scroll',  DT::dataTableOutput("allData_Table", width="70%"))
     ),
-    tabItem(
-      tabName = "Radar",
-      h2("Radar plots of selected data"),
-      h5("CU metrics are plotted in proportion to each other. Metric scores have been inverted so that larger triangles depict lower scores. Only CUs with all 3 metrics are shown."),
-      br(),
-      h4("Select metrics for radar plots:"),
-      fluidRow(
-        column(width=3,
-               selectInput(inputId = "selected_metric_1",
-                           label = "",
-                           choices = c("ShortTerm.Trend",  "Recent.Percentile", 
-                                       "Recent.Total", "Lower.Ratio", "Upper.Ratio"),
-                           selected = c("Recent.Total"),
-                           multiple=FALSE)
-        ),
-        column(width=3,
-               selectInput(inputId = "selected_metric_2",
-                           label = "",
-                           choices = c("ShortTerm.Trend",  "Recent.Percentile", 
-                                       "Recent.Total", "Lower.Ratio", "Upper.Ratio"),
-                           selected = c("Lower.Ratio"),
-                           multiple=FALSE)
-        ),
-        column(width=3,
-               selectInput(inputId = "selected_metric_3",
-                           label = "",
-                           choices = c("ShortTerm.Trend",  "Recent.Percentile", 
-                                       "Recent.Total", "Lower.Ratio", "Upper.Ratio"),
-                           selected = c("Upper.Ratio"),
-                           multiple=FALSE)
-        )
-      ),
-      checkboxInput(inputId = "faceted",
-                    label = "Select faceting:",
-                    value = TRUE),
-      #tags$head(tags$style(HTML(mycss))),
-      #div(id = "plot-container",
-      #    tags$img(src = "spinner.gif",
-      #             id = "loading-spinner"),
-          plotOutput("radarPlot", height="550px", width="700px")
-        #  textOutput("incomplete_plots")
-      #)
       
-    ),
     tabItem(
-      tabName = "Areas",
-      h2("Proportional radar plot areas for selected metrics"),
-      DT::dataTableOutput("Areas", width="50%")
-    ),
-    tabItem(
-      tabName="Summary",
-      h2("Summary of selected data"),
-      selectInput(inputId = "selected_type",
-                  label = "Select units for summarizing brushed CUs",
-                  choices = c("Proportion",  "Number"),
-                  selected = c("Proportion"),
-                  multiple=FALSE),
-      h3("Selected CUs by Management Timing Group"),
-      plotlyOutput("summaryPlot_MT", width="70%"),
-      br(), br(),
-      h3("Selected CUs by Freshwater Adaptive Zone"),
-      plotlyOutput("summaryPlot_FAZ",width="70%"),
-      br(), br(),
-      conditionalPanel("input.select_change == 'Annual'",
-                       h3("Selected CUs by WSP Integrated Status")
-      ),
-      conditionalPanel("input.select_change == 'Change'",
-                       h3("Selected CUs by Change in WSP Integrated Status")
-      ),
-      plotlyOutput("summaryPlot_WSP",width="70%"),
-      br(), br(),
-      conditionalPanel("input.select_change == 'Annual'",
-                       h3("Selected CUs by Exploitation Rate")
-      ),
-      conditionalPanel("input.select_change == 'Change'",
-                       h3("Selected CUs by Change in Exploitation Rate")
-      ),
-      plotlyOutput("summaryPlot_ER",width="70%")
-    ),
-    tabItem(
-      tabName = "Flow",
-      box(title = "Start here", width=12, status="info", solidHeader=TRUE, collapsible=TRUE, collapsed=FALSE,
-          uiOutput("selectors")),
-      
-      box(title = "View/select CUs on a map", width=12, status="info", solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE,
-          uiOutput("leafletMap")),
-      
-      box(title = "View/select CUs by performance metric (parallel coordinates plot)", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
-          uiOutput("parcoordsPlot")),
+      tabName = "CUSelection",
+      accordion(
+        accordionItem(uiOutput("box_DataFilters"), id = 1, title = "Start here: Choose the data you want to work with", collapsed=FALSE, color="Primary"),
+        #hid the data selector box
+        #accordionItem(uiOutput("box_DataSelectors"), id = 2, title = "Select CUs by attributes and/or metric values", color="Primary"),
+        accordionItem(uiOutput("box_LeafletMap"), id = 3, title = "View CUs on a map", color="Primary"),
+        accordionItem(uiOutput("box_Parcoords"), id = 4, title = "Compare CUs", color="Primary"),
+        accordionItem(div(style = 'overflow-x: scroll', uiOutput("box_SelectedDataTable")), id = 5, title = "Table view and download of selected data", color="Primary"),
+        accordionItem(uiOutput("box_HistoSummary"), id = 6, title = "Summary report", color="Primary")
+        #hid the radar plots
+        #accordionItem(uiOutput("box_RadarPlots"), id = 7, title = "Radar plots", color="Primary")
+      )
 
-      box(title = "View/select CUs on a data table", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
-          div(style = 'overflow-x: scroll', uiOutput("data"))),
-      
-      box(title = "Summary report", width=12, status="info", solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE,
-          uiOutput("summary"))
-      
-      
+      # box(title = "Start here", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=FALSE, status=BoxHeaderStatus,
+      #     uiOutput("box_DataFilters")),
+      # 
+      # box(title = "Select CUs by attributes and/or metric values", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE, status=BoxHeaderStatus,
+      #     uiOutput("box_DataSelectors")),
+      # 
+      # box(title = "View CUs on a map", width=12, solidHeader=TRUE, collapsible=TRUE, collapsed=TRUE, status=BoxHeaderStatus,
+      #     uiOutput("box_LeafletMap")),
+      # 
+      # box(title = "Compare CUs", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
+      #     uiOutput("box_Parcoords")),
+      # 
+      # box(title = "Table view and download of selected data", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
+      #     div(style = 'overflow-x: scroll', uiOutput("box_SelectedDataTable"))),
+      # 
+      # box(title = "Summary report", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
+      #     uiOutput("box_HistoSummary")),
+      # 
+      # box(title = "Radar plots", width=12, solidHeader=TRUE, collapsible=TRUE,  collapsed=TRUE, status=BoxHeaderStatus,
+      #     uiOutput("box_RadarPlots"))
     )
   )
 )
 
+
 # Define UI for application 
 ui <- dashboardPage(
-  dashboardHeader(title="Working"),
+  dashboardHeader(
+# sample code for adding buttons and other elements to header bar    
+#    tags$li(class = "dropdown", actionButton("btn1", label = "Button 1", style=ButtonStyle)),
+#    tags$li(class = "dropdown", conditionalPanel("input.tabs == 'CUSelection'",
+#                                                  actionButton("btn3", label = "Clear Selection", style=ButtonStyle))),
+     # tags$li(class = "dropdown",
+     #         tags$style(".main-header {max-height: 100px}"),
+     #         tags$style(".main-header .logo {height: 100px}")
+     # ),
+    # Use image in title
+    #title = tags$a(href='http://company.fr/',     # Note we can add a web link to the logo in the future using this structure if we want!
+     #              tags$img(src='logo.jpg'))
+    title = tags$img(src='Final - State of the Salmon Program - LT. Design-03.png', height="60px")
+  ),     
+
   #  dashboardSidebar(disable=F),
   sidebar,
   body

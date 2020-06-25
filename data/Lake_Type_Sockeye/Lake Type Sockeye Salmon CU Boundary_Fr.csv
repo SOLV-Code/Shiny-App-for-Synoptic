@@ -1,0 +1,169 @@
+FID,INDICE_UC,NOM_UC,CU TYPE,SP_QUAL,OBJECTID
+0,SEL-01-01,Osoyoos,Current,SEL,1
+1,SEL-03-01,Chilliwack_Early Summer Timing,Current,SEL,2
+2,SEL-03-02,Cultus_Late Timing,Current,SEL,3
+3,SEL-03-03,Harrison-downstream migrating_Late Timing,Current,SEL,4
+4,SEL-03-04,Harrison-upstream migrating_Late Timing,Current,SEL,5
+5,SEL-03-05,Pitt_Early Summer Timing,Current,SEL,6
+6,SEL-04-01,Lillooet/Harrison_Late Timing,Current,SEL,7
+7,SEL-05-02,Nahatlatch_Early Summer Timing,Current,SEL,8
+8,SEL-06-01,Anderson/Seton_Early Summer Timing,Current,SEL,9
+9,SEL-06-02,Chilko_Early Summer Timing,Current,SEL,10
+10,SEL-06-03,Chilko_Summer Timing,Current,SEL,11
+11,SEL-06-07,Francois/Fraser_Summer Timing,Current,SEL,12
+12,SEL-06-10,Quesnel_Summer Timing,Current,SEL,13
+13,SEL-06-11,Seton_Late Timing,Bin,SEL,14
+14,SEL-06-13,Takla/Trembleur/Stuart_Summer Timing,Current,SEL,15
+15,SEL-06-14,Takla/Trembleur_Early Stuart Timing,Current,SEL,16
+16,SEL-06-16,Taseko_Early Summer Timing,Current,SEL,17
+17,SEL-06-20,Nadina/Francois_Early Summer Timing,VREQ[Bin],SEL,18
+18,SEL-07-01,Bowron_Early Summer Timing,Current,SEL,19
+19,SEL-09-03,Shuswap Complex-Late Timing,Current,SEL,20
+20,SEL-10-01,Kamloops_Early Summer Timing,Current,SEL,22
+21,SEL-10-03,North Barriere_Early Summer Timing,Bin,SEL,23
+22,SEL-11-01,Fulmore,Current,SEL,24
+23,SEL-11-02,Heydon,Current,SEL,25
+24,SEL-11-03,Kakweiken,Current,SEL,26
+25,SEL-11-04,Loose,Current,SEL,27
+26,SEL-11-05,Mackenzie,Current,SEL,28
+27,SEL-11-06,Phillips,Current,SEL,29
+28,SEL-11-07,Sakinaw,Current,SEL,30
+29,SEL-11-09,Tzoonie,Current,SEL,31
+30,SEL-12-01,Ida/Bonanza,Current,SEL,33
+31,SEL-12-02,Nahwitti,Current,SEL,34
+32,SEL-12-03,Nimpkish,Current,SEL,35
+33,SEL-12-05,Quatse,Current,SEL,36
+34,SEL-12-06,Schoen,Current,SEL,37
+35,SEL-12-07,Shushartie,Current,SEL,38
+36,SEL-12-08,Woss,Current,SEL,39
+37,SEL-12-09,Vernon,Current,SEL,40
+38,SEL-13-01,Alice,Current,SEL,41
+39,SEL-13-02,Canoe Creek,Current,SEL,42
+40,SEL-13-03,Cecilia,Current,SEL,43
+41,SEL-13-04,Cheewat,Current,SEL,44
+42,SEL-13-05,Clayoquot,Current,SEL,45
+43,SEL-13-06,Deserted,Current,SEL,46
+44,SEL-13-07,Fairy,Current,SEL,47
+45,SEL-13-08,Great Central,Current,SEL,48
+46,SEL-13-09,Henderson,Current,SEL,49
+47,SEL-13-10,Hesquiat,Current,SEL,50
+48,SEL-13-11,Hobiton,Current,SEL,51
+49,SEL-13-12,Jansen,Current,SEL,52
+50,SEL-13-13,Kanim,Current,SEL,53
+51,SEL-13-14,Kennedy,Current,SEL,54
+52,SEL-13-15,Maggie,Current,SEL,55
+53,SEL-13-16,Megin,Current,SEL,56
+54,SEL-13-17,Muchalat,Current,SEL,57
+55,SEL-13-18,Muriel,Current,SEL,58
+56,SEL-13-19,Nitinat,Current,SEL,59
+57,SEL-13-20,O'Connell,Current,SEL,60
+58,SEL-13-22,Park River,Current,SEL,61
+59,SEL-13-23,Power,Current,SEL,62
+60,SEL-13-25,Sproat,Current,SEL,63
+61,SEL-13-26,William/Brink,Current,SEL,64
+62,SEL-15-01,Long,Current,SEL,65
+63,SEL-15-02,Owikeno,Current,SEL,66
+64,SEL-15-04,Wannock[Owikeno],Current,SEL,68
+65,SEL-16-01,South Atnarko Lakes,Current,SEL,69
+66,SEL-17-01,Ain/Skundale/Ian,Current,SEL,70
+67,SEL-17-02,Awun,Current,SEL,71
+68,SEL-17-03,Fairfax,Current,SEL,72
+69,SEL-17-04,Jalun,Current,SEL,73
+70,SEL-17-06,Mathers,Current,SEL,74
+71,SEL-17-07,Mercer,Current,SEL,75
+72,SEL-17-08,Skidegate,Current,SEL,76
+73,SEL-17-09,Yakoun,Current,SEL,77
+74,SEL-17-10,Marie,Current,SEL,78
+75,SEL-18-02,Canoona,Current,SEL,79
+76,SEL-18-04,Evelyn,Current,SEL,80
+77,SEL-18-05,Kainet Creek,Current,SEL,81
+78,SEL-18-06,Kimsquit,Current,SEL,82
+79,SEL-18-07,Kitkiata,Current,SEL,83
+80,SEL-18-08,Kitlope,Current,SEL,84
+81,SEL-18-09,Pine River,Current,SEL,85
+82,SEL-19-01,Banks,Current,SEL,86
+83,SEL-19-02,Bloomfield,Current,SEL,87
+84,SEL-19-03,Bolton Creek,Current,SEL,88
+85,SEL-19-04,Bonilla,Current,SEL,89
+86,SEL-19-09,Tuwartz,Current,SEL,90
+87,SEL-19-10,Fannie Cove,Current,SEL,91
+88,SEL-19-11,Curtis Inlet,Current,SEL,92
+89,SEL-19-14,Devon,Current,SEL,93
+90,SEL-19-17,Elsie/Hoy,Current,SEL,94
+91,SEL-19-18,End Hill Creek,Current,SEL,95
+92,SEL-19-20,Freeda/Brodie,Current,SEL,96
+93,SEL-19-23,Higgins Lagoon,Current,SEL,97
+94,SEL-19-25,Kdelmashan Creek,Current,SEL,98
+95,SEL-19-26,Keecha,Current,SEL,99
+96,SEL-19-27,Kent Inlet Lagoon Creek,Current,SEL,100
+97,SEL-19-31,Kildidt Lagoon Creek,Current,SEL,101
+98,SEL-19-32,Kisameet,Current,SEL,102
+99,SEL-19-33,Koeye,Current,SEL,103
+100,SEL-19-34,Kooryet,Current,SEL,104
+101,SEL-19-36,Kwakwa Creek,Current,SEL,105
+102,SEL-19-38,Limestone Creek,Current,SEL,106
+103,SEL-19-40,Mary Cove Creek,Current,SEL,107
+104,SEL-19-43,Mikado,Current,SEL,108
+105,SEL-19-45,Namu,Current,SEL,109
+106,SEL-19-46,Port John,Current,SEL,110
+107,SEL-19-47,Powles Creek,Current,SEL,111
+108,SEL-19-49,Prudhomme,Current,SEL,112
+109,SEL-19-51,Ryan Creek,Current,SEL,113
+110,SEL-19-52,Salter,Current,SEL,114
+111,SEL-19-53,Scoular/Kilpatrick,Current,SEL,115
+112,SEL-19-54,Shawatlan,Current,SEL,116
+113,SEL-19-57,Spencer Creek,Current,SEL,117
+114,SEL-19-59,Talamoosa Creek,Current,SEL,118
+115,SEL-19-60,Tankeeah River,Current,SEL,119
+116,SEL-19-62,Tsimtack Lakes,Current,SEL,120
+117,SEL-19-64,Tuno Creek West,Current,SEL,121
+118,SEL-19-66,Wale Creek,Current,SEL,122
+119,SEL-19-70,Yeo,Current,SEL,123
+120,SEL-20-01,Alastair,Current,SEL,124
+121,SEL-20-02,Aldrich,Current,SEL,125
+122,SEL-20-03,Dennis,Current,SEL,126
+123,SEL-20-04,Ecstall/Lower,Current,SEL,127
+124,SEL-20-05,Johnston,Current,SEL,128
+125,SEL-20-06,Kitsumkalum,Current,SEL,129
+126,SEL-20-07,Lakelse,Current,SEL,130
+127,SEL-20-08,Mcdonell,Current,SEL,131
+128,SEL-21-01,Atna,Current,SEL,132
+129,SEL-21-02,Babine,Current,SEL,133
+130,SEL-21-03,Bulkley,Current,SEL,134
+131,SEL-21-05,Kitwancool,Current,SEL,135
+132,SEL-21-06,Maxan,Current,SEL,136
+133,SEL-21-07,Morice,Current,SEL,137
+134,SEL-21-09,Stephens,Current,SEL,138
+135,SEL-21-11,Tahlo/Morrison,Current,SEL,139
+136,SEL-21-12,Footsore/Hodder,Current,SEL,140
+137,SEL-22-01,Asitika,Current,SEL,141
+138,SEL-22-02,Azuklotz,Current,SEL,142
+139,SEL-22-03,Bear,Current,SEL,143
+140,SEL-22-04,Damshilgwit,Current,SEL,144
+141,SEL-22-05,Johanson,Current,SEL,145
+142,SEL-22-06,Kluatantan,Current,SEL,146
+143,SEL-22-07,Kluayaz,Current,SEL,147
+144,SEL-22-08,Motase,Current,SEL,148
+145,SEL-22-09,Sicintine,Current,SEL,149
+146,SEL-22-10,Slamgeesh,Current,SEL,150
+147,SEL-22-11,Spawning,Current,SEL,151
+148,SEL-22-12,Sustut,Current,SEL,152
+149,SEL-24-01,Bowser,Current,SEL,153
+150,SEL-24-02,Damdochax/Wiminasik,Current,SEL,154
+151,SEL-24-03,Fred Wright,Current,SEL,155
+152,SEL-24-04,Kwinageese,Current,SEL,156
+153,SEL-24-05,Meziadin,Current,SEL,157
+154,SEL-24-06,Oweegee,Current,SEL,158
+155,SEL-25-01,Border,Current,SEL,159
+156,SEL-26-01,Christina,Current,SEL,160
+157,SEL-26-02,Tahltan,Current,SEL,161
+158,SEL-26-03,Chutine,Current,SEL,162
+159,SEL-27-01,Whiting,Current,SEL,163
+160,SEL-28-01,Kuthai,Current,SEL,164
+161,SEL-28-02,Little Trapper,Current,SEL,165
+162,SEL-28-03,Tatsamenie,Current,SEL,166
+163,SEL-28-05,King Salmon,Current,SEL,167
+164,SEL-30-01,Blanchard,Current,SEL,168
+165,SEL-30-02,Klukshu,Current,SEL,169
+166,SEL-30-03,Neskatahin,Current,SEL,170
+167,SEL-09-02,Shuswap Complex -Early Summer Timing,Current,SEL,171
